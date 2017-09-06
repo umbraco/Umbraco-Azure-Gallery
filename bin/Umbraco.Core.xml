@@ -3574,6 +3574,22 @@
                 CombineHashCode(field3);
             </summary>
         </member>
+        <member name="T:Umbraco.Core.HashGenerator">
+            <summary>
+            Used to generate a string hash using crypto libraries over multiple objects
+            </summary>
+            <remarks>
+            This should be used to generate a reliable hash that survives AppDomain restarts. 
+            This will use the crypto libs to generate the hash and will try to ensure that 
+            strings, etc... are not re-allocated so it's not consuming much memory.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.HashGenerator.GenerateHash">
+            <summary>
+            Returns the generated hash output of all added objects
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Core.Models.EntityBase.IEntity">
             <summary>
             Defines an Entity.
@@ -3917,9 +3933,15 @@
             In some cases raised evens might need to contain additional arbitrary readonly data which can be read by event subscribers
             </summary>
             <remarks>
-            This allows for a bit of flexibility in our event raising - it's not pretty but we need to maintain backwards compatibility 
+            This allows for a bit of flexibility in our event raising - it's not pretty but we need to maintain backwards compatibility
             so we cannot change the strongly typed nature for some events.
             </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableEventArgs.EventState">
+            <summary>
+            This can be used by event subscribers to store state in the event args so they easily deal with custom state data between a starting ("ing")
+            event and an ending ("ed") event
+            </summary>
         </member>
         <member name="P:Umbraco.Core.Events.CancellableObjectEventArgs.EventObject">
             <summary>
@@ -11511,6 +11533,16 @@
             Extension methods for the IPublicAccessService
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Services.PublicAccessServiceExtensions.HasAccess(Umbraco.Core.Services.IPublicAccessService,System.String,System.String,System.Func{System.String,System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Checks if the member with the specified username has access to the path which is also based on the passed in roles for the member
+            </summary>
+            <param name="publicAccessService"></param>
+            <param name="path"></param>
+            <param name="username"></param>
+            <param name="rolesCallback">A callback to retrieve the roles for this member</param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Core.Services.OperationStatus">
             <summary>
             The default operation status
@@ -13170,12 +13202,15 @@
         </member>
         <member name="T:Umbraco.Core.HashCodeCombiner">
             <summary>
-            Used to create a hash code from multiple objects.
+            Used to create a .NET HashCode from multiple objects.
             </summary>
             <remarks>
             .Net has a class the same as this: System.Web.Util.HashCodeCombiner and of course it works for all sorts of things
             which we've not included here as we just need a quick easy class for this in order to create a unique
             hash of directories/files to see if they have changed.
+            
+            NOTE: It's probably best to not relying on the hashing result across AppDomains! If you need a constant/reliable hash value
+            between AppDomains use SHA1. This is perfect for hashing things in a very fast way for a single AppDomain.
             </remarks>
         </member>
         <member name="M:Umbraco.Core.HashCodeCombiner.GetCombinedHashCode">
@@ -16480,7 +16515,7 @@
             </summary>
             <param name="user"></param>
             <param name="textService"></param>
-            <returns></returns>      
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Models.UserExtensions.HasPathAccess(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Models.IContent)">
             <summary>
@@ -19759,12 +19794,6 @@
         <member name="T:Umbraco.Core.Persistence.Repositories.ScriptRepository">
             <summary>
             Represents the Script Repository
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Persistence.Repositories.SimilarNodeNameComparer">
-            <summary>
-            Comparer that takes into account the duplicate index of a node name
-            This is needed as a normal alphabetic sort would go Page (1), Page (10), Page (2) etc.
             </summary>
         </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.StylesheetRepository">
@@ -23637,6 +23666,16 @@
             A base membership provider class offering much of the underlying functionality for initializing and password encryption/hashing.
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Security.MembershipProviderBase.GetRawPassword(System.String)">
+            <summary>
+            Returns the raw password value for a given user
+            </summary>
+            <param name="username"></param>
+            <returns></returns>
+            <remarks>
+            By default this will return an invalid attempt, inheritors will need to override this to support it
+            </remarks>
+        </member>
         <member name="M:Umbraco.Core.Security.MembershipProviderBase.Initialize(System.String,System.Collections.Specialized.NameValueCollection)">
             <summary>
             Initializes the provider.
@@ -23660,7 +23699,7 @@
             Processes a request to update the password for a membership user.
             </summary>
             <param name="username">The user to update the password for.</param>
-            <param name="oldPassword">This property is ignore for this provider</param>
+            <param name="oldPassword">Required to change a user password if the user is not new and AllowManuallyChangingPassword is false</param>
             <param name="newPassword">The new password for the specified user.</param>
             <returns>
             true if the password was updated successfully; otherwise, false.
@@ -28078,6 +28117,12 @@
             <param name="language"><see cref="T:Umbraco.Core.Models.ILanguage"/> to delete</param>
             <param name="userId">Optional id of the user deleting the language</param>
         </member>
+        <member name="M:Umbraco.Core.Services.ILocalizationService.GetDictionaryItemKeyMap">
+            <summary>
+            Gets the full dictionary key map.
+            </summary>
+            <returns>The full dictionary key map.</returns>
+        </member>
         <member name="T:Umbraco.Core.Services.IMacroService">
             <summary>
             Defines the MacroService, which is an easy access to operations involving <see cref="T:Umbraco.Core.Models.IMacro"/>
@@ -28800,10 +28845,16 @@
         </member>
         <member name="M:Umbraco.Core.Services.IMemberService.SavePassword(Umbraco.Core.Models.IMember,System.String)">
             <summary>
-            This is simply a helper method which essentially just wraps the MembershipProvider's ChangePassword method
+            This is simply a helper method which essentially just wraps the MembershipProvider's ChangePassword method which can be 
+            used during Member creation.
             </summary>
-            <remarks>This method exists so that Umbraco developers can use one entry point to create/update 
-            Members if they choose to. </remarks>
+            <remarks>
+            This method exists so that Umbraco developers can use this entry point to set a password when Creating members ...
+            this will not work for updating members in most cases (depends on your membership provider settings)
+            
+            It is preferred to use the membership APIs for working with passwords, in the near future this method will be obsoleted
+            and the ASP.NET Identity APIs should be used instead.
+            </remarks>
             <param name="member">The Member to save the password for</param>
             <param name="password">The password to encrypt and save</param>
         </member>
@@ -35456,11 +35507,6 @@
             <param name="logger">A profiling logger.</param>
             <returns>The hash.</returns>
         </member>
-        <member name="M:Umbraco.Core.PluginManager.ConvertHashToInt64(System.String)">
-            <summary>
-            Converts a string hash value into an Int64.
-            </summary>
-        </member>
         <member name="M:Umbraco.Core.PluginManager.TryGetCached(System.Type,System.Type)">
             <summary>
             Attemps to retrieve the list of types from the cache.
@@ -35571,7 +35617,7 @@
             <summary>
             Gets the currently cached hash value of the scanned assemblies.
             </summary>
-            <value>The cached hash value, or 0 if no cache is found.</value>
+            <value>The cached hash value, or string.Empty if no cache is found.</value>
         </member>
         <member name="P:Umbraco.Core.PluginManager.CurrentAssembliesHash">
             <summary>
@@ -36179,7 +36225,7 @@
         </member>
         <member name="M:Umbraco.Core.StringExtensions.NormaliseDirectoryPath(System.String)">
             <summary>
-            Ensures that the folder path endds with a DirectorySeperatorChar
+            Ensures that the folder path ends with a DirectorySeperatorChar
             </summary>
             <param name="currentFolder"></param>
             <returns></returns>

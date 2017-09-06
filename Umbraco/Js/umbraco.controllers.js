@@ -12164,6 +12164,17 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.MultiColorPickerCo
 
 function contentPickerController($scope, entityResource, editorState, iconHelper, $routeParams, angularHelper, navigationService, $location, miniEditorHelper) {
 
+    var unsubscribe;
+
+    function subscribe() {
+        unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
+            var currIds = _.map($scope.renderModel, function (i) {
+                return $scope.model.config.idType === "udi" ? i.udi : i.id;
+            });
+            $scope.model.value = trim(currIds.join(), ",");
+        });
+    }
+
     function trim(str, chr) {
         var rgxtrim = (!chr) ? new RegExp('^\\s+|\\s+$', 'g') : new RegExp('^' + chr + '+|' + chr + '+$', 'g');
         return str.replace(rgxtrim, '');
@@ -12392,19 +12403,13 @@ function contentPickerController($scope, entityResource, editorState, iconHelper
             }
         });
     };
-        
-    var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
-        var currIds = _.map($scope.renderModel, function (i) {
-            return $scope.model.config.idType === "udi" ? i.udi : i.id;
-        });
-        $scope.model.value = trim(currIds.join(), ",");
-    });
 
     //when the scope is destroyed we need to unsubscribe
     $scope.$on('$destroy', function () {
-        unsubscribe();
+        if(unsubscribe) {
+            unsubscribe();
+        }
     });
-
     
     var modelIds = $scope.model.value ? $scope.model.value.split(',') : [];
 
@@ -12427,14 +12432,14 @@ function contentPickerController($scope, entityResource, editorState, iconHelper
 
             //everything is loaded, start the watch on the model
             startWatch();
-
+            subscribe();
         });
     }
     else {
         //everything is loaded, start the watch on the model
         startWatch();
+        subscribe();
     }
-    
 
     function setEntityUrl(entity) {
 
@@ -16814,7 +16819,9 @@ function memberPickerController($scope, dialogService, entityResource, $log, ico
 
 angular.module('umbraco').controller("Umbraco.PropertyEditors.MemberPickerController", memberPickerController);
 
-function MultipleTextBoxController($scope) {
+function MultipleTextBoxController($scope, $timeout) {
+
+    var backspaceHits = 0;
 
     $scope.sortableOptions = {
         axis: 'y',
@@ -16827,7 +16834,7 @@ function MultipleTextBoxController($scope) {
     if (!$scope.model.value) {
         $scope.model.value = [];
     }
-    
+
     //add any fields that there isn't values for
     if ($scope.model.config.min > 0) {
         for (var i = 0; i < $scope.model.config.min; i++) {
@@ -16837,13 +16844,72 @@ function MultipleTextBoxController($scope) {
         }
     }
 
+    $scope.addRemoveOnKeyDown = function (event, index) {
+
+        var txtBoxValue = $scope.model.value[index];
+
+        event.preventDefault();
+
+        switch (event.keyCode) {
+            case 13:
+                if ($scope.model.config.max <= 0 && txtBoxValue.value || $scope.model.value.length < $scope.model.config.max && txtBoxValue.value) {
+                    var newItemIndex = index + 1;
+                    $scope.model.value.splice(newItemIndex, 0, { value: "" });
+                    //Focus on the newly added value
+                    $scope.model.value[newItemIndex].hasFocus = true;
+                }
+                break;
+            case 8:
+
+                if ($scope.model.value.length > $scope.model.config.min) {
+                    var remainder = [];
+
+                    // Used to require an extra hit on backspace for the field to be removed
+                    if(txtBoxValue.value === "") {
+                        backspaceHits++;
+                    } else {
+                        backspaceHits = 0;
+                    }
+
+                    if (txtBoxValue.value === "" && backspaceHits === 2) {
+                        for (var x = 0; x < $scope.model.value.length; x++) {
+                            if (x !== index) {
+                                remainder.push($scope.model.value[x]);
+                            }
+                        }
+
+                        $scope.model.value = remainder;
+
+                        var prevItemIndex = index - 1;
+
+                        //Set focus back on false as the directive only watches for true
+                        if(prevItemIndex >= 0) {
+                            $scope.model.value[prevItemIndex].hasFocus = false;
+                            $timeout(function () {
+                                //Focus on the previous value
+                                $scope.model.value[prevItemIndex].hasFocus = true;
+                            });
+                        }
+
+                        backspaceHits = 0;
+                    }
+                }
+
+                break;
+            default:
+        }
+    }
+
     $scope.add = function () {
         if ($scope.model.config.max <= 0 || $scope.model.value.length < $scope.model.config.max) {
             $scope.model.value.push({ value: "" });
+            // focus new value
+            var newItemIndex = $scope.model.value.length - 1;
+            $scope.model.value[newItemIndex].hasFocus = true;
         }
     };
 
-    $scope.remove = function(index) {
+    $scope.remove = function (index) {
         var remainder = [];
         for (var x = 0; x < $scope.model.value.length; x++) {
             if (x !== index) {
@@ -16856,7 +16922,6 @@ function MultipleTextBoxController($scope) {
 }
 
 angular.module("umbraco").controller("Umbraco.PropertyEditors.MultipleTextBoxController", MultipleTextBoxController);
-
 angular.module("umbraco").controller("Umbraco.PropertyEditors.RadioButtonsController",
     function($scope) {
         
@@ -18104,7 +18169,18 @@ angular.module('umbraco').controller("Umbraco.PropertyEditors.EmbeddedContentCon
 		$scope.fakeData = [];
 	};
 });
-function textAreaController($rootScope, $scope, $log) {
+function textAreaController($scope) {
+
+    // macro parameter editor doesn't contains a config object,
+    // so we create a new one to hold any properties 
+    if (!$scope.model.config) {
+        $scope.model.config = {};
+    }
+
+    if (!$scope.model.config.maxChars) {
+        $scope.model.config.maxChars = false;
+    }
+
     $scope.model.maxlength = false;
     if($scope.model.config.maxChars) {
         $scope.model.maxlength = true;
@@ -18130,7 +18206,18 @@ function textAreaController($rootScope, $scope, $log) {
     }
 }
 angular.module('umbraco').controller("Umbraco.PropertyEditors.textAreaController", textAreaController);
-function textboxController($rootScope, $scope, $log) {
+function textboxController($scope) {
+
+    // macro parameter editor doesn't contains a config object,
+    // so we create a new one to hold any properties 
+    if (!$scope.model.config) {
+        $scope.model.config = {};
+    }
+
+    if (!$scope.model.config.maxChars) {
+        $scope.model.config.maxChars = false;
+    }
+
     $scope.model.maxlength = false;
     if($scope.model.config.maxChars) {
         $scope.model.maxlength = true;
