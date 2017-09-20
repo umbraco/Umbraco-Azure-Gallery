@@ -1271,6 +1271,19 @@
             against a already resolved object instead of looking the object back up by id. 
             </remarks>
         </member>
+        <member name="M:Umbraco.Core.CodeAnnotations.ActionMetadataAttribute.#ctor(System.String)">
+            <summary>
+            Constructor used to assign a Category, since no name is assigned it will try to be translated from the language files based on the action's alias
+            </summary>
+            <param name="category"></param>
+        </member>
+        <member name="M:Umbraco.Core.CodeAnnotations.ActionMetadataAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Constructor used to assign an explicit name and category
+            </summary>
+            <param name="category"></param>
+            <param name="name"></param>
+        </member>
         <member name="T:Umbraco.Core.CodeAnnotations.FriendlyNameAttribute">
             <summary>
             Attribute to add a Friendly Name string with an UmbracoObjectType enum value
@@ -1568,13 +1581,19 @@
             Default constructor 
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Configuration.UmbracoConfig.#ctor(Umbraco.Core.Configuration.UmbracoSettings.IUmbracoSettingsSection,Umbraco.Core.Configuration.BaseRest.IBaseRestSection,Umbraco.Core.Configuration.Dashboard.IDashboardSection)">
+        <member name="M:Umbraco.Core.Configuration.UmbracoConfig.#ctor(Umbraco.Core.Configuration.UmbracoSettings.IUmbracoSettingsSection,Umbraco.Core.Configuration.BaseRest.IBaseRestSection,Umbraco.Core.Configuration.Dashboard.IDashboardSection,Umbraco.Core.Configuration.HealthChecks.IHealthChecks)">
             <summary>
             Constructor - can be used for testing
             </summary>
             <param name="umbracoSettings"></param>
             <param name="baseRestSettings"></param>
             <param name="dashboardSettings"></param>
+            <param name="healthChecks"></param>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.UmbracoConfig.HealthCheck">
+            <summary>
+            Gets the IHealthCheck config
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Configuration.UmbracoConfig.DashboardSettings">
             <summary>
@@ -1582,6 +1601,12 @@
             </summary>
         </member>
         <member name="M:Umbraco.Core.Configuration.UmbracoConfig.SetDashboardSettings(Umbraco.Core.Configuration.Dashboard.IDashboardSection)">
+            <summary>
+            Only for testing
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.UmbracoConfig.SetHealthCheckSettings(Umbraco.Core.Configuration.HealthChecks.IHealthChecks)">
             <summary>
             Only for testing
             </summary>
@@ -1670,6 +1695,48 @@
             <summary>
             Allow setting internally so we can create a default
             </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ISecuritySection.AllowPasswordReset">
+            <summary>
+            Used to enable/disable the forgot password functionality on the back office login screen
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ISecuritySection.UsernameIsEmail">
+            <summary>
+            A boolean indicating that by default the email address will be the username
+            </summary>
+            <remarks>
+            Even if this is true and the username is different from the email in the database, the username field will still be shown.
+            When this is false, the username and email fields will be shown in the user section.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.AllowPasswordReset">
+            <summary>
+            Used to enable/disable the forgot password functionality on the back office login screen
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.UsernameIsEmail">
+            <summary>
+            A boolean indicating that by default the email address will be the username
+            </summary>
+            <remarks>
+            Even if this is true and the username is different from the email in the database, the username field will still be shown.
+            When this is false, the username and email fields will be shown in the user section.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.Umbraco#Core#Configuration#UmbracoSettings#ISecuritySection#AllowPasswordReset">
+            <summary>
+            Used to enable/disable the forgot password functionality on the back office login screen
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.Umbraco#Core#Configuration#UmbracoSettings#ISecuritySection#UsernameIsEmail">
+            <summary>
+            A boolean indicating that by default the email address will be the username
+            </summary>
+            <remarks>
+            Even if this is true and the username is different from the email in the database, the username field will still be shown.
+            When this is false, the username and email fields will be shown in the user section.
+            </remarks>
         </member>
         <member name="T:Umbraco.Core.Configuration.UmbracoSettings.UmbracoConfigurationElement">
             <summary>
@@ -1763,6 +1830,11 @@
             Resets settings that were set programmatically, to their initial values.
             </summary>
             <remarks>To be used in unit tests.</remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.HasSmtpServer">
+            <summary>
+            For testing only
+            </summary>
         </member>
         <member name="P:Umbraco.Core.Configuration.GlobalSettings.ReservedUrls">
             <summary>
@@ -2235,6 +2307,11 @@
         <member name="F:Umbraco.Core.Constants.Trees.Content">
             <summary>
             alias for the content tree.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Trees.ContentBlueprints">
+            <summary>
+            alias for the content blueprint tree.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.Trees.Members">
@@ -2852,6 +2929,11 @@
             Alias for the email address property editor
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.PropertyEditors.NestedContentAlias">
+            <summary>
+            Alias for the nested content property editor.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.PropertyEditors.PreValueKeys.DataValueType">
             <summary>
             Pre-value name used to indicate a field that can be used to override the database field to which data for the associated
@@ -2954,6 +3036,16 @@
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.ObjectTypes.DocumentGuid">
+            <summary>
+            Guid for a Document object.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.ObjectTypes.DocumentBlueprint">
+            <summary>
+            Guid for a Document Blueprint object.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.ObjectTypes.DocumentBlueprintGuid">
             <summary>
             Guid for a Document object.
             </summary>
@@ -3436,6 +3528,15 @@
             <param name="dt"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.DateTimeExtensions.PeriodicMinutesFrom(System.DateTime,System.String)">
+            <summary>
+            Calculates the number of minutes from a date time, on a rolling daily basis (so if 
+            date time is before the time, calculate onto next day)
+            </summary>
+            <param name="fromDateTime">Date to start from</param>
+            <param name="scheduledTime">Time to compare against (in Hmm form, e.g. 330, 2200)</param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Core.DecimalExtensions">
             <summary>
             Provides extension methods for System.Decimal.
@@ -3452,6 +3553,28 @@
             <returns>The normalized value.</returns>
             <remarks>Normalizing changes the scaling factor and removes trailing zeroes,
             so 1.2500m comes out as 1.25m.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Deploy.IUniqueIdentifyingServiceConnector">
+            <summary>
+            Provides a method to retrieve an artifact's unique identifier.
+            </summary>
+            <remarks>
+            Artifacts are uniquely identified by their <see cref="T:Umbraco.Core.Udi"/>, however they represent
+            elements in Umbraco that may be uniquely identified by another value. For example,
+            a content type is uniquely identified by its alias. If someone creates a new content
+            type, and tries to deploy it to a remote environment where a content type with the
+            same alias already exists, both content types end up having different <see cref="T:Umbraco.Core.Udi"/>
+            but the same alias. By default, Deploy would fail and throw when trying to save the
+            new content type (duplicate alias). However, if the connector also implements this
+            interface, the situation can be detected beforehand and reported in a nicer way.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Deploy.IUniqueIdentifyingServiceConnector.GetUniqueIdentifier(Umbraco.Core.Deploy.IArtifact)">
+            <summary>
+            Gets the unique identifier of the specified artifact.
+            </summary>
+            <param name="artifact">The artifact.</param>
+            <returns>The unique identifier.</returns>
         </member>
         <member name="T:Umbraco.Core.Deploy.ArtifactBase`1">
             <summary>
@@ -3974,6 +4097,47 @@
             <param name="content">The content item.</param>
             <param name="alias">The property alias.</param>
             <param name="value">The deploy property value.</param>
+        </member>
+        <member name="T:Umbraco.Core.EmailSender">
+            <summary>
+            A utility class for sending emails
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.EmailSender.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.EmailSender.Send(System.Net.Mail.MailMessage)">
+            <summary>
+            Sends the message non-async
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Umbraco.Core.EmailSender.SendAsync(System.Net.Mail.MailMessage)">
+            <summary>
+            Sends the message async
+            </summary>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Umbraco.Core.EmailSender.CanSendRequiredEmail">
+            <summary>
+            Returns true if the application should be able to send a required application email
+            </summary>
+            <remarks>
+            We assume this is possible if either an event handler is registered or an smtp server is configured
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.EmailSender.EventHandlerRegistered">
+            <summary>
+            returns true if an event handler has been registered
+            </summary>
+        </member>
+        <member name="E:Umbraco.Core.EmailSender.SendEmail">
+            <summary>
+            An event that is raised when no smtp server is configured if events are enabled
+            </summary>
         </member>
         <member name="T:Umbraco.Core.Events.EventDefinitionFilter">
             <summary>
@@ -4904,6 +5068,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Umbraco.Core.IEmailSender">
+            <summary>
+            Simple abstraction to send an email message
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Models.EntityBase.IRememberBeingDirty">
             <summary>
             An interface that defines if the object is tracking property changes and that is is also
@@ -5163,6 +5332,354 @@
             <summary>
             Marker interface for value object, eg. objects without
             the same kind of identity as an Entity (with its Id).
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Models.Membership.ContentPermissionSet" -->
+        <member name="T:Umbraco.Core.Models.Membership.EntityPermissionCollection">
+            <summary>
+            A <see cref="T:System.Collections.Generic.HashSet`1"/> of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/>
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.EntityPermissionCollection.GetAllPermissions">
+            <summary>
+            Returns the aggregate permissions in the permission set
+            </summary>
+            <returns></returns>
+            <remarks>
+            This value is only calculated once
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.IReadOnlyUserGroup">
+            <summary>
+            A readonly user group providing basic information
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IReadOnlyUserGroup.Alias">
+            <summary>
+            The alias
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IReadOnlyUserGroup.Permissions">
+            <summary>
+            The set of default permissions
+            </summary>
+            <remarks>
+            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.ReadOnlyUserGroup.Permissions">
+            <summary>
+            The set of default permissions
+            </summary>
+            <remarks>
+            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.UserState">
+            <summary>
+            The state of a user
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.UserType.Permissions">
+            <summary>
+            The set of default permissions for the user type
+            </summary>
+            <remarks>
+            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUserGroup.Icon">
+            <summary>
+            The icon
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUserGroup.Name">
+            <summary>
+            The name
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUserGroup.Permissions">
+            <summary>
+            The set of default permissions
+            </summary>
+            <remarks>
+            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUserGroup.UserCount">
+            <summary>
+            Specifies the number of users assigned to this group
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Models.Membership.EntityPermissionSet" -->
+        <member name="M:Umbraco.Core.Models.Membership.EntityPermissionSet.Empty">
+            <summary>
+            Returns an empty permission set
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.EntityPermissionSet.EntityId">
+            <summary>
+            The entity id with permissions assigned
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:Umbraco.Core.Models.Membership.EntityPermissionSet.PermissionsSet" -->
+        <member name="M:Umbraco.Core.Models.Membership.EntityPermissionSet.GetAllPermissions">
+            <summary>
+            Returns the aggregate permissions in the permission set
+            </summary>
+            <returns></returns>
+            <remarks>
+            This value is only calculated once
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.MembershipScenario">
+            <summary>
+            How membership is implemented in the current install.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.Membership.MembershipScenario.NativeUmbraco">
+            <summary>
+            The member is based on the native Umbraco members (IMember + Umbraco membership provider)
+            </summary>
+            <remarks>
+            This supports custom member properties
+            </remarks>
+        </member>
+        <member name="F:Umbraco.Core.Models.Membership.MembershipScenario.CustomProviderWithUmbracoLink">
+            <summary>
+            The member is based on a custom member provider but it is linked to an IMember
+            </summary>
+            <remarks>
+            This supports custom member properties (but that is not enabled yet)
+            </remarks>
+        </member>
+        <member name="F:Umbraco.Core.Models.Membership.MembershipScenario.StandaloneCustomProvider">
+            <summary>
+            The member is based purely on a custom member provider and is not linked to umbraco data
+            </summary>
+            <remarks>
+            This does not support custom member properties.
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.EntityPermission">
+            <summary>
+            Represents an entity permission (defined on the user group and derived to retrieve permissions for a given user)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.EntityPermission.AssignedPermissions">
+            <summary>
+            The assigned permissions for the user/entity combo
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.EntityPermission.IsDefaultPermissions">
+            <summary>
+            True if the permissions assigned to this object are the group's default permissions and not explicitly defined permissions
+            </summary>
+            <remarks>
+            This will be the case when looking up entity permissions and falling back to the default permissions
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.MembershipUserExtensions.GetMembershipScenario(Umbraco.Core.Services.IMemberService)">
+            <summary>
+            Returns the currently configured membership scenario for members in umbraco
+            </summary>
+            <value></value>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1.#ctor(System.String,System.String,System.Object,System.String,System.String,System.String,System.Boolean,System.Boolean,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.String,System.String,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1"/> class.
+            </summary>
+            <param name="providerName">Name of the provider.</param>
+            <param name="name">The name.</param>
+            <param name="providerUserKey">The provider user key.</param>
+            <param name="email">The email.</param>
+            <param name="passwordQuestion">The password question.</param>
+            <param name="comment">The comment.</param>
+            <param name="isApproved">if set to <c>true</c> [is approved].</param>
+            <param name="isLockedOut">if set to <c>true</c> [is locked out].</param>
+            <param name="creationDate">The creation date.</param>
+            <param name="lastLoginDate">The last login date.</param>
+            <param name="lastActivityDate">The last activity date.</param>
+            <param name="lastPasswordChangedDate">The last password changed date.</param>
+            <param name="lastLockoutDate">The last lockout date.</param>
+            <param name="fullName">The full name.</param>
+            <param name="language">The language.</param>
+            <param name="user"></param>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.IMembershipUser">
+            <summary>
+            Defines the base contract for <see cref="T:Umbraco.Core.Models.IMember"/> and <see cref="T:Umbraco.Core.Models.Membership.IUser"/>
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IMembershipUser.RawPasswordValue">
+            <summary>
+            Gets or sets the raw password value
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IMembershipUser.RawPasswordAnswerValue">
+            <summary>
+            Gets or sets the raw password answer value
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IMembershipUser.FailedPasswordAttempts">
+            <summary>
+            Gets or sets the number of failed password attempts.
+            This is the number of times the password was entered incorrectly upon login.
+            </summary>
+            <remarks>
+            Alias: umbracoMemberFailedPasswordAttempts
+            Part of the standard properties collection.
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.IProfile">
+            <summary>
+            Defines the the User Profile interface
+            </summary>   
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.IUser">
+            <summary>
+            Defines the interface for a <see cref="T:Umbraco.Core.Models.Membership.User"/>
+            </summary>
+            <remarks>Will be left internal until a proper Membership implementation is part of the roadmap</remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUser.Groups">
+            <summary>
+            Gets the groups that user is part of
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUser.ProfileData">
+            <summary>
+            Exposes the basic profile data
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUser.SecurityStamp">
+            <summary>
+            The security stamp used by ASP.Net identity
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUser.Avatar">
+            <summary>
+            Will hold the media file system relative path of the users custom avatar if they uploaded one
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.User">
+            <summary>
+            Represents a backoffice user
+            </summary>    
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.User.#ctor">
+            <summary>
+            Constructor for creating a new/empty user
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.User.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Constructor for creating a new/empty user
+            </summary>
+            <param name="name"></param>
+            <param name="email"></param>
+            <param name="username"></param>
+            <param name="rawPasswordValue"></param>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.User.#ctor(System.Int32,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{Umbraco.Core.Models.Membership.IReadOnlyUserGroup},System.Int32[],System.Int32[])">
+            <summary>
+            Constructor for creating a new User instance for an existing user
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <param name="email"></param>
+            <param name="username"></param>
+            <param name="rawPasswordValue"></param>
+            <param name="userGroups"></param>
+            <param name="startContentIds"></param>
+            <param name="startMediaIds"></param>
+        </member>
+        <member name="F:Umbraco.Core.Models.Membership.User.GroupsToSave">
+            <summary>
+            This used purely for hacking backwards compatibility into this class for &lt; 7.7 compat
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.SecurityStamp">
+            <summary>
+            The security stamp used by ASP.Net identity
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.SessionTimeout">
+            <summary>
+            Gets or sets the session timeout.
+            </summary>
+            <value>
+            The session timeout.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.StartContentIds">
+            <summary>
+            Gets or sets the start content id.
+            </summary>
+            <value>
+            The start content id.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.StartMediaIds">
+            <summary>
+            Gets or sets the start media id.
+            </summary>
+            <value>
+            The start media id.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.Groups">
+            <summary>
+            Gets the groups that user is part of
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.AdditionalData">
+            <summary>
+            This is used as an internal cache for this entity - specifically for calculating start nodes so we don't re-calculated all of the time
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.User.WrappedUserProfile">
+            <summary>
+            Internal class used to wrap the user in a profile
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.UserGroup">
+            <summary>
+            Represents a Group for a Backoffice User
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.UserGroup.#ctor">
+            <summary>
+            Constructor to create a new user group
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.Membership.UserGroup.#ctor(System.Int32,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Constructor to create an existing user group
+            </summary>
+            <param name="userCount"></param>
+            <param name="alias"></param>
+            <param name="name"></param>
+            <param name="permissions"></param>
+            <param name="icon"></param>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.UserGroup.Permissions">
+            <summary>
+            The set of default permissions for the user group
+            </summary>
+            <remarks>
+            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.Membership.MemberCountType">
+            <summary>
+            The types of members to count
             </summary>
         </member>
         <member name="T:Umbraco.Core.Models.PublishedContent.PublishedContentEnumerable">
@@ -5527,6 +6044,26 @@
             <para>Use nested published property type when creating detached properties within a published content.</para>
             </remarks>
         </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserGroupDto.UserCount">
+            <summary>
+            This is only relevant when this column is included in the results (i.e. GetUserGroupsWithUserCounts)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.DomainDto.IsoCode">
+            <summary>
+            Used for a result on the query to get the associated language for a domain if there is one
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserDto.PasswordConfig">
+            <summary>
+            This will represent a JSON structure of how the password has been created (i.e hash algorithm, iterations)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserDto.Avatar">
+            <summary>
+            Will hold the media file system relative path of the users custom avatar if they uploaded one
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Models.UserControl">
             <summary>
             Represents a UserControl file
@@ -5887,10 +6424,76 @@
             
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.CreateNew(System.String,System.String,System.String)">
+            <summary>
+             Used to construct a new instance without an identity
+            </summary>
+            <param name="username"></param>
+            <param name="email">This is allowed to be null (but would need to be filled in if trying to persist this instance)</param>
+            <param name="culture"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.#ctor(System.Int32,System.Collections.Generic.IEnumerable{Umbraco.Core.Models.Membership.IReadOnlyUserGroup})">
+            <summary>
+            Creates an existing user with the specified groups
+            </summary>
+            <param name="userId"></param>
+            <param name="groups"></param>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.HasIdentity">
+            <summary>
+            Returns true if an Id has been set on this object this will be false if the object is new and not peristed to the database
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.Email">
+            <summary>
+            Override Email so we can track changes to it
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.UserName">
+            <summary>
+            Override UserName so we can track changes to it
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.LastLoginDateUtc">
+            <summary>
+            Override LastLoginDateUtc so we can track changes to it
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.EmailConfirmed">
+            <summary>
+            Override EmailConfirmed so we can track changes to it
+            </summary>
+        </member>
         <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.Name">
             <summary>
             Gets/sets the user's real name
             </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.AccessFailedCount">
+            <summary>
+            Override AccessFailedCount so we can track changes to it
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.PasswordHash">
+            <summary>
+            Override PasswordHash so we can track changes to it
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.StartContentIds">
+            <summary>
+            Content start nodes assigned to the User (not ones assigned to the user's groups)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.StartMediaIds">
+            <summary>
+            Media start nodes assigned to the User (not ones assigned to the user's groups)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.AllowedSections">
+            <summary>
+            This is a readonly list of the user's allowed sections which are based on it's user groups
+            </summary>        
         </member>
         <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.LockoutEnabled">
             <summary>
@@ -5902,9 +6505,28 @@
             Based on the user's lockout end date, this will determine if they are locked out
             </summary>
         </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.IsApproved">
+            <summary>
+            This is a 1:1 mapping with IUser.IsApproved
+            </summary>
+        </member>
         <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.Logins">
             <summary>
             Overridden to make the retrieval lazy
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.AddRole(System.String)">
+            <summary>
+            helper method to easily add a role without having to deal with IdentityUserRole{T}
+            </summary>
+            <param name="role"></param>
+            <remarks>
+            Adding a role this way will not reflect on the user's group's collection or it's allowed sections until the user is persisted
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.Roles">
+            <summary>
+            Override Roles because the value of these are the user's group aliases
             </summary>
         </member>
         <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.SetLoginsCallback(System.Lazy{System.Collections.Generic.IEnumerable{Umbraco.Core.Models.Identity.IIdentityUserLogin}})">
@@ -5912,6 +6534,35 @@
             Used to set a lazy call back to populate the user's Login list
             </summary>
             <param name="callback"></param>
+        </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.IsDirty">
+            <summary>
+            Since this class only has change tracking turned on for Email/Username this will return true if either of those have changed
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.IsPropertyDirty(System.String)">
+            <summary>
+            Returns true if the specified property is dirty
+            </summary>
+            <param name="propName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.Umbraco#Core#Models#EntityBase#ICanBeDirty#ResetDirtyProperties">
+            <summary>
+            Resets dirty properties
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.ChangeTracker">
+            <summary>
+            internal class used to track changes for properties that have it enabled
+            </summary>        
+        </member>
+        <member name="M:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.ChangeTracker.OnPropertyChanged(System.Reflection.PropertyInfo)">
+            <summary>
+            Make this public so that it's usable
+            </summary>
+            <param name="propertyInfo"></param>
         </member>
         <member name="P:Umbraco.Core.Models.Identity.IIdentityUserLogin.LoginProvider">
             <summary>
@@ -6047,11 +6698,6 @@
             <summary>Determines if another range is inside the bounds of this range.</summary>
             <param name="Range">The child range to test</param>
             <returns>True if range is inside, else false</returns>
-        </member>
-        <member name="P:Umbraco.Core.Models.Rdbms.DomainDto.IsoCode">
-            <summary>
-            Used for a result on the query to get the associated language for a domain if there is one
-            </summary>
         </member>
         <member name="T:Umbraco.Core.Models.XsltFile">
             <summary>
@@ -7299,257 +7945,6 @@
             Gets or sets the Childs object type id
             </summary>
             <remarks>Corresponds to the NodeObjectType in the umbracoNode table</remarks>
-        </member>
-        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Models.Membership.EntityPermissionSet" -->
-        <member name="P:Umbraco.Core.Models.Membership.EntityPermissionSet.EntityId">
-            <summary>
-            The entity id with permissions assigned
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "P:Umbraco.Core.Models.Membership.EntityPermissionSet.UserPermissionsSet" -->
-        <member name="T:Umbraco.Core.Models.Membership.MembershipScenario">
-            <summary>
-            How membership is implemented in the current install.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Models.Membership.MembershipScenario.NativeUmbraco">
-            <summary>
-            The member is based on the native Umbraco members (IMember + Umbraco membership provider)
-            </summary>
-            <remarks>
-            This supports custom member properties
-            </remarks>
-        </member>
-        <member name="F:Umbraco.Core.Models.Membership.MembershipScenario.CustomProviderWithUmbracoLink">
-            <summary>
-            The member is based on a custom member provider but it is linked to an IMember
-            </summary>
-            <remarks>
-            This supports custom member properties (but that is not enabled yet)
-            </remarks>
-        </member>
-        <member name="F:Umbraco.Core.Models.Membership.MembershipScenario.StandaloneCustomProvider">
-            <summary>
-            The member is based purely on a custom member provider and is not linked to umbraco data
-            </summary>
-            <remarks>
-            This does not support custom member properties.
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.EntityPermission">
-            <summary>
-            Represents a user -> entity permission
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.EntityPermission.AssignedPermissions">
-            <summary>
-            The assigned permissions for the user/entity combo
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Models.Membership.MembershipUserExtensions.GetMembershipScenario(Umbraco.Core.Services.IMemberService)">
-            <summary>
-            Returns the currently configured membership scenario for members in umbraco
-            </summary>
-            <value></value>
-        </member>
-        <member name="M:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1.#ctor(`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1.#ctor(System.String,System.String,System.Object,System.String,System.String,System.String,System.Boolean,System.Boolean,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.String,System.String,Umbraco.Core.Models.Membership.IUserType,`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.Membership.UmbracoMembershipUser`1"/> class.
-            </summary>
-            <param name="providerName">Name of the provider.</param>
-            <param name="name">The name.</param>
-            <param name="providerUserKey">The provider user key.</param>
-            <param name="email">The email.</param>
-            <param name="passwordQuestion">The password question.</param>
-            <param name="comment">The comment.</param>
-            <param name="isApproved">if set to <c>true</c> [is approved].</param>
-            <param name="isLockedOut">if set to <c>true</c> [is locked out].</param>
-            <param name="creationDate">The creation date.</param>
-            <param name="lastLoginDate">The last login date.</param>
-            <param name="lastActivityDate">The last activity date.</param>
-            <param name="lastPasswordChangedDate">The last password changed date.</param>
-            <param name="lastLockoutDate">The last lockout date.</param>
-            <param name="fullName">The full name.</param>
-            <param name="language">The language.</param>
-            <param name="userType">Type of the user.</param>
-            <param name="user"></param>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.IMembershipUser">
-            <summary>
-            Defines the base contract for <see cref="T:Umbraco.Core.Models.IMember"/> and <see cref="T:Umbraco.Core.Models.Membership.IUser"/>
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IMembershipUser.RawPasswordValue">
-            <summary>
-            Gets or sets the raw password value
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IMembershipUser.RawPasswordAnswerValue">
-            <summary>
-            Gets or sets the raw password answer value
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IMembershipUser.FailedPasswordAttempts">
-            <summary>
-            Gets or sets the number of failed password attempts.
-            This is the number of times the password was entered incorrectly upon login.
-            </summary>
-            <remarks>
-            Alias: umbracoMemberFailedPasswordAttempts
-            Part of the standard properties collection.
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.IProfile">
-            <summary>
-            Defines the the Profile interface
-            </summary>
-            <remarks>
-            This interface is pretty useless but has been exposed publicly from 6.x so we're stuck with it. It would make more sense 
-            if the Id was an int but since it's not people have to cast it to int all of the time!
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.IUser">
-            <summary>
-            Defines the interface for a <see cref="T:Umbraco.Core.Models.Membership.User"/>
-            </summary>
-            <remarks>Will be left internal until a proper Membership implementation is part of the roadmap</remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUser.UserType">
-            <summary>
-            Gets/sets the user type for the user
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUser.DefaultPermissions">
-            <summary>
-            The default permission set for the user
-            </summary>
-            <remarks>
-            Currently in umbraco each permission is a single char but with an Enumerable{string} collection this allows for flexible changes to this in the future
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUser.ProfileData">
-            <summary>
-            Exposes the basic profile data
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUser.SecurityStamp">
-            <summary>
-            The security stamp used by ASP.Net identity
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUserType.Alias">
-            <summary>
-            The user type alias
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUserType.Name">
-            <summary>
-            The user type name
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.IUserType.Permissions">
-            <summary>
-            The set of default permissions for the user type
-            </summary>
-            <remarks>
-            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.User">
-            <summary>
-            Represents a backoffice user
-            </summary>    
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.SecurityStamp">
-            <summary>
-            The security stamp used by ASP.Net identity
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.AddedSections">
-            <summary>
-            Used internally to check if we need to add a section in the repository to the db
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.RemovedSections">
-            <summary>
-            Used internally to check if we need to remove  a section in the repository to the db
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.SessionTimeout">
-            <summary>
-            Gets or sets the session timeout.
-            </summary>
-            <value>
-            The session timeout.
-            </value>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.StartContentId">
-            <summary>
-            Gets or sets the start content id.
-            </summary>
-            <value>
-            The start content id.
-            </value>
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.User.StartMediaId">
-            <summary>
-            Gets or sets the start media id.
-            </summary>
-            <value>
-            The start media id.
-            </value>
-        </member>
-        <member name="M:Umbraco.Core.Models.Membership.User.ResetDirtyProperties(System.Boolean)">
-            <summary>
-            Whenever resetting occurs, clear the remembered add/removed collections, even if 
-            rememberPreviouslyChangedProperties is true, the AllowedSections property will still
-            be flagged as dirty.
-            </summary>
-            <param name="rememberPreviouslyChangedProperties"></param>
-        </member>
-        <member name="M:Umbraco.Core.Models.Membership.User.SectionCollectionChanged(System.Object,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
-            <summary>
-            Handles the collection changed event in order for us to flag the AllowedSections property as changed
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.User.UserProfile">
-            <summary>
-            Internal class used to wrap the user in a profile
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.UserGroup">
-            <summary>
-            Represents a Group for a Backoffice User
-            </summary>
-            <remarks>
-            Should be internal until a proper user/membership implementation
-            is part of the roadmap.
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.UserType">
-            <summary>
-            Represents the Type for a Backoffice User
-            </summary>    
-        </member>
-        <member name="P:Umbraco.Core.Models.Membership.UserType.Permissions">
-            <summary>
-            The set of default permissions for the user type
-            </summary>
-            <remarks>
-            By default each permission is simply a single char but we've made this an enumerable{string} to support a more flexible permissions structure in the future.
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.Membership.MemberCountType">
-            <summary>
-            The types of members to count
-            </summary>
         </member>
         <member name="T:Umbraco.Core.Models.MemberGroup">
             <summary>
@@ -9129,6 +9524,11 @@
             Language
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Models.UmbracoObjectTypes.DocumentBlueprint">
+            <summary>
+            Document
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Models.UmbracoObjectTypes.IdReservation">
             <summary>
             Reserved Identifier
@@ -9174,28 +9574,23 @@
             <param name="umbracoObjectType">UmbracoObjectTypes value</param>
             <returns>a string of the FriendlyName</returns>
         </member>
+        <member name="M:Umbraco.Core.Models.UserExtensions.GetCurrentUserAvatarUrls(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Services.IUserService,Umbraco.Core.Cache.ICacheProvider)">
+            <summary>
+            Tries to lookup the user's gravatar to see if the endpoint can be reached, if so it returns the valid URL
+            </summary>
+            <param name="user"></param>
+            <param name="userService"></param>
+            <param name="staticCache"></param>
+            <returns>
+            A list of 5 different sized avatar URLs
+            </returns>
+        </member>
         <member name="M:Umbraco.Core.Models.UserExtensions.GetUserCulture(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Services.ILocalizedTextService)">
             <summary>
             Returns the culture info associated with this user, based on the language they're assigned to in the back office
             </summary>
             <param name="user"></param>
             <param name="textService"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Models.UserExtensions.HasPathAccess(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Models.IContent)">
-            <summary>
-            Checks if the user has access to the content item based on their start noe
-            </summary>
-            <param name="user"></param>
-            <param name="content"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Models.UserExtensions.HasPathAccess(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Models.IMedia)">
-            <summary>
-            Checks if the user has access to the media item based on their start noe
-            </summary>
-            <param name="user"></param>
-            <param name="media"></param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Models.UserExtensions.IsAdmin(Umbraco.Core.Models.Membership.IUser)">
@@ -9263,7 +9658,7 @@
             This is used to override the default one from the ContentType.
             </summary>
             <remarks>
-            If no template is explicitly set on the Content object, 
+            If no template is explicitly set on the Content object,
             the Default template from the ContentType will be returned.
             </remarks>
         </member>
@@ -9308,11 +9703,6 @@
             <remarks>
             This Property is kept internal until localization is introduced.
             </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.Content.PermissionsChanged">
-            <summary>
-            Used internally to track if permissions have been changed during the saving process for this entity
-            </summary>
         </member>
         <member name="P:Umbraco.Core.Models.Content.ContentType">
             <summary>
@@ -9592,6 +9982,11 @@
         <member name="P:Umbraco.Core.Models.IContent.PublishedVersionGuid">
             <summary>
             Gets the unique identifier of the published version, if any.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IContent.IsBlueprint">
+            <summary>
+            Gets a value indicating whether the content item is a blueprint.
             </summary>
         </member>
         <member name="T:Umbraco.Core.Models.IContentBase">
@@ -11094,6 +11489,23 @@
             <remarks>First try with EXIF as it is faster and does not load the entire image
             in memory. Fallback to GDI which means loading the image in memory and thus
             use potentially large amounts of memory.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.IO.FileSystemProviderManager.SetCurrent(Umbraco.Core.IO.FileSystemProviderManager)">
+            <summary>
+            For tests only, allows setting the value of the singleton "Current" property
+            </summary>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Umbraco.Core.IO.FileSystemProviderManager.#ctor(Umbraco.Core.Configuration.IFileSystemProvidersSection)">
+            <summary>
+            Constructor that can be used for tests
+            </summary>
+            <param name="configSection"></param>
+        </member>
+        <member name="M:Umbraco.Core.IO.FileSystemProviderManager.#ctor">
+            <summary>
+            Default constructor that will read the config from the locally found config section
+            </summary>
         </member>
         <member name="T:Umbraco.Core.IO.FileSystemProviderManager.ProviderConstructionInfo">
             <summary>
@@ -15339,6 +15751,12 @@
             <paramref name="quote"/> is optional, it can be '[' (default), ']', '\'' or '"'.
             </remarks>
         </member>
+        <member name="T:Umbraco.Core.Persistence.Mappers.UserGroupMapper">
+            <summary>
+            Represents a <see cref="T:Umbraco.Core.Models.Membership.UserGroup"/> to DTO mapper used to translate the properties of the public api 
+            implementation to that of the database's DTO as sql: [tableName].[columnName].
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Persistence.Mappers.TaskTypeMapper">
             <summary>
             Represents a <see cref="T:Umbraco.Core.Models.TaskType"/> to DTO mapper used to translate the properties of the public api 
@@ -15479,11 +15897,19 @@
             implementation to that of the database's DTO as sql: [tableName].[columnName].
             </summary>
         </member>
-        <member name="T:Umbraco.Core.Persistence.Mappers.UserTypeMapper">
+        <member name="T:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenSevenZero.EnsureContentTemplatePermissions">
             <summary>
-            Represents a <see cref="T:Umbraco.Core.Models.Membership.UserType"/> to DTO mapper used to translate the properties of the public api 
-            implementation to that of the database's DTO as sql: [tableName].[columnName].
+            Ensures the built-in user groups have the blueprint permission by default on upgrade
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenSevenZero.AddUserGroupTables.RemoveOldTablesIfExist(System.Collections.Generic.List{System.String},Umbraco.Core.Persistence.SqlSyntax.ColumnInfo[])">
+            <summary>
+            In some very rare cases, there might alraedy be user group tables that we'll need to remove first
+            but of course we don't want to remove the tables we will be creating below if they already exist so
+            need to do some checks first since these old rare tables have a different schema
+            </summary>
+            <param name="tables"></param>
+            <param name="columns"></param>
         </member>
         <member name="T:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenSixZero.UpdateUniqueIndexOnCmsPropertyData">
             <summary>
@@ -15958,6 +16384,13 @@
             <param name="predicate"></param>
             <returns>This instance so calls to this method are chainable</returns>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Querying.IQuery`1.WhereAny(System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}}})">
+            <summary>
+            Adds a set of OR-ed where clauses to the query.
+            </summary>
+            <param name="predicates"></param>
+            <returns>This instance so calls to this method are chainable.</returns>
+        </member>
         <member name="T:Umbraco.Core.Persistence.Querying.ModelToSqlExpressionVisitor`1">
             <summary>
             An expression tree parser to create SQL statements and SQL parameters based on a strongly typed expression,
@@ -15989,6 +16422,13 @@
             </summary>
             <param name="predicate"></param>
             <returns>This instance so calls to this method are chainable</returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Querying.Query`1.WhereAny(System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}}})">
+            <summary>
+            Adds a set of OR-ed where clauses to the query.
+            </summary>
+            <param name="predicates"></param>
+            <returns>This instance so calls to this method are chainable.</returns>
         </member>
         <member name="M:Umbraco.Core.Persistence.Querying.Query`1.GetWhereClauses">
             <summary>
@@ -16027,6 +16467,17 @@
             <summary>
             A query to return the count for items 
             </summary>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.ContentBlueprintRepository">
+            <summary>
+            Override the base content repository so we can change the node object type
+            </summary>
+            <remarks>
+            It would be nicer if we could separate most of this down into a smaller version of the ContentRepository class, however to do that 
+            requires quite a lot of work since we'd need to re-organize the interhitance quite a lot or create a helper class to perform a lot of the underlying logic.
+            
+            TODO: Create a helper method to contain most of the underlying logic for the ContentRepository
+            </remarks>
         </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.EntityContainerRepository">
             <summary>
@@ -16113,6 +16564,57 @@
             <param name="files"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.Get(System.String)">
+            <summary>
+            Gets a group by it's alias
+            </summary>
+            <param name="alias"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.GetGroupsAssignedToSection(System.String)">
+            <summary>
+            This is useful when an entire section is removed from config
+            </summary>
+            <param name="sectionAlias"></param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.AddOrUpdateGroupWithUsers(Umbraco.Core.Models.Membership.IUserGroup,System.Int32[])">
+            <summary>
+            Used to add or update a user group and assign users to it
+            </summary>
+            <param name="userGroup"></param>
+            <param name="userIds"></param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.GetPermissions(System.Int32[],System.Int32[])">
+            <summary>
+            Gets explicilty defined permissions for the group for specified entities
+            </summary>
+            <param name="groupIds"></param>
+            <param name="entityIds">Array of entity Ids, if empty will return permissions for the group for all entities</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.GetPermissions(Umbraco.Core.Models.Membership.IReadOnlyUserGroup[],System.Boolean,System.Int32[])">
+            <summary>
+            Gets explicilt and default permissions (if requested) permissions for the group for specified entities
+            </summary>
+            <param name="groups"></param>
+            <param name="fallbackToDefaultPermissions">If true will include the group's default permissions if no permissions are explicitly assigned</param>
+            <param name="nodeIds">Array of entity Ids, if empty will return permissions for the group for all entities</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.ReplaceGroupPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+            <summary>
+            Replaces the same permission set for a single group to any number of entities
+            </summary>
+            <param name="groupId">Id of group</param>
+            <param name="permissions">Permissions as enumerable list of <see cref="T:System.Char"/></param>
+            <param name="entityIds">Specify the nodes to replace permissions for. If nothing is specified all permissions are removed.</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserGroupRepository.AssignGroupPermission(System.Int32,System.Char,System.Int32[])">
+            <summary>
+            Assigns the same permission set for a single group to any number of entities
+            </summary>
+            <param name="groupId">Id of group</param>
+            <param name="permission">Permissions as enumerable list of <see cref="T:System.Char"/></param>
+            <param name="entityIds">Specify the nodes to replace permissions for</param>
+        </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.UserControlRepository">
             <summary>
             Represents the UserControl Repository
@@ -16140,6 +16642,65 @@
             If null or not specified, will return the XSLT files at the root path relative to the IFileSystem
             </param>
             <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.UserGroupRepository">
+            <summary>
+            Represents the UserGroupRepository for doing CRUD operations for <see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/>
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserGroupRepository.GetPermissions(System.Int32[],System.Int32[])">
+            <summary>
+            Gets explicilty defined permissions for the group for specified entities
+            </summary>
+            <param name="groupIds"></param>
+            <param name="entityIds">Array of entity Ids, if empty will return permissions for the group for all entities</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserGroupRepository.GetPermissions(Umbraco.Core.Models.Membership.IReadOnlyUserGroup[],System.Boolean,System.Int32[])">
+            <summary>
+            Gets explicilt and default permissions (if requested) permissions for the group for specified entities
+            </summary>
+            <param name="groups"></param>
+            <param name="fallbackToDefaultPermissions">If true will include the group's default permissions if no permissions are explicitly assigned</param>
+            <param name="nodeIds">Array of entity Ids, if empty will return permissions for the group for all entities</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserGroupRepository.ReplaceGroupPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+            <summary>
+            Replaces the same permission set for a single group to any number of entities
+            </summary>
+            <param name="groupId">Id of group</param>
+            <param name="permissions">Permissions as enumerable list of <see cref="T:System.Char"/> If nothing is specified all permissions are removed.</param>
+            <param name="entityIds">Specify the nodes to replace permissions for. </param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserGroupRepository.AssignGroupPermission(System.Int32,System.Char,System.Int32[])">
+            <summary>
+            Assigns the same permission set for a single group to any number of entities
+            </summary>
+            <param name="groupId">Id of group</param>
+            <param name="permission">Permissions as enumerable list of <see cref="T:System.Char"/></param>
+            <param name="entityIds">Specify the nodes to replace permissions for</param>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.UserGroupRepository.UserGroupWithUsers">
+            <summary>
+            used to persist a user group with associated users at once
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.UserGroupRepository.UserGroupWithUsersRepository">
+            <summary>
+            used to persist a user group with associated users at once
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserGroupRepository.UserGroupWithUsersRepository.RemoveAllUsersFromGroup(System.Int32)">
+            <summary>
+            Removes all users from a group
+            </summary>
+            <param name="groupId">Id of group</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserGroupRepository.UserGroupWithUsersRepository.AddUsersToGroup(System.Int32,System.Int32[])">
+            <summary>
+            Adds a set of users to a group
+            </summary>
+            <param name="groupId">Id of group</param>
+            <param name="userIds">Ids of users</param>
         </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.SimpleGetRepository`3">
             <summary>
@@ -16349,11 +16910,18 @@
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.ContentRepository.AssignEntityPermission(Umbraco.Core.Models.IContent,System.Char,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Assigns a single permission to the current content item for the specified user ids
+            Assigns a single permission to the current content item for the specified user group ids
             </summary>
             <param name="entity"></param>
             <param name="permission"></param>
-            <param name="userIds"></param>
+            <param name="groupIds"></param>        
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ContentRepository.GetPermissionsForEntity(System.Int32)">
+            <summary>
+            Gets the explicit list of permissions for the content item
+            </summary>
+            <param name="entityId"></param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.ContentRepository.AddOrUpdateContentXml(Umbraco.Core.Models.IContent,System.Func{Umbraco.Core.Models.IContent,System.Xml.Linq.XElement})">
             <summary>
@@ -16361,6 +16929,12 @@
             </summary>
             <param name="content"></param>
             <param name="xml"></param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ContentRepository.AddOrUpdatePermissions(Umbraco.Core.Models.Membership.ContentPermissionSet)">
+            <summary>
+            Used to add/update a permission for a content item
+            </summary>
+            <param name="permission"></param>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.ContentRepository.DeleteContentXml(Umbraco.Core.Models.IContent)">
             <summary>
@@ -16388,6 +16962,15 @@
             <param name="orderBySystemField">Flag to indicate when ordering by system field</param>
             <param name="filter">Search text filter</param>
             <returns>An Enumerable list of <see cref="T:Umbraco.Core.Models.IContent"/> objects</returns>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.ContentRepository.ContentByGuidReadRepository">
+            <summary>
+            A reading repository purely for looking up by GUID
+            </summary>
+            <remarks>
+            TODO: This is ugly and to fix we need to decouple the IRepositoryQueryable -> IRepository -> IReadRepository which should all be separate things!
+            Then we can do the same thing with repository instances and we wouldn't need to leave all these methods as not implemented because we wouldn't need to implement them
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.ContentRepository.ProcessQuery(Umbraco.Core.Persistence.Sql,Umbraco.Core.Persistence.Repositories.VersionableRepositoryBase{System.Int32,Umbraco.Core.Models.IContent}.PagingSqlQuery,System.Boolean,System.Boolean)">
             <summary>
@@ -16708,15 +17291,15 @@
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.IContentRepository.AssignEntityPermission(Umbraco.Core.Models.IContent,System.Char,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Assigns a single permission to the current content item for the specified user ids
+            Assigns a single permission to the current content item for the specified user group ids
             </summary>
             <param name="entity"></param>
             <param name="permission"></param>
-            <param name="userIds"></param>
+            <param name="groupIds"></param>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.IContentRepository.GetPermissionsForEntity(System.Int32)">
             <summary>
-            Gets the list of permissions for the content item
+            Gets the explicit list of permissions for the content item
             </summary>
             <param name="entityId"></param>
             <returns></returns>
@@ -16727,6 +17310,12 @@
             </summary>
             <param name="content"></param>
             <param name="xml"></param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IContentRepository.AddOrUpdatePermissions(Umbraco.Core.Models.Membership.ContentPermissionSet)">
+            <summary>
+            Used to add/update a permission for a content item
+            </summary>
+            <param name="permission"></param>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.IContentRepository.DeleteContentXml(Umbraco.Core.Models.IContent)">
             <summary>
@@ -17074,46 +17663,61 @@
             <param name="username"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetUsersAssignedToSection(System.String)">
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetAllInGroup(System.Int32)">
             <summary>
-            This is useful when an entire section is removed from config
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects associated with a given group
             </summary>
-            <param name="sectionAlias"></param>
+            <param name="groupId">Id of group</param>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser},System.Int32,System.Int32,System.Int32@,System.Linq.Expressions.Expression{System.Func{Umbraco.Core.Models.Membership.IUser,System.String}})">
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetAllNotInGroup(System.Int32)">
             <summary>
-            Gets paged member results
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects not associated with a given group
+            </summary>
+            <param name="groupId">Id of group</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser},System.Int64,System.Int32,System.Int64@,System.Linq.Expressions.Expression{System.Func{Umbraco.Core.Models.Membership.IUser,System.Object}},Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String[],System.String[],Umbraco.Core.Models.Membership.UserState[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser})">
+            <summary>
+            Gets paged user results
             </summary>
             <param name="query"></param>
             <param name="pageIndex"></param>
             <param name="pageSize"></param>
             <param name="totalRecords"></param>
             <param name="orderBy"></param>
+            <param name="customFilter"></param>
+            <param name="orderDirection"></param>
+            <param name="includeUserGroups">
+            A filter to only include user that belong to these user groups
+            </param>
+            <param name="excludeUserGroups">
+            A filter to only include users that do not belong to these user groups
+            </param>
+            <param name="userState">Optional parameter to filter by specfied user state</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetUserPermissionsForEntities(System.Int32,System.Int32[])">
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.GetByUsername(System.String,System.Boolean)">
             <summary>
-            Gets the user permissions for the specified entities
+            Returns a user by username
             </summary>
-            <param name="userId"></param>
-            <param name="entityIds"></param>
-            <returns></returns>
+            <param name="username"></param>
+            <param name="includeSecurityData">
+            This is only used for a shim in order to upgrade to 7.7
+            </param>
+            <returns>
+            A non cached <see cref="T:Umbraco.Core.Models.Membership.IUser"/> instance
+            </returns>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.ReplaceUserPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.Get(System.Int32,System.Boolean)">
             <summary>
-            Replaces the same permission set for a single user to any number of entities
+            Returns a user by id
             </summary>
-            <param name="userId"></param>
-            <param name="permissions"></param>
-            <param name="entityIds"></param>
-        </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.IUserRepository.AssignUserPermission(System.Int32,System.Char,System.Int32[])">
-            <summary>
-            Assigns the same permission set for a single user to any number of entities
-            </summary>
-            <param name="userId"></param>
-            <param name="permission"></param>
-            <param name="entityIds"></param>
+            <param name="id"></param>
+            <param name="includeSecurityData">
+            This is only used for a shim in order to upgrade to 7.7 
+            </param>
+            <returns>
+            A non cached <see cref="T:Umbraco.Core.Models.Membership.IUser"/> instance
+            </returns>
         </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.LanguageRepository">
             <summary>
@@ -17137,6 +17741,15 @@
             </param>
             <param name="withCache"></param>
             <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.MediaRepository.MediaByGuidReadRepository">
+            <summary>
+            A reading repository purely for looking up by GUID
+            </summary>
+            <remarks>
+            TODO: This is ugly and to fix we need to decouple the IRepositoryQueryable -> IRepository -> IReadRepository which should all be separate things!
+            Then we can do the same thing with repository instances and we wouldn't need to leave all these methods as not implemented because we wouldn't need to implement them
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.MediaRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IMedia},System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.Boolean,Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IMedia})">
             <summary>
@@ -17306,58 +17919,86 @@
             A repository that exposes functionality to modify assigned permissions to a node
             </summary>
             <typeparam name="TEntity"></typeparam>
+            <remarks>
+            This repo implements the base <see cref="T:Umbraco.Core.Persistence.Repositories.PetaPocoRepositoryBase`2"/> class so that permissions can be queued to be persisted
+            like the normal repository pattern but the standard repository Get commands don't apply and will throw <see cref="T:System.NotImplementedException"/>
+            </remarks>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.GetUserPermissionsForEntities(System.Int32,System.Int32[])">
+        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.GetPermissionsForEntities(System.Int32[],System.Int32[])">
             <summary>
-            Returns permissions for a given user for any number of nodes
+            Returns explicitly defined permissions for a user group for any number of nodes
             </summary>
-            <param name="userId"></param>
+            <param name="groupIds">
+            The group ids to lookup permissions for
+            </param>
             <param name="entityIds"></param>
             <returns></returns>        
+            <remarks>
+            This method will not support passing in more than 2000 group Ids
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.GetPermissionsForEntities(System.Int32[])">
+            <summary>
+            Returns permissions directly assigned to the content items for all user groups
+            </summary>
+            <param name="entityIds"></param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.GetPermissionsForEntity(System.Int32)">
             <summary>
-            Returns permissions for all users for a given entity
+            Returns permissions directly assigned to the content item for all user groups
             </summary>
             <param name="entityId"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.ReplaceUserPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.ReplacePermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
             <summary>
-            Assigns the same permission set for a single user to any number of entities
+            Assigns the same permission set for a single group to any number of entities
             </summary>
-            <param name="userId"></param>
+            <param name="groupId"></param>
             <param name="permissions"></param>
             <param name="entityIds"></param>
             <remarks>
             This will first clear the permissions for this user and entities and recreate them
             </remarks>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.AssignUserPermission(System.Int32,System.Char,System.Int32[])">
+        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.AssignPermission(System.Int32,System.Char,System.Int32[])">
             <summary>
             Assigns one permission for a user to many entities
             </summary>
-            <param name="userId"></param>
+            <param name="groupId"></param>
             <param name="permission"></param>
             <param name="entityIds"></param>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.AssignEntityPermission(`0,System.Char,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Assigns one permission to an entity for multiple users
+            Assigns one permission to an entity for multiple groups
             </summary>
             <param name="entity"></param>
             <param name="permission"></param>
-            <param name="userIds"></param>
+            <param name="groupIds"></param>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.ReplaceEntityPermissions(Umbraco.Core.Models.Membership.EntityPermissionSet)">
             <summary>
-            Assigns permissions to an entity for multiple users/permission entries
+            Assigns permissions to an entity for multiple group/permission entries
             </summary>
             <param name="permissionSet">
             </param>
             <remarks>
             This will first clear the permissions for this entity then re-create them
             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.PersistNewItem(Umbraco.Core.Models.Membership.ContentPermissionSet)">
+            <summary>
+            Used to add or update entity permissions during a content item being updated
+            </summary>
+            <param name="entity"></param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.PermissionRepository`1.PersistUpdatedItem(Umbraco.Core.Models.Membership.ContentPermissionSet)">
+            <summary>
+            Used to add or update entity permissions during a content item being updated
+            </summary>
+            <param name="entity"></param>
         </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.PetaPocoRepositoryBase`2">
             <summary>
@@ -17381,6 +18022,15 @@
         <member name="M:Umbraco.Core.Persistence.Repositories.RecycleBinRepository`2.FormatDeleteStatement(System.String,System.String)">
             <summary>
             A delete statement that will delete anything in the table specified where its PK (keyName) is found in the
+            list of umbracoNode.id that have trashed flag set
+            </summary>
+            <param name="tableName"></param>
+            <param name="keyName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.RecycleBinRepository`2.FormatUpdateStatement(System.String,System.String)">
+            <summary>
+            An update statement that will update a value to NULL in the table specified where its PK (keyName) is found in the
             list of umbracoNode.id that have trashed flag set
             </summary>
             <param name="tableName"></param>
@@ -17604,58 +18254,60 @@
             Represents the UserRepository for doing CRUD operations for <see cref="T:Umbraco.Core.Models.Membership.IUser"/>
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser},System.Int32,System.Int32,System.Int32@,System.Linq.Expressions.Expression{System.Func{Umbraco.Core.Models.Membership.IUser,System.String}})">
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.#ctor(Umbraco.Core.Persistence.UnitOfWork.IScopeUnitOfWork,Umbraco.Core.CacheHelper,Umbraco.Core.Logging.ILogger,Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="work"></param>
+            <param name="cacheHelper"></param>
+            <param name="logger"></param>
+            <param name="sqlSyntax"></param>
+            <param name="passwordConfiguration">
+            A dictionary specifying the configuration for user passwords. If this is null then no password configuration will be persisted or read.
+            </param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Persistence.Repositories.UserRepository.GetByUsername(System.String,System.Boolean)" -->
+        <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Persistence.Repositories.UserRepository.Get(System.Int32,System.Boolean)" -->
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.GetQueryWithGroups">
+            <summary>
+            A query to return a user with it's groups and with it's groups sections
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.GetAllInGroup(System.Int32)">
+            <summary>
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects associated with a given group
+            </summary>
+            <param name="groupId">Id of group</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.GetAllNotInGroup(System.Int32)">
+            <summary>
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects not associated with a given group
+            </summary>
+            <param name="groupId">Id of group</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser},System.Int64,System.Int32,System.Int64@,System.Linq.Expressions.Expression{System.Func{Umbraco.Core.Models.Membership.IUser,System.Object}},Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String[],System.String[],Umbraco.Core.Models.Membership.UserState[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser})">
             <summary>
             Gets paged user results
             </summary>
-            <param name="query">
-            The where clause, if this is null all records are queried
-            </param>
+            <param name="query"></param>
             <param name="pageIndex"></param>
             <param name="pageSize"></param>
             <param name="totalRecords"></param>
             <param name="orderBy"></param>
+            <param name="orderDirection"></param>
+            <param name="includeUserGroups">
+            A filter to only include user that belong to these user groups
+            </param>
+            <param name="excludeUserGroups">
+            A filter to only include users that do not belong to these user groups
+            </param>
+            <param name="userState">Optional parameter to filter by specfied user state</param>
+            <param name="filter"></param>
             <returns></returns>
             <remarks>
             The query supplied will ONLY work with data specifically on the umbracoUser table because we are using PetaPoco paging (SQL paging)
             </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.GetUserPermissionsForEntities(System.Int32,System.Int32[])">
-            <summary>
-            Returns permissions for a given user for any number of nodes
-            </summary>
-            <param name="userId"></param>
-            <param name="entityIds"></param>
-            <returns></returns>        
-        </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.ReplaceUserPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
-            <summary>
-            Replaces the same permission set for a single user to any number of entities
-            </summary>
-            <param name="userId"></param>
-            <param name="permissions"></param>
-            <param name="entityIds"></param>
-        </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.AssignUserPermission(System.Int32,System.Char,System.Int32[])">
-            <summary>
-            Assigns the same permission set for a single user to any number of entities
-            </summary>
-            <param name="userId"></param>
-            <param name="permission"></param>
-            <param name="entityIds"></param>
-        </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.UserRepository.DisposeResources">
-            <summary>
-            Dispose disposable properties
-            </summary>
-            <remarks>
-            Ensure the unit of work is disposed
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Persistence.Repositories.UserTypeRepository">
-            <summary>
-            Represents the UserTypeRepository for doing CRUD operations for <see cref="T:Umbraco.Core.Models.Membership.IUserType"/>
-            </summary>
         </member>
         <member name="F:Umbraco.Core.Persistence.Repositories.VersionableRepositoryBase`2.ThrowOnWarning">
             <summary>
@@ -21512,31 +22164,35 @@
             Default back office user manager
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Security.BackOfficeUserManager.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Umbraco.Core.Security.BackOfficeUserManager},Umbraco.Core.Services.IUserService,Umbraco.Core.Services.IExternalLoginService,Umbraco.Core.Security.MembershipProviderBase)">
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Umbraco.Core.Security.BackOfficeUserManager},Umbraco.Core.Services.IUserService,Umbraco.Core.Services.IEntityService,Umbraco.Core.Services.IExternalLoginService,Umbraco.Core.Security.MembershipProviderBase,Umbraco.Core.Configuration.UmbracoSettings.IContentSection)">
             <summary>
             Creates a BackOfficeUserManager instance with all default options and the default BackOfficeUserManager 
             </summary>
             <param name="options"></param>
             <param name="userService"></param>
+            <param name="entityService"></param>
             <param name="externalLoginService"></param>
             <param name="membershipProvider"></param>
+            <param name="contentSectionConfig"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Security.BackOfficeUserManager.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Umbraco.Core.Security.BackOfficeUserManager},Umbraco.Core.Security.BackOfficeUserStore,Umbraco.Core.Security.MembershipProviderBase)">
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Umbraco.Core.Security.BackOfficeUserManager},Umbraco.Core.Security.BackOfficeUserStore,Umbraco.Core.Security.MembershipProviderBase,Umbraco.Core.Configuration.UmbracoSettings.IContentSection)">
             <summary>
             Creates a BackOfficeUserManager instance with all default options and a custom BackOfficeUserManager instance
             </summary>
             <param name="options"></param>
             <param name="customUserStore"></param>
             <param name="membershipProvider"></param>
+            <param name="contentSectionConfig"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Security.BackOfficeUserManager.InitUserManager(Umbraco.Core.Security.BackOfficeUserManager,Umbraco.Core.Security.MembershipProviderBase,Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Umbraco.Core.Security.BackOfficeUserManager})">
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager.InitUserManager(Umbraco.Core.Security.BackOfficeUserManager,Umbraco.Core.Security.MembershipProviderBase,Umbraco.Core.Configuration.UmbracoSettings.IContentSection,Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Umbraco.Core.Security.BackOfficeUserManager})">
             <summary>
             Initializes the user manager with the correct options
             </summary>
             <param name="manager"></param>
             <param name="membershipProvider"></param>
+            <param name="contentSectionConfig"></param>
             <param name="options"></param>
             <returns></returns>
         </member>
@@ -21550,14 +22206,44 @@
             Developers will need to override this to support custom 2 factor auth
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.InitUserManager(Umbraco.Core.Security.BackOfficeUserManager{`0},Umbraco.Core.Security.MembershipProviderBase,Microsoft.Owin.Security.DataProtection.IDataProtectionProvider)">
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.InitUserManager(Umbraco.Core.Security.BackOfficeUserManager{`0},Umbraco.Core.Security.MembershipProviderBase,Microsoft.Owin.Security.DataProtection.IDataProtectionProvider,Umbraco.Core.Configuration.UmbracoSettings.IContentSection)">
             <summary>
             Initializes the user manager with the correct options
             </summary>
             <param name="manager"></param>
-            <param name="membershipProvider"></param>
+            <param name="membershipProvider">
+            The <see cref="T:Umbraco.Core.Security.MembershipProviderBase"/> for the users called UsersMembershipProvider
+            </param>
             <param name="dataProtectionProvider"></param>
+            <param name="contentSectionConfig"></param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.GetDefaultPasswordHasher(Umbraco.Core.Security.MembershipProviderBase)">
+            <summary>
+            This will determine which password hasher to use based on what is defined in config
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Umbraco.Core.Security.BackOfficeUserManager`1.BackOfficeUserPasswordChecker">
+            <summary>
+            Gets/sets the default back office user password checker
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.GeneratePassword">
+            <summary>
+            Helper method to generate a password for a user based on the current password validator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.IsLockedOutAsync(System.Int32)">
+            <summary>
+            Override to check the user approval value as well as the user lock out date, by default this only checks the user's locked out date
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+            <remarks>
+            In the ASP.NET Identity world, there is only one value for being locked out, in Umbraco we have 2 so when checking this for Umbraco we need to check both values
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.CheckPasswordAsync(`0,System.String)">
             <summary>
@@ -21581,10 +22267,45 @@
             have to implement/override this class.
             </remarks>
         </member>
-        <member name="P:Umbraco.Core.Security.BackOfficeUserManager`1.BackOfficeUserPasswordChecker">
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.VerifyPasswordAsync(Microsoft.AspNet.Identity.IUserPasswordStore{`0,System.Int32},`0,System.String)">
             <summary>
-            Gets/sets the default back office user password checker
+            Override to determine how to hash the password
             </summary>
+            <param name="store"></param>
+            <param name="user"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.UpdatePassword(Microsoft.AspNet.Identity.IUserPasswordStore{`0,System.Int32},`0,System.String)">
+            <summary>
+            Override to determine how to hash the password
+            </summary>
+            <param name="passwordStore"></param>
+            <param name="user"></param>
+            <param name="newPassword"></param>
+            <returns></returns>
+            <remarks>
+            This method is called anytime the password needs to be hashed for storage (i.e. including when reset password is used)
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.UpdateSecurityStampInternal(Umbraco.Core.Models.Identity.BackOfficeIdentityUser)">
+            <summary>
+            This is copied from the underlying .NET base class since they decied to not expose it
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.GetSecurityStore">
+            <summary>
+            This is copied from the underlying .NET base class since they decied to not expose it
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.NewSecurityStamp">
+            <summary>
+            This is copied from the underlying .NET base class since they decied to not expose it
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.GetCurrentRequestIpAddress">
             <summary>
@@ -21731,21 +22452,21 @@
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserStore.AddToRoleAsync(Umbraco.Core.Models.Identity.BackOfficeIdentityUser,System.String)">
             <summary>
-            Adds a user to a role (section)
+            Adds a user to a role (user group)
             </summary>
             <param name="user"/><param name="roleName"/>
             <returns/>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserStore.RemoveFromRoleAsync(Umbraco.Core.Models.Identity.BackOfficeIdentityUser,System.String)">
             <summary>
-            Removes the role (allowed section) for the user
+            Removes the role (user group) for the user
             </summary>
             <param name="user"/><param name="roleName"/>
             <returns/>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserStore.GetRolesAsync(Umbraco.Core.Models.Identity.BackOfficeIdentityUser)">
             <summary>
-            Returns the roles for this user
+            Returns the roles (user groups) for this user
             </summary>
             <param name="user"/>
             <returns/>
@@ -21801,6 +22522,9 @@
             </summary>
             <param name="user"/><param name="lockoutEnd"/>
             <returns/>
+            <remarks>
+            Currently we do not suport a timed lock out, when they are locked out, an admin will  have to reset the status
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserStore.IncrementAccessFailedCountAsync(Umbraco.Core.Models.Identity.BackOfficeIdentityUser)">
             <summary>
@@ -21838,6 +22562,12 @@
             <param name="user"/><param name="enabled"/>
             <returns/>
         </member>
+        <member name="T:Umbraco.Core.Security.BackOfficeUserValidator`1">
+            <summary>
+            Custom validator to not validate a user's username or email if they haven't changed
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="T:Umbraco.Core.Security.IBackOfficeUserManagerMarker">
             <summary>
             This interface is only here due to the fact that IOwinContext Get / Set only work in generics, if they worked 
@@ -21851,9 +22581,55 @@
             set the logic for this procedure.
             </summary>
         </member>
-        <member name="T:Umbraco.Core.Security.MembershipPasswordHasher">
+        <member name="M:Umbraco.Core.Security.IBackOfficeUserPasswordChecker.CheckPasswordAsync(Umbraco.Core.Models.Identity.BackOfficeIdentityUser,System.String)">
             <summary>
-            A custom password hasher that conforms to the current password hashing done in Umbraco
+            Checks a password for a user
+            </summary>
+            <param name="user"></param>
+            <param name="password"></param>
+            <returns></returns>
+            <remarks>
+            This will allow a developer to auto-link a local account which is required if the user queried doesn't exist locally. 
+            The user parameter will always contain the username, if the user doesn't exist locally, the other properties will not be filled in.
+            A developer can then create a local account by filling in the properties and using UserManager.CreateAsync
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Security.IMembershipProviderPasswordHasher">
+            <summary>
+            A password hasher that is based on the rules configured for a membership provider
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Security.IUserAwarePasswordHasher`2">
+            <summary>
+            A password hasher that is User aware so that it can process the hashing based on the user's settings
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TUser"></typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Security.MachineKeyGenerator">
+            <summary>
+            Used to generate a machine key
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Security.MachineKeyGenerator.GenerateConfigurationBlock" -->
+        <member name="T:Umbraco.Core.Security.MembershipProviderPasswordHasher">
+            <summary>
+            A password hasher that conforms to the password hashing done with membership providers
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Security.MembershipProviderPasswordHasher.MembershipProvider">
+            <summary>
+            Exposes the underlying MembershipProvider
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Security.EmailService">
+            <summary>
+            The <see cref="T:Microsoft.AspNet.Identity.IIdentityMessageService"/> implementation for Umbraco
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Security.MembershipProviderPasswordValidator">
+            <summary>
+            Ensure that both the normal password validator rules are processed along with the underlying memberhsip provider rules
             </summary>
         </member>
         <member name="M:Umbraco.Core.Security.OwinExtensions.GetBackOfficeSignInManager(Microsoft.Owin.IOwinContext)">
@@ -21873,6 +22649,16 @@
             This is required because to extract the user manager we need to user a custom service since owin only deals in generics and 
             developers could register their own user manager types
             </remarks> 
+        </member>
+        <member name="T:Umbraco.Core.Security.UmbracoEmailMessage">
+            <summary>
+            A custom implementation for IdentityMessage that allows the customization of how an email is sent
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Security.UserAwareMembershipProviderPasswordHasher">
+            <summary>
+            The default password hasher that is User aware so that it can process the hashing based on the user's settings
+            </summary>
         </member>
         <member name="T:Umbraco.Core.Security.AuthenticationExtensions">
             <summary>
@@ -22006,12 +22792,12 @@
         </member>
         <member name="P:Umbraco.Core.Security.MembershipProviderBase.DefaultMinPasswordLength">
             <summary>
-            Providers can override this setting, default is 7
+            Providers can override this setting, default is 10
             </summary>
         </member>
         <member name="P:Umbraco.Core.Security.MembershipProviderBase.DefaultMinNonAlphanumericChars">
             <summary>
-            Providers can override this setting, default is 1
+            Providers can override this setting, default is 0
             </summary>
         </member>
         <member name="P:Umbraco.Core.Security.MembershipProviderBase.DefaultUseLegacyEncoding">
@@ -22313,16 +23099,19 @@
             <param name="provider"></param>
             <param name="userService"></param>
             <returns></returns>
+            <remarks>
+            An Admin can always reset the password
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Security.MembershipProviderExtensions.GetMembersMembershipProvider">
             <summary>
-            Method to get the Umbraco Members membership provider based on it's alias
+            Method to get the Umbraco Members membership provider based on its alias
             </summary>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Security.MembershipProviderExtensions.GetUsersMembershipProvider">
             <summary>
-            Method to get the Umbraco Users membership provider based on it's alias
+            Method to get the Umbraco Users membership provider based on its alias
             </summary>
             <returns></returns>
         </member>
@@ -22509,6 +23298,16 @@
             This is the 'security stamp' for validation
             </summary>        
         </member>
+        <member name="P:Umbraco.Core.Security.UserData.StartContentNodes">
+            <summary>
+            The start nodes on the UserData object for the auth ticket contains all of the user's start nodes including ones assigned to their user groups
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Security.UserData.StartMediaNodes">
+            <summary>
+            The start nodes on the UserData object for the auth ticket contains all of the user's start nodes including ones assigned to their user groups
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Serialization.NoTypeConverterJsonConverter`1">
             <summary>
             This is required if we want to force JSON.Net to not use .Net TypeConverters during serialization/deserialization
@@ -22635,6 +23434,15 @@
             Placehold for sharing logic between the content, media (and member) services
             TODO: Start sharing the logic!
             </summary>
+        </member>
+        <member name="T:Umbraco.Core.Services.MediaServiceExtensions">
+            <summary>
+            Media service extension methods
+            </summary>
+            <remarks>
+            Many of these have to do with UDI lookups but we don't need to add these methods to the service interface since a UDI is just a GUID
+            and the services already support GUIDs
+            </remarks>
         </member>
         <member name="E:Umbraco.Core.Services.DomainService.Deleting">
             <summary>
@@ -23263,18 +24071,34 @@
         <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Services.ContentService.ReplaceContentPermissions(Umbraco.Core.Models.Membership.EntityPermissionSet)" -->
         <member name="M:Umbraco.Core.Services.ContentService.AssignContentPermission(Umbraco.Core.Models.IContent,System.Char,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Assigns a single permission to the current content item for the specified user ids
+            Assigns a single permission to the current content item for the specified group ids
             </summary>
             <param name="entity"></param>
             <param name="permission"></param>
-            <param name="userIds"></param>
+            <param name="groupIds"></param>
         </member>
         <member name="M:Umbraco.Core.Services.ContentService.GetPermissionsForEntity(Umbraco.Core.Models.IContent)">
             <summary>
-            Gets the list of permissions for the content item
+            Returns implicit/inherited permissions assigned to the content item for all user groups
             </summary>
             <param name="content"></param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.ContentService.CreateContent(System.String,System.Guid,System.String,System.Int32)">
+            <summary>
+            Creates an <see cref="T:Umbraco.Core.Models.IContent"/> object using the alias of the <see cref="T:Umbraco.Core.Models.IContentType"/>
+            that this Content should based on.
+            </summary>
+            <remarks>
+            Note that using this method will simply return a new IContent without any identity
+            as it has not yet been persisted. It is intended as a shortcut to creating new content objects
+            that does not invoke a save operation against the database.
+            </remarks>
+            <param name="name">Name of the Content object</param>
+            <param name="parentId">Id of Parent for the new Content</param>
+            <param name="contentTypeAlias">Alias of the <see cref="T:Umbraco.Core.Models.IContentType"/></param>
+            <param name="userId">Optional id of the user creating the content</param>
+            <returns><see cref="T:Umbraco.Core.Models.IContent"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.ContentService.CreateContent(System.String,System.Int32,System.String,System.Int32)">
             <summary>
@@ -23347,7 +24171,14 @@
         </member>
         <member name="M:Umbraco.Core.Services.ContentService.GetByIds(System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Gets an <see cref="T:Umbraco.Core.Models.IContent"/> object by Id
+            Gets <see cref="T:Umbraco.Core.Models.IContent"/> objects by Ids
+            </summary>
+            <param name="ids">Ids of the Content to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.IContent"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.ContentService.GetByIds(System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Gets <see cref="T:Umbraco.Core.Models.IContent"/> objects by Ids
             </summary>
             <param name="ids">Ids of the Content to retrieve</param>
             <returns><see cref="T:Umbraco.Core.Models.IContent"/></returns>
@@ -24102,6 +24933,32 @@
             Occurs after the Recycle Bin has been Emptied
             </summary>
         </member>
+        <member name="E:Umbraco.Core.Services.ContentService.SavedBlueprint">
+            <summary>
+            Occurs after a blueprint has been saved.
+            </summary>
+        </member>
+        <member name="E:Umbraco.Core.Services.ContentService.DeletedBlueprint">
+            <summary>
+            Occurs after a blueprint has been deleted.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Services.ContentServiceExtensions">
+            <summary>
+            Content service extension methods
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.ContentServiceExtensions.CreateContent(Umbraco.Core.Services.IContentService,System.String,Umbraco.Core.Udi,System.String,System.Int32)">
+            <summary>
+            Method to create an IContent object based on the Udi of a parent
+            </summary>
+            <param name="contentService"></param>
+            <param name="name"></param>
+            <param name="parentId"></param>
+            <param name="mediaTypeAlias"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.ContentServiceExtensions.RemoveContentPermissions(Umbraco.Core.Services.IContentService,System.Int32)">
             <summary>
             Remove all permissions for this user for all nodes
@@ -24793,6 +25650,11 @@
             <param name="filter"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Services.EntityService.GetPagedDescendants(System.Collections.Generic.IEnumerable{System.Int32},Umbraco.Core.Models.UmbracoObjectTypes,System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String)">
+            <summary>
+            Returns a paged collection of descendants.
+            </summary>
+        </member>
         <member name="M:Umbraco.Core.Services.EntityService.GetPagedDescendantsFromRoot(Umbraco.Core.Models.UmbracoObjectTypes,System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String,System.Boolean)">
             <summary>
             Returns a paged collection of descendants from the root
@@ -24846,11 +25708,11 @@
         </member>
         <member name="M:Umbraco.Core.Services.EntityService.GetAll(System.Guid,System.Int32[])">
             <summary>
-            Gets a collection of <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/>
+            Gets a collection of <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity" />
             </summary>
             <param name="objectTypeId">Guid id of the UmbracoObjectType</param>
             <param name="ids"></param>
-            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/> objects</returns>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity" /> objects</returns>
         </member>
         <member name="M:Umbraco.Core.Services.EntityService.GetObjectType(System.Int32)">
             <summary>
@@ -25433,18 +26295,34 @@
         <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Services.IContentService.ReplaceContentPermissions(Umbraco.Core.Models.Membership.EntityPermissionSet)" -->
         <member name="M:Umbraco.Core.Services.IContentService.AssignContentPermission(Umbraco.Core.Models.IContent,System.Char,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Assigns a single permission to the current content item for the specified user ids
+            Assigns a single permission to the current content item for the specified user group ids
             </summary>
             <param name="entity"></param>
             <param name="permission"></param>
-            <param name="userIds"></param>
+            <param name="groupIds"></param>
         </member>
         <member name="M:Umbraco.Core.Services.IContentService.GetPermissionsForEntity(Umbraco.Core.Models.IContent)">
             <summary>
-            Gets the list of permissions for the content item
+            Returns implicit/inherited permissions assigned to the content item for all user groups
             </summary>
             <param name="content"></param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IContentService.CreateContent(System.String,System.Guid,System.String,System.Int32)">
+            <summary>
+            Creates an <see cref="T:Umbraco.Core.Models.IContent"/> object using the alias of the <see cref="T:Umbraco.Core.Models.IContentType"/>
+            that this Content should based on.
+            </summary>
+            <remarks>
+            Note that using this method will simply return a new IContent without any identity
+            as it has not yet been persisted. It is intended as a shortcut to creating new content objects
+            that does not invoke a save operation against the database.
+            </remarks>
+            <param name="name">Name of the Content object</param>
+            <param name="parentId">Id of Parent for the new Content</param>
+            <param name="contentTypeAlias">Alias of the <see cref="T:Umbraco.Core.Models.IContentType"/></param>
+            <param name="userId">Optional id of the user creating the content</param>
+            <returns><see cref="T:Umbraco.Core.Models.IContent"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.IContentService.CreateContent(System.String,System.Int32,System.String,System.Int32)">
             <summary>
@@ -25970,6 +26848,13 @@
             it will only return content type aliases for the object types specified
             </param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IContentTypeService.GetAllContentTypeIds(System.String[])">
+            <summary>
+            Returns all content type Ids for the aliases given
+            </summary>
+            <param name="aliases"></param>
+            <returns></returns>        
         </member>
         <member name="M:Umbraco.Core.Services.IContentTypeService.Copy(Umbraco.Core.Models.IContentType,System.String,System.String,System.Int32)">
             <summary>
@@ -26513,6 +27398,11 @@
             <param name="filter"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Services.IEntityService.GetPagedDescendants(System.Collections.Generic.IEnumerable{System.Int32},Umbraco.Core.Models.UmbracoObjectTypes,System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String)">
+            <summary>
+            Returns a paged collection of descendants
+            </summary>
+        </member>
         <member name="M:Umbraco.Core.Services.IEntityService.GetPagedDescendantsFromRoot(Umbraco.Core.Models.UmbracoObjectTypes,System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String,System.Boolean)">
             <summary>
             Returns a paged collection of descendants from the root
@@ -26579,6 +27469,16 @@
             <param name="objectTypeId">Guid id of the UmbracoObjectType</param>
             <param name="ids"></param>
             <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/> objects</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IEntityService.GetAllPaths(Umbraco.Core.Models.UmbracoObjectTypes,System.Int32[])">
+            <summary>
+            Gets paths for entities.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IEntityService.GetAllPaths(Umbraco.Core.Models.UmbracoObjectTypes,System.Guid[])">
+            <summary>
+            Gets paths for entities.
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Services.IEntityService.GetObjectType(System.Int32)">
             <summary>
@@ -27240,6 +28140,22 @@
             for all media
             </param>
         </member>
+        <member name="M:Umbraco.Core.Services.IMediaService.CreateMedia(System.String,System.Guid,System.String,System.Int32)">
+            <summary>
+            Creates an <see cref="T:Umbraco.Core.Models.IMedia"/> object using the alias of the <see cref="T:Umbraco.Core.Models.IMediaType"/>
+            that this Media should based on.
+            </summary>
+            <remarks>
+            Note that using this method will simply return a new IMedia without any identity
+            as it has not yet been persisted. It is intended as a shortcut to creating new media objects
+            that does not invoke a save operation against the database.
+            </remarks>
+            <param name="name">Name of the Media object</param>
+            <param name="parentId">Id of Parent for the new Media item</param>
+            <param name="mediaTypeAlias">Alias of the <see cref="T:Umbraco.Core.Models.IMediaType"/></param>
+            <param name="userId">Optional id of the user creating the media item</param>
+            <returns><see cref="T:Umbraco.Core.Models.IMedia"/></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.IMediaService.CreateMedia(System.String,System.Int32,System.String,System.Int32)">
             <summary>
             Creates an <see cref="T:Umbraco.Core.Models.IMedia"/> object using the alias of the <see cref="T:Umbraco.Core.Models.IMediaType"/>
@@ -27873,14 +28789,6 @@
             <param name="countType"><see cref="T:Umbraco.Core.Models.Membership.MemberCountType"/> to count by</param>
             <returns><see cref="!:System.int"/> with number of Members or Users for passed in type</returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IMembershipMemberService`1.GetDefaultMemberType">
-            <summary>
-            Gets the default MemberType alias
-            </summary>
-            <remarks>By default we'll return the 'writer', but we need to check it exists. If it doesn't we'll 
-            return the first type that is not an admin, otherwise if there's only one we will return that one.</remarks>
-            <returns>Alias of the default MemberType</returns>
-        </member>
         <member name="M:Umbraco.Core.Services.IMembershipMemberService`1.Exists(System.String)">
             <summary>
             Checks if a Member with the username exists
@@ -27960,6 +28868,14 @@
             <param name="raiseEvents">Optional parameter to raise events. 
             Default is <c>True</c> otherwise set to <c>False</c> to not raise events</param>
         </member>
+        <member name="M:Umbraco.Core.Services.IMembershipMemberService`1.GetDefaultMemberType">
+            <summary>
+            Gets the default MemberType alias
+            </summary>
+            <remarks>By default we'll return the 'writer', but we need to check it exists. If it doesn't we'll 
+            return the first type that is not an admin, otherwise if there's only one we will return that one.</remarks>
+            <returns>Alias of the default MemberType</returns>
+        </member>
         <member name="M:Umbraco.Core.Services.IMembershipMemberService`1.FindByEmail(System.String,System.Int32,System.Int32,System.Int32@,Umbraco.Core.Persistence.Querying.StringPropertyMatchType)">
             <summary>
             Finds a list of <see cref="T:Umbraco.Core.Models.Membership.IMembershipUser"/> objects by a partial email string
@@ -28002,7 +28918,7 @@
             Idea is to have this is an isolated interface so that it can be easily 'replaced' in the membership provider impl.
             </remarks>
         </member>
-        <member name="M:Umbraco.Core.Services.IMembershipUserService.CreateUserWithIdentity(System.String,System.String,Umbraco.Core.Models.Membership.IUserType)">
+        <member name="M:Umbraco.Core.Services.IMembershipUserService.CreateUserWithIdentity(System.String,System.String)">
             <summary>
             Creates and persists a new User
             </summary>
@@ -28011,7 +28927,6 @@
             Id of the user once its been created.</remarks>
             <param name="username">Username of the User to create</param>
             <param name="email">Email of the User to create</param>
-            <param name="userType"><see cref="T:Umbraco.Core.Models.Membership.IUserType"/> which the User should be based on</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.IMemberTypeService.GetAll(System.Int32[])">
@@ -28440,7 +29355,7 @@
         </member>
         <member name="M:Umbraco.Core.Services.ISectionService.GetAllowedSections(System.Int32)">
             <summary>
-            Get the user's allowed sections
+            Get the user group's allowed sections
             </summary>
             <param name="userId"></param>
             <returns></returns>
@@ -28802,6 +29717,46 @@
             Defines the UserService, which is an easy access to operations involving <see cref="T:Umbraco.Core.Models.Membership.IProfile"/> and eventually Users.
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Services.IUserService.GetUserStates">
+            <summary>
+            This is basically facets of UserStates key = state, value = count
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.GetAll(System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.Membership.UserState[],System.String[],System.String[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser})">
+            <summary>
+            Get paged users
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderBy"></param>
+            <param name="orderDirection"></param>
+            <param name="userState"></param>
+            <param name="includeUserGroups">
+            A filter to only include user that belong to these user groups
+            </param>
+            <param name="excludeUserGroups">
+            A filter to only include users that do not belong to these user groups
+            </param>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.GetAll(System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.Membership.UserState[],System.String[],System.String)">
+            <summary>
+            Get paged users
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderBy"></param>
+            <param name="orderDirection"></param>
+            <param name="userState"></param>
+            <param name="userGroups">
+            A filter to only include user that belong to these user groups
+            </param>        
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.IUserService.SavePassword(Umbraco.Core.Models.Membership.IUser,System.String)">
             <summary>
             This is simply a helper method which essentially just wraps the MembershipProvider's ChangePassword method
@@ -28840,91 +29795,139 @@
             <param name="id">Id of the user to retrieve</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.DeleteSectionFromAllUsers(System.String)">
+        <member name="M:Umbraco.Core.Services.IUserService.GetUsersById(System.Int32[])">
             <summary>
-            Removes a specific section from all users
+            Gets a users by Id
+            </summary>
+            <param name="ids">Ids of the users to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.DeleteSectionFromAllUserGroups(System.String)">
+            <summary>
+            Removes a specific section from all user groups
             </summary>
             <remarks>This is useful when an entire section is removed from config</remarks>
             <param name="sectionAlias">Alias of the section to remove</param>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.AddSectionToAllUsers(System.String,System.Int32[])">
-            <summary>
-            Add a specific section to all users or those specified as parameters
-            </summary>
-            <remarks>This is useful when a new section is created to allow specific users accessing it</remarks>
-            <param name="sectionAlias">Alias of the section to add</param>
-            <param name="userIds">Specifiying nothing will add the section to all user</param>
-        </member>
         <member name="M:Umbraco.Core.Services.IUserService.GetPermissions(Umbraco.Core.Models.Membership.IUser,System.Int32[])">
             <summary>
-            Get permissions set for a user and optional node ids
+            Get explicitly assigned permissions for a user and optional node ids
             </summary>
             <remarks>If no permissions are found for a particular entity then the user's default permissions will be applied</remarks>
             <param name="user">User to retrieve permissions for</param>
-            <param name="nodeIds">Specifiying nothing will return all user permissions for all nodes</param>
+            <param name="nodeIds">Specifiying nothing will return all user permissions for all nodes that have explicit permissions defined</param>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/></returns>
+            <remarks>
+            This will return the default permissions for the user's groups for node ids that don't have explicitly defined permissions
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.GetPermissions(Umbraco.Core.Models.Membership.IUserGroup[],System.Boolean,System.Int32[])">
+            <summary>
+            Get explicitly assigned permissions for groups and optional node Ids
+            </summary>
+            <param name="groups"></param>
+            <param name="fallbackToDefaultPermissions">
+                Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+            <param name="nodeIds">Specifiying nothing will return all permissions for all nodes</param>
             <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.ReplaceUserPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+        <member name="M:Umbraco.Core.Services.IUserService.GetPermissionsForPath(Umbraco.Core.Models.Membership.IUser,System.String)">
             <summary>
-            Replaces the same permission set for a single user to any number of entities
+            Gets the implicit/inherited permissions for the user for the given path
+            </summary>
+            <param name="user">User to check permissions for</param>
+            <param name="path">Path to check permissions for</param>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.GetPermissionsForPath(Umbraco.Core.Models.Membership.IUserGroup[],System.String,System.Boolean)">
+            <summary>
+            Gets the permissions for the provided groups and path
+            </summary>
+            <param name="groups"></param>
+            <param name="path">Path to check permissions for</param>
+            <param name="fallbackToDefaultPermissions">
+                Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.ReplaceUserGroupPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+            <summary>
+            Replaces the same permission set for a single group to any number of entities
             </summary>        
-            <param name="userId">Id of the user</param>
+            <param name="groupId">Id of the group</param>
             <param name="permissions">
             Permissions as enumerable list of <see cref="T:System.Char"/>, 
-            if no permissions are specified then all permissions for this node are removed for this user
+            if no permissions are specified then all permissions for this node are removed for this group
             </param>
             <param name="entityIds">Specify the nodes to replace permissions for. If nothing is specified all permissions are removed.</param>
-            <remarks>If no 'entityIds' are specified all permissions will be removed for the specified user.</remarks>
+            <remarks>If no 'entityIds' are specified all permissions will be removed for the specified group.</remarks>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.AssignUserPermission(System.Int32,System.Char,System.Int32[])">
+        <member name="M:Umbraco.Core.Services.IUserService.AssignUserGroupPermission(System.Int32,System.Char,System.Int32[])">
             <summary>
-            Assigns the same permission set for a single user to any number of entities
+            Assigns the same permission set for a single user group to any number of entities
             </summary>
-            <param name="userId">Id of the user</param>
+            <param name="groupId">Id of the group</param>
             <param name="permission"></param>
             <param name="entityIds">Specify the nodes to replace permissions for</param>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.GetAllUserTypes(System.Int32[])">
+        <member name="M:Umbraco.Core.Services.IUserService.GetAllInGroup(System.Int32)">
             <summary>
-            Gets all UserTypes or thosed specified as parameters
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects associated with a given group
             </summary>
-            <param name="ids">Optional Ids of UserTypes to retrieve</param>
-            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="groupId">Id of group</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.GetUserTypeByAlias(System.String)">
+        <member name="M:Umbraco.Core.Services.IUserService.GetAllNotInGroup(System.Int32)">
             <summary>
-            Gets a UserType by its Alias
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects not associated with a given group
             </summary>
-            <param name="alias">Alias of the UserType to retrieve</param>
-            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="groupId">Id of group</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.GetUserTypeById(System.Int32)">
+        <member name="M:Umbraco.Core.Services.IUserService.GetAllUserGroups(System.Int32[])">
             <summary>
-            Gets a UserType by its Id
+            Gets all UserGroups or those specified as parameters
             </summary>
-            <param name="id">Id of the UserType to retrieve</param>
-            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="ids">Optional Ids of UserGroups to retrieve</param>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.GetUserTypeByName(System.String)">
+        <member name="M:Umbraco.Core.Services.IUserService.GetUserGroupsByAlias(System.String[])">
             <summary>
-            Gets a UserType by its Name
+            Gets a UserGroup by its Alias
             </summary>
-            <param name="name">Name of the UserType to retrieve</param>
-            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="alias">Alias of the UserGroup to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.SaveUserType(Umbraco.Core.Models.Membership.IUserType,System.Boolean)">
+        <member name="M:Umbraco.Core.Services.IUserService.GetUserGroupByAlias(System.String)">
             <summary>
-            Saves a UserType
+            Gets a UserGroup by its Alias
             </summary>
-            <param name="userType">UserType to save</param>
+            <param name="name">Name of the UserGroup to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.GetUserGroupById(System.Int32)">
+            <summary>
+            Gets a UserGroup by its Id
+            </summary>
+            <param name="id">Id of the UserGroup to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.Save(Umbraco.Core.Models.Membership.IUserGroup,System.Int32[],System.Boolean)">
+            <summary>
+            Saves a UserGroup
+            </summary>
+            <param name="userGroup">UserGroup to save</param>
+            <param name="userIds">
+            If null than no changes are made to the users who are assigned to this group, however if a value is passed in 
+            than all users will be removed from this group and only these users will be added
+            </param>
             <param name="raiseEvents">Optional parameter to raise events. 
             Default is <c>True</c> otherwise set to <c>False</c> to not raise events</param>
         </member>
-        <member name="M:Umbraco.Core.Services.IUserService.DeleteUserType(Umbraco.Core.Models.Membership.IUserType)">
+        <member name="M:Umbraco.Core.Services.IUserService.DeleteUserGroup(Umbraco.Core.Models.Membership.IUserGroup)">
             <summary>
-            Deletes a UserType
+            Deletes a UserGroup
             </summary>
-            <param name="userType">UserType to delete</param>
+            <param name="userGroup">UserGroup to delete</param>
         </member>
         <member name="T:Umbraco.Core.Services.LocalizationService">
             <summary>
@@ -29242,6 +30245,22 @@
             Represents the Media Service, which is an easy access to operations involving <see cref="T:Umbraco.Core.Models.IMedia"/>
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Services.MediaService.CreateMedia(System.String,System.Guid,System.String,System.Int32)">
+            <summary>
+            Creates an <see cref="T:Umbraco.Core.Models.IMedia"/> object using the alias of the <see cref="T:Umbraco.Core.Models.IMediaType"/>
+            that this Media should based on.
+            </summary>
+            <remarks>
+            Note that using this method will simply return a new IMedia without any identity
+            as it has not yet been persisted. It is intended as a shortcut to creating new media objects
+            that does not invoke a save operation against the database.
+            </remarks>
+            <param name="name">Name of the Media object</param>
+            <param name="parentId">Id of Parent for the new Media item</param>
+            <param name="mediaTypeAlias">Alias of the <see cref="T:Umbraco.Core.Models.IMediaType"/></param>
+            <param name="userId">Optional id of the user creating the media item</param>
+            <returns><see cref="T:Umbraco.Core.Models.IMedia"/></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.MediaService.CreateMedia(System.String,System.Int32,System.String,System.Int32)">
             <summary>
             Creates an <see cref="T:Umbraco.Core.Models.IMedia"/> object using the alias of the <see cref="T:Umbraco.Core.Models.IMediaType"/>
@@ -29313,7 +30332,14 @@
         </member>
         <member name="M:Umbraco.Core.Services.MediaService.GetByIds(System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Gets an <see cref="T:Umbraco.Core.Models.IMedia"/> object by Id
+            Gets an <see cref="T:Umbraco.Core.Models.IMedia"/> objects by Ids
+            </summary>
+            <param name="ids">Ids of the Media to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.IMedia"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.MediaService.GetByIds(System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Gets an <see cref="T:Umbraco.Core.Models.IMedia"/> objects by Ids
             </summary>
             <param name="ids">Ids of the Media to retrieve</param>
             <returns><see cref="T:Umbraco.Core.Models.IMedia"/></returns>
@@ -31517,14 +32543,6 @@
             Represents the UserService, which is an easy access to operations involving <see cref="T:Umbraco.Core.Models.Membership.IProfile"/>, <see cref="T:Umbraco.Core.Models.Membership.IMembershipUser"/> and eventually Backoffice Users.
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.GetDefaultMemberType">
-            <summary>
-            Gets the default MemberType alias
-            </summary>
-            <remarks>By default we'll return the 'writer', but we need to check it exists. If it doesn't we'll
-            return the first type that is not an admin, otherwise if there's only one we will return that one.</remarks>
-            <returns>Alias of the default MemberType</returns>
-        </member>
         <member name="M:Umbraco.Core.Services.UserService.Exists(System.String)">
             <summary>
             Checks if a User with the username exists
@@ -31532,14 +32550,13 @@
             <param name="username">Username to check</param>
             <returns><c>True</c> if the User exists otherwise <c>False</c></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.CreateUserWithIdentity(System.String,System.String,Umbraco.Core.Models.Membership.IUserType)">
+        <member name="M:Umbraco.Core.Services.UserService.CreateUserWithIdentity(System.String,System.String)">
             <summary>
             Creates a new User
             </summary>
             <remarks>The user will be saved in the database and returned with an Id</remarks>
             <param name="username">Username of the user to create</param>
             <param name="email">Email of the user to create</param>
-            <param name="userType"><see cref="T:Umbraco.Core.Models.Membership.IUserType"/> which the User should be based on</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.UserService.Umbraco#Core#Services#IMembershipMemberService{Umbraco#Core#Models#Membership#IUser}#CreateWithIdentity(System.String,System.String,System.String,System.String)">
@@ -31549,7 +32566,7 @@
             <param name="username">Username of the <see cref="T:Umbraco.Core.Models.Membership.IUser"/> to create</param>
             <param name="email">Email of the <see cref="T:Umbraco.Core.Models.Membership.IUser"/> to create</param>
             <param name="passwordValue">This value should be the encoded/encrypted/hashed value for the password that will be stored in the database</param>
-            <param name="memberTypeAlias">Alias of the Type</param>
+            <param name="memberTypeAlias">Not used for users</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.UserService.Umbraco#Core#Services#IMembershipMemberService{Umbraco#Core#Models#Membership#IUser}#CreateWithIdentity(System.String,System.String,System.String,System.String,System.Boolean)">
@@ -31563,7 +32580,7 @@
             <param name="isApproved">Is the member approved</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.CreateUserWithIdentity(System.String,System.String,System.String,Umbraco.Core.Models.Membership.IUserType,System.Boolean)">
+        <member name="M:Umbraco.Core.Services.UserService.CreateUserWithIdentity(System.String,System.String,System.String,System.Boolean)">
             <summary>
             Creates and persists a Member
             </summary>
@@ -31572,7 +32589,6 @@
             <param name="username">Username of the Member to create</param>
             <param name="email">Email of the Member to create</param>
             <param name="passwordValue">This value should be the encoded/encrypted/hashed value for the password that will be stored in the database</param>
-            <param name="userType">MemberType the Member should be based on</param>
             <param name="isApproved">Is the user approved</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
@@ -31610,16 +32626,6 @@
             </summary>
             <param name="membershipUser"><see cref="T:Umbraco.Core.Models.Membership.IUser"/> to Delete</param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.SavePassword(Umbraco.Core.Models.Membership.IUser,System.String)">
-            <summary>
-            This is simply a helper method which essentially just wraps the MembershipProvider's ChangePassword method
-            </summary>
-            <remarks>
-            This method exists so that Umbraco developers can use one entry point to create/update users if they choose to.
-            </remarks>
-            <param name="user">The user to save the password for</param>
-            <param name="password">The password to save</param>
-        </member>
         <member name="M:Umbraco.Core.Services.UserService.Delete(Umbraco.Core.Models.Membership.IUser,System.Boolean)">
             <summary>
             Deletes or disables a User
@@ -31642,6 +32648,12 @@
             <param name="entities"><see cref="T:System.Collections.Generic.IEnumerable`1"/> to save</param>
             <param name="raiseEvents">Optional parameter to raise events.
             Default is <c>True</c> otherwise set to <c>False</c> to not raise events</param>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetDefaultMemberType">
+            <summary>
+            This is just the default user group that the membership provider will use
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Services.UserService.FindByEmail(System.String,System.Int32,System.Int32,System.Int32@,Umbraco.Core.Persistence.Querying.StringPropertyMatchType)">
             <summary>
@@ -31677,6 +32689,25 @@
             <param name="countType"><see cref="T:Umbraco.Core.Models.Membership.MemberCountType"/> to count by</param>
             <returns><see cref="!:System.int"/> with number of Users for passed in type</returns>
         </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetAll(System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.Membership.UserState[],System.String[],System.String[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.Membership.IUser})">
+            <summary>
+            Get paged users
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderBy"></param>
+            <param name="orderDirection"></param>
+            <param name="userState"></param>
+            <param name="includeUserGroups">
+            A filter to only include user that belong to these user groups
+            </param>
+            <param name="excludeUserGroups">
+            A filter to only include users that do not belong to these user groups
+            </param>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.UserService.GetAll(System.Int32,System.Int32,System.Int32@)">
             <summary>
             Gets a list of paged <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects
@@ -31684,6 +32715,20 @@
             <param name="pageIndex">Current page index</param>
             <param name="pageSize">Size of the page</param>
             <param name="totalRecords">Total number of records found (out)</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetAllInGroup(System.Int32)">
+            <summary>
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects associated with a given group
+            </summary>
+            <param name="groupId">Id of group</param>
+            <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetAllNotInGroup(System.Int32)">
+            <summary>
+            Gets a list of <see cref="T:Umbraco.Core.Models.Membership.IUser"/> objects not associated with a given group
+            </summary>
+            <param name="groupId">Id of group</param>
             <returns><see cref="T:System.Collections.Generic.IEnumerable`1"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.UserService.GetProfileById(System.Int32)">
@@ -31707,88 +32752,147 @@
             <param name="id">Id of the user to retrieve</param>
             <returns><see cref="T:Umbraco.Core.Models.Membership.IUser"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.ReplaceUserPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
+        <member name="M:Umbraco.Core.Services.UserService.ReplaceUserGroupPermissions(System.Int32,System.Collections.Generic.IEnumerable{System.Char},System.Int32[])">
             <summary>
-            Replaces the same permission set for a single user to any number of entities
+            Replaces the same permission set for a single group to any number of entities
             </summary>
-            <remarks>If no 'entityIds' are specified all permissions will be removed for the specified user.</remarks>
-            <param name="userId">Id of the user</param>
-            <param name="permissions">Permissions as enumerable list of <see cref="T:System.Char"/></param>
-            <param name="entityIds">Specify the nodes to replace permissions for. If nothing is specified all permissions are removed.</param>
+            <remarks>If no 'entityIds' are specified all permissions will be removed for the specified group.</remarks>
+            <param name="groupId">Id of the group</param>
+            <param name="permissions">Permissions as enumerable list of <see cref="T:System.Char"/> If nothing is specified all permissions are removed.</param>
+            <param name="entityIds">Specify the nodes to replace permissions for. </param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.AssignUserPermission(System.Int32,System.Char,System.Int32[])">
+        <member name="M:Umbraco.Core.Services.UserService.AssignUserGroupPermission(System.Int32,System.Char,System.Int32[])">
             <summary>
-            Assigns the same permission set for a single user to any number of entities
+            Assigns the same permission set for a single user group to any number of entities
             </summary>
-            <param name="userId">Id of the user</param>
+            <param name="groupId">Id of the user group</param>
             <param name="permission"></param>
             <param name="entityIds">Specify the nodes to replace permissions for</param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.GetAllUserTypes(System.Int32[])">
+        <member name="M:Umbraco.Core.Services.UserService.GetAllUserGroups(System.Int32[])">
             <summary>
-            Gets all UserTypes or thosed specified as parameters
+            Gets all UserGroups or those specified as parameters
             </summary>
-            <param name="ids">Optional Ids of UserTypes to retrieve</param>
-            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="ids">Optional Ids of UserGroups to retrieve</param>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.GetUserTypeByAlias(System.String)">
+        <member name="M:Umbraco.Core.Services.UserService.GetUserGroupByAlias(System.String)">
             <summary>
-            Gets a UserType by its Alias
+            Gets a UserGroup by its Alias
             </summary>
-            <param name="alias">Alias of the UserType to retrieve</param>
-            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="alias">Alias of the UserGroup to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.GetUserTypeById(System.Int32)">
+        <member name="M:Umbraco.Core.Services.UserService.GetUserGroupById(System.Int32)">
             <summary>
-            Gets a UserType by its Id
+            Gets a UserGroup by its Id
             </summary>
-            <param name="id">Id of the UserType to retrieve</param>
-            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
+            <param name="id">Id of the UserGroup to retrieve</param>
+            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserGroup"/></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.GetUserTypeByName(System.String)">
+        <member name="M:Umbraco.Core.Services.UserService.Save(Umbraco.Core.Models.Membership.IUserGroup,System.Int32[],System.Boolean)">
             <summary>
-            Gets a UserType by its Name
+            Saves a UserGroup
             </summary>
-            <param name="name">Name of the UserType to retrieve</param>
-            <returns><see cref="T:Umbraco.Core.Models.Membership.IUserType"/></returns>
-        </member>
-        <member name="M:Umbraco.Core.Services.UserService.SaveUserType(Umbraco.Core.Models.Membership.IUserType,System.Boolean)">
-            <summary>
-            Saves a UserType
-            </summary>
-            <param name="userType">UserType to save</param>
+            <param name="userGroup">UserGroup to save</param>
+            <param name="userIds">
+            If null than no changes are made to the users who are assigned to this group, however if a value is passed in 
+            than all users will be removed from this group and only these users will be added
+            </param>
             <param name="raiseEvents">Optional parameter to raise events.
             Default is <c>True</c> otherwise set to <c>False</c> to not raise events</param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.DeleteUserType(Umbraco.Core.Models.Membership.IUserType)">
+        <member name="M:Umbraco.Core.Services.UserService.DeleteUserGroup(Umbraco.Core.Models.Membership.IUserGroup)">
             <summary>
-            Deletes a UserType
+            Deletes a UserGroup
             </summary>
-            <param name="userType">UserType to delete</param>
+            <param name="userGroup">UserGroup to delete</param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.DeleteSectionFromAllUsers(System.String)">
+        <member name="M:Umbraco.Core.Services.UserService.DeleteSectionFromAllUserGroups(System.String)">
             <summary>
             Removes a specific section from all users
             </summary>
             <remarks>This is useful when an entire section is removed from config</remarks>
             <param name="sectionAlias">Alias of the section to remove</param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserService.AddSectionToAllUsers(System.String,System.Int32[])">
-            <summary>
-            Add a specific section to all users or those specified as parameters
-            </summary>
-            <remarks>This is useful when a new section is created to allow specific users accessing it</remarks>
-            <param name="sectionAlias">Alias of the section to add</param>
-            <param name="userIds">Specifiying nothing will add the section to all user</param>
-        </member>
         <member name="M:Umbraco.Core.Services.UserService.GetPermissions(Umbraco.Core.Models.Membership.IUser,System.Int32[])">
             <summary>
-            Get permissions set for a user and optional node ids
+            Get explicitly assigned permissions for a user and optional node ids
             </summary>
-            <remarks>If no permissions are found for a particular entity then the user's default permissions will be applied</remarks>
             <param name="user">User to retrieve permissions for</param>
-            <param name="nodeIds">Specifiying nothing will return all user permissions for all nodes</param>
+            <param name="nodeIds">Specifiying nothing will return all permissions for all nodes</param>
             <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetPermissions(Umbraco.Core.Models.Membership.IReadOnlyUserGroup[],System.Boolean,System.Int32[])">
+            <summary>
+            Get explicitly assigned permissions for a group and optional node Ids
+            </summary>
+            <param name="groups">Groups to retrieve permissions for</param>
+            <param name="fallbackToDefaultPermissions">
+            Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+            <param name="nodeIds">Specifiying nothing will return all permissions for all nodes</param>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetPermissions(Umbraco.Core.Models.Membership.IUserGroup[],System.Boolean,System.Int32[])">
+            <summary>
+            Get explicitly assigned permissions for a group and optional node Ids
+            </summary>
+            <param name="groups"></param>
+            <param name="fallbackToDefaultPermissions">
+                Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+            <param name="nodeIds">Specifiying nothing will return all permissions for all nodes</param>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetPermissionsForPath(Umbraco.Core.Models.Membership.IUser,System.String)">
+            <summary>
+            Gets the implicit/inherited permissions for the user for the given path
+            </summary>
+            <param name="user">User to check permissions for</param>
+            <param name="path">Path to check permissions for</param>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetPermissionsForPath(Umbraco.Core.Models.Membership.IUserGroup[],System.String,System.Boolean)">
+            <summary>
+            Gets the permissions for the provided group and path
+            </summary>
+            <param name="groups"></param>
+            <param name="path">Path to check permissions for</param>
+            <param name="fallbackToDefaultPermissions">
+                Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+            <returns>String indicating permissions for provided user and path</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.CalculatePermissionsForPathForUser(Umbraco.Core.Models.Membership.EntityPermission[],System.Int32[])">
+            <summary>
+            This performs the calculations for inherited nodes based on this http://issues.umbraco.org/issue/U4-10075#comment=67-40085
+            </summary>
+            <param name="groupPermissions"></param>
+            <param name="pathIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.GetPermissionsForPathForGroup(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.Membership.EntityPermission},System.Int32[],System.Boolean)">
+            <summary>
+            Returns the resulting permission set for a group for the path based on all permissions provided for the branch
+            </summary>
+            <param name="pathPermissions">
+            The collective set of permissions provided to calculate the resulting permissions set for the path 
+            based on a single group
+            </param>
+            <param name="pathIds">Must be ordered deepest to shallowest (right to left)</param>
+            <param name="fallbackToDefaultPermissions">
+            Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserService.TryGetAssignedPermissionsForNode(System.Collections.Generic.IList{Umbraco.Core.Models.Membership.EntityPermission},System.Int32,System.String@)">
+            <summary>
+            Checks in a set of permissions associated with a user for those related to a given nodeId
+            </summary>
+            <param name="permissions">The set of permissions</param>
+            <param name="nodeId">The node Id</param>
+            <param name="assignedPermissions">The permissions to return</param>
+            <returns>True if permissions for the given path are found</returns>
         </member>
         <member name="E:Umbraco.Core.Services.UserService.SavingUser">
             <summary>
@@ -31810,40 +32914,63 @@
             Occurs after Delete
             </summary>
         </member>
-        <member name="E:Umbraco.Core.Services.UserService.SavingUserType">
+        <member name="E:Umbraco.Core.Services.UserService.SavingUserGroup">
             <summary>
             Occurs before Save
             </summary>
         </member>
-        <member name="E:Umbraco.Core.Services.UserService.SavedUserType">
+        <member name="E:Umbraco.Core.Services.UserService.SavedUserGroup">
             <summary>
             Occurs after Save
             </summary>
         </member>
-        <member name="E:Umbraco.Core.Services.UserService.DeletingUserType">
+        <member name="E:Umbraco.Core.Services.UserService.DeletingUserGroup">
             <summary>
             Occurs before Delete
             </summary>
         </member>
-        <member name="E:Umbraco.Core.Services.UserService.DeletedUserType">
+        <member name="E:Umbraco.Core.Services.UserService.DeletedUserGroup">
             <summary>
             Occurs after Delete
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Services.UserServiceExtensions.RemoveUserPermissions(Umbraco.Core.Services.IUserService,System.Int32,System.Int32[])">
+        <member name="M:Umbraco.Core.Services.UserServiceExtensions.GetPermissions(Umbraco.Core.Services.IUserService,Umbraco.Core.Models.Membership.IUserGroup,System.Boolean,System.Int32[])">
             <summary>
-            Remove all permissions for this user for all nodes specified
+            Get explicitly assigned permissions for a group and optional node Ids
+            </summary>
+            <param name="service"></param>
+            <param name="group"></param>
+            <param name="fallbackToDefaultPermissions">
+                Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+            <param name="nodeIds">Specifiying nothing will return all permissions for all nodes</param>
+            <returns>An enumerable list of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserServiceExtensions.GetPermissionsForPath(Umbraco.Core.Services.IUserService,Umbraco.Core.Models.Membership.IUserGroup,System.String,System.Boolean)">
+            <summary>
+            Gets the permissions for the provided group and path
+            </summary>
+            <param name="service"></param>
+            <param name="group"></param>
+            <param name="path">Path to check permissions for</param>
+            <param name="fallbackToDefaultPermissions">
+                Flag indicating if we want to include the default group permissions for each result if there are not explicit permissions set
+            </param>
+        </member>
+        <member name="M:Umbraco.Core.Services.UserServiceExtensions.RemoveUserGroupPermissions(Umbraco.Core.Services.IUserService,System.Int32,System.Int32[])">
+            <summary>
+            Remove all permissions for this user group for all nodes specified
             </summary>
             <param name="userService"></param>
-            <param name="userId"></param>
+            <param name="groupId"></param>
             <param name="entityIds"></param>
         </member>
-        <member name="M:Umbraco.Core.Services.UserServiceExtensions.RemoveUserPermissions(Umbraco.Core.Services.IUserService,System.Int32)">
+        <member name="M:Umbraco.Core.Services.UserServiceExtensions.RemoveUserGroupPermissions(Umbraco.Core.Services.IUserService,System.Int32)">
             <summary>
-            Remove all permissions for this user for all nodes
+            Remove all permissions for this user group for all nodes
             </summary>
             <param name="userService"></param>
-            <param name="userId"></param>
+            <param name="groupId"></param>
         </member>
         <member name="M:Umbraco.Core.Services.UserServiceExtensions.CreateUserMappingForCustomProvider(Umbraco.Core.Services.IUserService,System.Web.Security.MembershipUser)">
             <summary>
@@ -34101,6 +35228,20 @@
             <summary>
             Gets the <see cref="T:umbraco.interfaces.IAction"/> implementations.
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.ActionsResolver.FromActionSymbols(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            This method will return a list of IAction's based on a string (letter) list. Each character in the list may represent
+            an IAction. This will associate any found IActions based on the Letter property of the IAction with the character being referenced.
+            </summary>
+            <param name="actions"></param>
+            <returns>returns a list of actions that have an associated letter found in the action string list</returns>
+        </member>
+        <member name="M:Umbraco.Core.ActionsResolver.ToActionSymbols(System.Collections.Generic.IEnumerable{umbraco.interfaces.IAction})">
+            <summary>
+            Returns the string (letter) representation of the actions that make up the actions collection
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.ActionsResolver.GetAction``1">
             <summary>
@@ -36509,6 +37650,13 @@
             <summary>
              String extension methods
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.StringExtensions.GetIdsFromPathReversed(System.String)">
+            <summary>
+            Convert a path to node ids in the order from right to left (deepest to shallowest)
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.StringExtensions.StripWhitespace(System.String)">
             <summary>

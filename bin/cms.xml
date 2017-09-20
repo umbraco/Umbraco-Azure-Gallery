@@ -477,11 +477,6 @@
             </summary>
             <param name="serviceName"></param>
         </member>
-        <member name="T:umbraco.BusinessLogic.Permission">
-            <summary>
-            Summary description for Permission.
-            </summary>
-        </member>
         <member name="M:umbraco.BusinessLogic.Permission.#ctor">
             <summary>
             Private constructor, this class cannot be directly instantiated
@@ -501,18 +496,18 @@
             <param name="node"></param>
             <returns></returns>
         </member>
-        <member name="M:umbraco.BusinessLogic.Permission.DeletePermissions(umbraco.BusinessLogic.User,umbraco.cms.businesslogic.CMSNode)">
+        <member name="M:umbraco.BusinessLogic.Permission.DeletePermissions(Umbraco.Core.Models.Membership.IUserGroup,umbraco.cms.businesslogic.CMSNode)">
             <summary>
-            Delets all permissions for the node/user combination
+            Delets all permissions for the node/user group combination
             </summary>
-            <param name="user"></param>
+            <param name="userGroup"></param>
             <param name="node"></param>
         </member>
-        <member name="M:umbraco.BusinessLogic.Permission.DeletePermissions(umbraco.BusinessLogic.User)">
+        <member name="M:umbraco.BusinessLogic.Permission.DeletePermissions(Umbraco.Core.Models.Membership.IUserGroup)">
             <summary>
-            deletes all permissions for the user
+            deletes all permissions for the user group
             </summary>
-            <param name="user"></param>
+            <param name="userGroup"></param>
         </member>
         <member name="M:umbraco.BusinessLogic.Permission.DeletePermissions(umbraco.cms.businesslogic.CMSNode)">
             <summary>

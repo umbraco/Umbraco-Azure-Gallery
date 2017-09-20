@@ -845,12 +845,6 @@
             <param name="checkForUmbracoConsoleAccess">if set to <c>true</c> [check for umbraco console access].</param>
             <returns></returns>
         </member>
-        <member name="P:umbraco.BusinessLogic.User.UserType">
-            <summary>
-            Gets or sets the type of the user.
-            </summary>
-            <value>The type of the user.</value>
-        </member>
         <member name="M:umbraco.BusinessLogic.User.getAll">
             <summary>
             Gets all users
@@ -893,16 +887,15 @@
             <param name="partialMatch">whether to use a partial match</param>
             <returns></returns>
         </member>
-        <member name="M:umbraco.BusinessLogic.User.MakeNew(System.String,System.String,System.String,umbraco.BusinessLogic.UserType)">
+        <member name="M:umbraco.BusinessLogic.User.MakeNew(System.String,System.String,System.String)">
             <summary>
             Create a new user.
             </summary>
             <param name="name">The full name.</param>
             <param name="lname">The login name.</param>
             <param name="passw">The password.</param>
-            <param name="ut">The user type.</param>
         </member>
-        <member name="M:umbraco.BusinessLogic.User.MakeNew(System.String,System.String,System.String,System.String,umbraco.BusinessLogic.UserType)">
+        <member name="M:umbraco.BusinessLogic.User.MakeNew(System.String,System.String,System.String,System.String)">
             <summary>
             Creates a new user.
             </summary>
@@ -910,9 +903,8 @@
             <param name="lname">The lname.</param>
             <param name="passw">The passw.</param>
             <param name="email">The email.</param>
-            <param name="ut">The ut.</param>        
         </member>
-        <member name="M:umbraco.BusinessLogic.User.Update(System.Int32,System.String,System.String,System.String,umbraco.BusinessLogic.UserType)">
+        <member name="M:umbraco.BusinessLogic.User.Update(System.Int32,System.String,System.String,System.String)">
             <summary>
             Updates the name, login name and password for the user with the specified id.
             </summary>
@@ -920,7 +912,6 @@
             <param name="name">The name.</param>
             <param name="lname">The lname.</param>
             <param name="email">The email.</param>
-            <param name="ut">The ut.</param>
         </member>
         <member name="M:umbraco.BusinessLogic.User.Update(System.Int32,System.String,System.Boolean,System.Boolean)">
             <summary>
@@ -960,7 +951,7 @@
             <summary>
             Gets the users permissions based on a nodes path
             </summary>
-            <param name="Path">The path.</param>
+            <param name="path">The path.</param>
             <returns></returns>
         </member>
         <member name="M:umbraco.BusinessLogic.User.initCruds">
@@ -991,27 +982,21 @@
             </summary>
             <value>The id.</value>
         </member>
-        <member name="M:umbraco.BusinessLogic.User.ClearApplications">
+        <member name="M:umbraco.BusinessLogic.User.ClearGroups">
             <summary>
-            Clears the list of applications the user has access to, ensure to call Save afterwords
+            Clears the list of groups the user is in, ensure to call Save afterwords
             </summary>
         </member>
-        <member name="M:umbraco.BusinessLogic.User.clearApplications">
+        <member name="M:umbraco.BusinessLogic.User.AddGroup(System.String)">
             <summary>
-            Clears the list of applications the user has access to.
+            Adds a group to the list of groups for the user, ensure to call Save() afterwords
             </summary>
         </member>
-        <member name="M:umbraco.BusinessLogic.User.AddApplication(System.String)">
+        <member name="M:umbraco.BusinessLogic.User.GetGroups">
             <summary>
-            Adds a application to the list of allowed applications, ensure to call Save() afterwords
+            Returns the assigned user group aliases for the user
             </summary>
-            <param name="appAlias"></param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.User.addApplication(System.String)">
-            <summary>
-            Adds a application to the list of allowed applications
-            </summary>
-            <param name="AppAlias">The app alias.</param>
+            <returns></returns>
         </member>
         <member name="P:umbraco.BusinessLogic.User.NoConsole">
             <summary>
@@ -1024,13 +1009,6 @@
             Gets or sets a value indicating whether this <see cref="T:umbraco.BusinessLogic.User"/> is disabled.
             </summary>
             <value><c>true</c> if disabled; otherwise, <c>false</c>.</value>
-        </member>
-        <!-- Badly formed XML comment ignored for member "P:umbraco.BusinessLogic.User.StartNodeId" -->
-        <member name="P:umbraco.BusinessLogic.User.StartMediaId">
-            <summary>
-            Gets or sets the start media id.
-            </summary>
-            <value>The start media id.</value>
         </member>
         <member name="M:umbraco.BusinessLogic.User.FlushFromCache">
             <summary>
@@ -1123,112 +1101,6 @@
             Raises the <see cref="E:FlushingFromCache"/> event.
             </summary>
             <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
-        </member>
-        <member name="T:umbraco.BusinessLogic.UserType">
-            <summary>
-            Represents a umbraco Usertype
-            </summary>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.#ctor">
-            <summary>
-            Creates a new empty instance of a UserType
-            </summary>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.#ctor(System.Int32)">
-            <summary>
-            Creates a new instance of a UserType and attempts to 
-            load it's values from the database cache.
-            </summary>
-            <remarks>
-            If the UserType is not found in the existing ID list, then this object 
-            will remain an empty object
-            </remarks>
-            <param name="id">The UserType id to find</param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.#ctor(System.Int32,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:umbraco.BusinessLogic.UserType"/> class.
-            </summary>
-            <param name="id">The user type id.</param>
-            <param name="name">The name.</param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.#ctor(System.Int32,System.String,System.String,System.String)">
-            <summary>
-            Creates a new instance of UserType with all parameters
-            </summary>
-            <param name="id"></param>
-            <param name="name"></param>
-            <param name="defaultPermissions"></param>
-            <param name="alias"></param>
-        </member>
-        <member name="P:umbraco.BusinessLogic.UserType.UserTypes">
-            <summary>
-            The cache storage for all user types
-            </summary>
-        </member>
-        <member name="P:umbraco.BusinessLogic.UserType.Alias">
-            <summary>
-            Gets or sets the user type alias.
-            </summary>
-        </member>
-        <member name="P:umbraco.BusinessLogic.UserType.Name">
-            <summary>
-            Gets the name of the user type.
-            </summary>
-        </member>
-        <member name="P:umbraco.BusinessLogic.UserType.Id">
-            <summary>
-            Gets the id the user type
-            </summary>
-        </member>
-        <member name="P:umbraco.BusinessLogic.UserType.DefaultPermissions">
-            <summary>
-            Gets the default permissions of the user type
-            </summary>
-        </member>
-        <member name="P:umbraco.BusinessLogic.UserType.getAll">
-            <summary>
-            Returns an array of UserTypes
-            </summary>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.Save">
-            <summary>
-            Saves this instance.
-            </summary>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.Delete">
-            <summary>
-            Deletes this instance.
-            </summary>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.LoadByPrimaryKey(System.Int32)">
-            <summary>
-            Load the data for the current UserType by it's id
-            </summary>
-            <param name="id"></param>
-            <returns>Returns true if the UserType id was found
-            and the data was loaded, false if it wasn't</returns>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.MakeNew(System.String,System.String,System.String)">
-            <summary>
-            Creates a new user type
-            </summary>
-            <param name="name"></param>
-            <param name="defaultPermissions"></param>
-            <param name="alias"></param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.GetUserType(System.Int32)">
-            <summary>
-            Gets the user type with the specied ID
-            </summary>
-            <param name="id">The id.</param>
-            <returns></returns>
-        </member>
-        <member name="M:umbraco.BusinessLogic.UserType.GetAllUserTypes">
-            <summary>
-            Returns all UserType's
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:umbraco.BusinessLogic.Utils.EncodedStringWriter">
             <summary>
@@ -1384,7 +1256,7 @@
         <member name="T:umbraco.BasePages.BasePage">
             <summary>
             umbraco.BasePages.BasePage is the default page type for the umbraco backend.
-            The basepage keeps track of the current user and the page context. But does not 
+            The basepage keeps track of the current user and the page context. But does not
             Restrict access to the page itself.
             The keep the page secure, the umbracoEnsuredPage class should be used instead
             </summary>
@@ -1426,7 +1298,7 @@
         </member>
         <member name="P:umbraco.BasePages.BasePage.Current">
             <summary>
-            Returns the current BasePage for the current request. 
+            Returns the current BasePage for the current request.
             This assumes that the current page is a BasePage, otherwise, returns null;
             </summary>
         </member>
@@ -1713,6 +1585,14 @@
             <summary>
             UmbracoEnsuredPage is the standard protected page in the umbraco backend, and forces authentication.
             </summary>
+        </member>
+        <member name="M:umbraco.BasePages.UmbracoEnsuredPage.CheckPathAndPermissions(System.Int32,Umbraco.Core.Models.UmbracoObjectTypes,umbraco.interfaces.IAction)">
+            <summary>
+            Performs an authorization check for the user against the requested entity/path and permission set, this is only relevant to content and media
+            </summary>
+            <param name="entityId"></param>
+            <param name="objectType"></param>
+            <param name="actionToCheck"></param>
         </member>
         <member name="M:umbraco.BasePages.UmbracoEnsuredPage.OnPreInit(System.EventArgs)">
             <summary>
@@ -2430,7 +2310,7 @@
         <member name="P:umbraco.UmbracoSettings.HelpPages">
             <summary>
             Gets HelpPage configurations.
-            A help page configuration specify language, user type, application, application url and 
+            A help page configuration specify language, user groups, application, application url and 
             the target help page url.
             </summary>
         </member>

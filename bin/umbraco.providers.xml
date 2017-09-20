@@ -611,6 +611,7 @@
             </summary>
             <param name="username">The user to reset the password for.</param>
             <param name="answer">The password answer for the specified user.</param>
+            <param name="generatedPassword"></param>
             <returns>The new password for the specified user.</returns>
         </member>
         <member name="M:umbraco.providers.UsersMembershipProvider.UnlockUser(System.String)">
@@ -676,18 +677,12 @@
             </summary>
             <value>The language.</value>
         </member>
-        <member name="P:umbraco.providers.UsersMembershipUser.UserType">
-            <summary>
-            Gets or sets the type of the user.
-            </summary>
-            <value>The type of the user.</value>
-        </member>
         <member name="M:umbraco.providers.UsersMembershipUser.#ctor">
             <summary>
             Initializes a new instance of the <see cref="!:UmbracoMembershipUser"/> class.
             </summary>
         </member>
-        <member name="M:umbraco.providers.UsersMembershipUser.#ctor(System.String,System.String,System.Object,System.String,System.String,System.String,System.Boolean,System.Boolean,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.String,System.String,umbraco.BusinessLogic.UserType)">
+        <member name="M:umbraco.providers.UsersMembershipUser.#ctor(System.String,System.String,System.Object,System.String,System.String,System.String,System.Boolean,System.Boolean,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.DateTime,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="!:UmbracoMembershipUser"/> class.
             </summary>
@@ -706,7 +701,6 @@
             <param name="lastLockoutDate">The last lockout date.</param>
             <param name="fullName">The full name.</param>
             <param name="language">The language.</param>
-            <param name="userType">Type of the user.</param>
         </member>
         <member name="T:umbraco.providers.UsersRoleProvider">
             <summary>
