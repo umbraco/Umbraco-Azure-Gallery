@@ -752,6 +752,11 @@
             To modify move field declaration from designer file to code-behind file.
             </remarks>
         </member>
+        <member name="P:Umbraco.Web.UI.Umbraco.Dialogs.EditMacro.CountOfMacroProperties">
+            <summary>
+            Returns the number of macro properties defined on the macro found
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.UI.Umbraco.Dialogs.EditMacro.OnPreRender(System.EventArgs)">
             <summary>
             Sets the macro propery count if the macro object has been loaded
@@ -760,11 +765,6 @@
             <remarks>
             The macro property will only have been loaded on a post back from the first screen after selecting a macro, otherwise it will be zero.
             </remarks>
-        </member>
-        <member name="P:Umbraco.Web.UI.Umbraco.Dialogs.EditMacro.CountOfMacroProperties">
-            <summary>
-            Returns the number of macro properties defined on the macro found
-            </summary>
         </member>
         <member name="F:Umbraco.Web.UI.Umbraco.Dialogs.Sort.CssInclude1">
             <summary>

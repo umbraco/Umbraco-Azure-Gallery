@@ -30,6 +30,19 @@
             <param name="result"></param>
             <returns></returns>
         </member>
+        <member name="M:umbraco.MacroEngines.ExamineBackedMedia.#ctor(Examine.SearchResult,Examine.Providers.BaseIndexProvider,Examine.Providers.BaseSearchProvider)">
+            <summary>
+            Internal constructor used for unit tests
+            </summary>
+            <param name="result"></param>
+            <param name="indexer"></param>
+            <param name="searcher"></param>
+        </member>
+        <member name="F:umbraco.MacroEngines.Library.RazorLibraryCore._htmlHelper">
+            <summary>
+            An empty HtmlHelper with a blank ViewContext, used only to access some htmlHelper extension methods
+            </summary>
+        </member>
         <member name="F:umbraco.MacroEngines.DynamicNode.GetDataTypeCallback">
             <summary>
             This callback is used only so we can set it dynamically for use in unit tests
@@ -48,19 +61,6 @@
             Checks if the owner list is null and attempts to create it if there is a parent. 
             </summary>
             <returns>Successful if the owners list is not null, false if the owners list could not be created and remains null</returns>
-        </member>
-        <member name="M:umbraco.MacroEngines.ExamineBackedMedia.#ctor(Examine.SearchResult,Examine.Providers.BaseIndexProvider,Examine.Providers.BaseSearchProvider)">
-            <summary>
-            Internal constructor used for unit tests
-            </summary>
-            <param name="result"></param>
-            <param name="indexer"></param>
-            <param name="searcher"></param>
-        </member>
-        <member name="F:umbraco.MacroEngines.Library.RazorLibraryCore._htmlHelper">
-            <summary>
-            An empty HtmlHelper with a blank ViewContext, used only to access some htmlHelper extension methods
-            </summary>
         </member>
         <member name="T:umbraco.MacroEngines.RazorBuildProvider">
             <summary>
