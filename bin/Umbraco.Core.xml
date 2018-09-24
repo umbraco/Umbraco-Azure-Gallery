@@ -153,6 +153,21 @@
             - http://issues.umbraco.org/issue/U4-5391
             </remarks>
         </member>
+        <member name="M:Umbraco.Core.ApplicationContext.ResetUmbracoApplicationUrl">
+            <summary>
+            Resets the url.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.ApplicationContext.CurrentVersion">
+            <summary>
+            Gets the Current Version of the Umbraco Site before an upgrade
+            by using the last/most recent Umbraco Migration that has been run
+            </summary>
+            <returns>A SemVersion of the latest Umbraco DB Migration run</returns>
+            <remarks>
+            NOTE: This existed in the InstallHelper previously but should really be here so it can be re-used if necessary
+            </remarks>
+        </member>
         <member name="P:Umbraco.Core.ApplicationContext.DatabaseContext">
             <summary>
             Gets the current DatabaseContext
@@ -512,13 +527,24 @@
             This property is always empty except in the LoginFailed event for an unknown user trying to login
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Auditing.IdentityAuditEventArgs.#ctor(Umbraco.Core.Auditing.AuditEvent,System.String,System.Int32)">
+        <member name="M:Umbraco.Core.Auditing.IdentityAuditEventArgs.#ctor(Umbraco.Core.Auditing.AuditEvent,System.String,System.String,System.Int32,System.Int32)">
             <summary>
-            Sets the properties on the event being raised, all parameters are optional except for the action being performed
+            Default constructor
             </summary>
-            <param name="action">An action based on the AuditEvent enum</param>
-            <param name="ipAddress">The client's IP address. This is usually automatically set but could be overridden if necessary</param>
-            <param name="performingUser">The Id of the user performing the action (if different from the user affected by the action)</param>
+            <param name="action"></param>
+            <param name="ipAddress"></param>
+            <param name="comment"></param>
+            <param name="performingUser"></param>
+            <param name="affectedUser"></param>
+        </member>
+        <member name="M:Umbraco.Core.Auditing.IdentityAuditEventArgs.#ctor(Umbraco.Core.Auditing.AuditEvent,System.String,System.String,System.String)">
+            <summary>
+            Creates an instance without a performing or affected user (the id will be set to -1)
+            </summary>
+            <param name="action"></param>
+            <param name="ipAddress"></param>
+            <param name="username"></param>
+            <param name="comment"></param>
         </member>
         <member name="M:Umbraco.Core.Auditing.IdentityAuditEventArgs.GetCurrentRequestBackofficeUserId">
             <summary>
@@ -1428,6 +1454,53 @@
             When set, DeepClone will always clone all items
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Collections.TypeList`1">
+            <summary>
+            Represents a list of types.
+            </summary>
+            <remarks>Types in the list are, or derive from, or implement, the base type.</remarks>
+            <typeparam name="TBase">The base type.</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TypeList`1.Add``1">
+            <summary>
+            Adds a type to the list.
+            </summary>
+            <typeparam name="T">The type to add.</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TypeList`1.Contains(System.Type)">
+            <summary>
+            Determines whether a type is in the list.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.CompositeTypeTypeKey">
+            <summary>
+            Represents a composite key of (Type, Type) for fast dictionaries.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.#ctor(System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeTypeTypeKey"/> struct.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Collections.CompositeTypeTypeKey.Type1">
+            <summary>
+            Gets the first type.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Collections.CompositeTypeTypeKey.Type2">
+            <summary>
+            Gets the second type.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.Equals(Umbraco.Core.Collections.CompositeTypeTypeKey)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.GetHashCode">
+            <inheritdoc/>
+        </member>
         <member name="T:Umbraco.Core.ConcurrentHashSet`1">
             <summary>
             A thread-safe representation of a <see cref="T:System.Collections.Generic.HashSet`1"/>. 
@@ -1540,10 +1613,20 @@
             A utility class for working with CDF config and cache files - use sparingly!
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Configuration.ClientDependencyConfiguration.UpdateVersionNumber(Semver.SemVersion,System.DateTime,System.String)">
+            <summary>
+            Changes the version number in ClientDependency.config to a hashed value for the version and the DateTime.Day
+            </summary>
+            <param name="version">The <see cref="T:Semver.SemVersion">version</see> of Umbraco we're upgrading to</param>
+            <param name="date">A <see cref="T:System.DateTime">date</see> value to use in the hash to prevent this method from updating the version on each startup</param>
+            <param name="dateFormat">Allows the developer to specify the <see cref="T:System.String">date precision</see> for the hash (i.e. "yyyyMMdd" would be a precision for the day)</param>
+            <returns>Boolean to indicate succesful update of the ClientDependency.config file</returns>
+        </member>
         <member name="M:Umbraco.Core.Configuration.ClientDependencyConfiguration.IncreaseVersionNumber">
             <summary>
             Changes the version number in ClientDependency.config to a random value to avoid stale caches
             </summary>
+            <seealso cref="M:Umbraco.Core.Configuration.ClientDependencyConfiguration.UpdateVersionNumber(Semver.SemVersion,System.DateTime,System.String)" />
         </member>
         <member name="M:Umbraco.Core.Configuration.ClientDependencyConfiguration.ClearTempFiles(System.Web.HttpContextBase)">
             <summary>
@@ -1962,7 +2045,7 @@
         </member>
         <member name="P:Umbraco.Core.Configuration.GlobalSettings.VersionCheckPeriod">
             <summary>
-            Returns a string value to determine if umbraco should skip version-checking.
+            Returns the number of days that should take place between version checks.
             </summary>
             <value>The version check period in days (0 = never).</value>
         </member>
@@ -1971,6 +2054,14 @@
             Returns a string value to determine if umbraco should disbable xslt extensions
             </summary>
             <value><c>"true"</c> if version xslt extensions are disabled, otherwise, <c>"false"</c></value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.LocalTempStorageLocation">
+            <summary>
+            This is the location type to store temporary files such as cache files or other localized files for a given machine
+            </summary>
+            <remarks>
+            Currently used for the xml cache file and the plugin cache files
+            </remarks>
         </member>
         <member name="P:Umbraco.Core.Configuration.GlobalSettings.EditXhtmlMode">
             <summary>
@@ -2324,6 +2415,11 @@
             alias for the media tree.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.Trees.Macros">
+            <summary>
+            alias for the macro tree.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.Trees.DataTypes">
             <summary>
             alias for the datatype tree.
@@ -2559,6 +2655,16 @@
             ContentType alias for default relation type "Relate Parent Document On Delete".
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.RelationTypes.RelateParentMediaFolderOnDeleteName">
+            <summary>
+            ContentType name for default relation type "Relate Parent Media Folder On Delete".
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.RelationTypes.RelateParentMediaFolderOnDeleteAlias">
+            <summary>
+            ContentType alias for default relation type "Relate Parent Media Folder On Delete".
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Constants.PropertyEditors">
             <summary>
             Defines the identifiers for Umbraco Property Editors as constants for easy centralized access/management.
@@ -2662,6 +2768,11 @@
         <member name="F:Umbraco.Core.Constants.PropertyEditors.DropdownlistPublishingKeysAlias">
             <summary>
             Alias for the Dropdown list, publishing keys datatype.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.PropertyEditors.DropDownListFlexibleAlias">
+            <summary>
+            Alias for the "new" Dropdown list, that replaces the old four deprecated ones and works as other list based property editors
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.PropertyEditors.FolderBrowser">
@@ -2970,6 +3081,11 @@
                 Defines the constants used for Umbraco packages in the package.config xml
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Constants.PackageRepository">
+            <summary>
+                Defines the constants used for the Umbraco package repository
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Constants.ObjectTypes">
             <summary>
             Defines the identifiers for Umbraco object types as constants for easy centralized access/management.
@@ -3215,15 +3331,51 @@
             The integer identifier for global system root node.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.System.RootString">
+            <summary>
+            The string identifier for global system root node.
+            </summary>
+            <remarks>Use this instead of re-creating the string everywhere.</remarks>
+        </member>
         <member name="F:Umbraco.Core.Constants.System.RecycleBinContent">
             <summary>
             The integer identifier for content's recycle bin.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.System.RecycleBinContentString">
+            <summary>
+            The string identifier for content's recycle bin.
+            </summary>
+            <remarks>Use this instead of re-creating the string everywhere.</remarks>
+        </member>
+        <member name="F:Umbraco.Core.Constants.System.RecycleBinContentPathPrefix">
+            <summary>
+            The string path prefix of the content's recycle bin.
+            </summary>
+            <remarks>
+            <para>Everything that is in the content recycle bin, has a path that starts with the prefix.</para>
+            <para>Use this instead of re-creating the string everywhere.</para>
+            </remarks>
+        </member>
         <member name="F:Umbraco.Core.Constants.System.RecycleBinMedia">
             <summary>
             The integer identifier for media's recycle bin.
             </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.System.RecycleBinMediaString">
+            <summary>
+            The string identifier for media's recycle bin.
+            </summary>
+            <remarks>Use this instead of re-creating the string everywhere.</remarks>
+        </member>
+        <member name="F:Umbraco.Core.Constants.System.RecycleBinMediaPathPrefix">
+            <summary>
+            The string path prefix of the media's recycle bin.
+            </summary>
+            <remarks>
+            <para>Everything that is in the media recycle bin, has a path that starts with the prefix.</para>
+            <para>Use this instead of re-creating the string everywhere.</para>
+            </remarks>
         </member>
         <member name="T:Umbraco.Core.Constants.Web">
             <summary>
@@ -4098,6 +4250,11 @@
             <param name="alias">The property alias.</param>
             <param name="value">The deploy property value.</param>
         </member>
+        <member name="T:Umbraco.Core.DisposableObjectSlim">
+            <summary>
+            This should not be use if there are ubmanaged resources to be disposed, use DisposableObject instead
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.EmailSender">
             <summary>
             A utility class for sending emails
@@ -4170,25 +4327,6 @@
             to do with the events when the scope exits and has been completed.</para>
             <para>If the scope exits without being completed, events are ignored.</para>
             </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.ScopeEventDispatcherBase.FilterSupersededAndUpdateToLatestEntity(System.Collections.Generic.IReadOnlyList{Umbraco.Core.Events.IEventDefinition})">
-            <summary>
-            This will iterate over the events (latest first) and filter out any events or entities in event args that are included 
-            in more recent events that Supersede previous ones. For example, If an Entity has been Saved and then Deleted, we don't want
-            to raise the Saved event (well actually we just don't want to include it in the args for that saved event)
-            </summary>
-            <param name="events"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.ScopeEventDispatcherBase.IsFiltered(Umbraco.Core.Models.EntityBase.IEntity,Umbraco.Core.Events.ScopeEventDispatcherBase.EventDefinitionTypeData,System.Collections.Generic.List{System.Tuple{Umbraco.Core.Models.EntityBase.IEntity,Umbraco.Core.Events.ScopeEventDispatcherBase.EventDefinitionTypeData}})">
-            <summary>
-            This will check against all of the processed entity/events (allEntities) to see if this entity already exists in 
-            event args that supersede the event args being passed in and if so returns true.
-            </summary>
-            <param name="entity"></param>
-            <param name="eventDef"></param>
-            <param name="allEntities"></param>
-            <returns></returns>
         </member>
         <member name="T:Umbraco.Core.Events.ScopeLifespanMessagesFactory">
             <summary>
@@ -5073,6 +5211,503 @@
             Simple abstraction to send an email message
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Logging.RollingFileCleanupAppender">
+            <summary>
+            This class will do the exact same thing as the RollingFileAppender that comes from log4net
+            With the extension, that it is able to do automatic cleanup of the logfiles in the directory where logging happens
+            
+            By specifying the properties MaxLogFileDays and BaseFilePattern, the files will automaticly get deleted when
+            the logger is configured(typically when the app starts). To utilize this appender swap out the type of the rollingFile appender
+            that ships with Umbraco, to be Umbraco.Core.Logging.RollingFileCleanupAppender, and add the maxLogFileDays and baseFilePattern elements 
+            to the configuration i.e.:
+            
+            <example>
+             <appender name="rollingFile" type="Log4netAwesomeness.CustomRollingFileAppender, Log4netAwesomeness">
+              <file type="log4net.Util.PatternString" value="App_Data\Logs\UmbracoTraceLog.%property{log4net:HostName}.txt" />
+               <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
+               <appendToFile value="true" />
+               <rollingStyle value="Date" />
+               <maximumFileSize value="5MB" />
+               <maxLogFileDays value="5"/>
+               <basefilePattern value="UmbracoTraceLog.*.txt.*"/>
+               <layout type="log4net.Layout.PatternLayout">
+                 <conversionPattern value=" %date [P%property{processId}/D%property{appDomainId}/T%thread] %-5level %logger - %message%newline" />
+               </layout>
+               <layout type="log4net.Layout.PatternLayout">
+                 <conversionPattern value=" %date [P%property{processId}/D%property{appDomainId}/T%thread] %-5level %logger - %message%newline" />
+               </layout>
+               <encoding value="utf-8" />
+             </appender>
+            </example>
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.RollingFileCleanupAppender.OpenFile(System.String,System.Boolean)">
+            <summary>
+            This override will delete logs older than the specified amount of days
+            </summary>
+            <param name="fileName"></param>
+            <param name="append"></param>
+        </member>
+        <member name="T:Umbraco.Core.Logging.AsyncForwardingAppenderBase">
+            <summary>
+            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.AsyncForwardingAppenderBase.HttpContext">
+            <summary>
+            Returns HttpContext.Current
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.AsyncForwardingAppenderBase.InternalLoggerName">
+            <summary>
+            The logger name that will be used for logging internal errors.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.ImageProcessorLogger">
+            <summary>
+            A logger for explicitly logging ImageProcessor exceptions.
+            <remarks>
+            Creating this logger is enough for ImageProcessor to find and replace its in-built debug logger
+            without any additional configuration required. This class currently has to be public in order 
+            to do so.
+            </remarks>
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ImageProcessorLogger.Log``1(System.String,System.String,System.Int32)">
+            <summary>
+            Logs the specified message as an error.
+            </summary>
+            <typeparam name="T">The type calling the logger.</typeparam>
+            <param name="text">The message to log.</param>
+            <param name="callerName">The property or method name calling the log.</param>
+            <param name="lineNumber">The line number where the method is called.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ImageProcessorLogger.Log(System.Type,System.String,System.String,System.Int32)">
+            <summary>
+            Logs the specified message as an error.
+            </summary>
+            <param name="type">The type calling the logger.</param>
+            <param name="text">The message to log.</param>
+            <param name="callerName">The property or method name calling the log.</param>
+            <param name="lineNumber">The line number where the method is called.</param>
+        </member>
+        <member name="T:Umbraco.Core.Logging.IQueue`1">
+            <summary>
+            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LoggingEventContext">
+            <remarks>
+            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LoggingEventHelper">
+            <remarks>
+            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.RingBuffer`1">
+            <summary>
+            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Logging.OwinLogger.WriteCore(System.Diagnostics.TraceEventType,System.Int32,System.Object,System.Exception,System.Func{System.Object,System.Exception,System.String})">
+            <summary>
+            Aggregates most logging patterns to a single method.  This must be compatible with the Func representation in the OWIN environment.
+                        To check IsEnabled call WriteCore with only TraceEventType and check the return value, no event will be written.
+            </summary>
+            <param name="eventType"/><param name="eventId"/><param name="state"/><param name="exception"/><param name="formatter"/>
+            <returns/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.OwinLoggerFactory.Create(System.String)">
+            <summary>
+            Creates a new ILogger instance of the given name.
+            </summary>
+            <param name="name"/>
+            <returns/>
+        </member>
+        <member name="T:Umbraco.Core.Logging.ParallelForwardingAppender">
+            <summary>
+            An asynchronous appender based on <see cref="T:System.Collections.Concurrent.BlockingCollection`1"/>
+            </summary>
+            <remarks>
+            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.DebugDiagnosticsLogger">
+            <summary>
+            Implements <see cref="T:Umbraco.Core.Logging.ILogger"/> on top of System.Diagnostics.Debug.
+            </summary>
+            <remarks>Useful for tests.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.AppDomainTokenConverter">
+            <summary>
+            Allows for outputting a normalized appdomainappid token in a log format
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LoggerExtensions">
+            <summary>
+            Allows for strongly typed log sources
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.String,System.Exception)">
+            <summary>
+            Adds an error log
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="logger"></param>
+            <param name="message"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.String,System.Func{System.Object}[])">
+            <summary>
+            Adds a warn log
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="logger"></param>
+            <param name="message"></param>
+            <param name="formatItems"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.String,System.Func{System.Object}[])">
+            <summary>
+            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="logger"></param>
+            <param name="generateMessageFormat">The generate message format.</param>
+            <param name="formatItems">The format items.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="logger"></param>
+            <param name="generateMessage">The delegate to generate a message.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.Func{System.String})">
+            <summary>
+            Debugs a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="logger"></param>
+            <param name="generateMessage">The delegate to generate a message.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.String,System.Func{System.Object}[])">
+            <summary>
+            Debugs a message, only generating the message if debug is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="logger"></param>
+            <param name="generateMessageFormat">The generate message format.</param>
+            <param name="formatItems">The format items.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerResolver.SetLogger(Umbraco.Core.Logging.ILogger)">
+            <summary>
+            Method allowing to change the logger during startup
+            </summary>
+            <param name="profiler"></param>
+        </member>
+        <member name="P:Umbraco.Core.Logging.LoggerResolver.Logger">
+            <summary>
+            Gets the current logger
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.ProfilingLogger">
+            <summary>
+            Used to create DisposableTimer instances for debugging or tracing durations
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.ILogger">
+            <summary>
+            Interface for logging service.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.Logger">
+            <summary>
+             Used for logging
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.CreateWithDefaultLog4NetConfiguration">
+            <summary>
+            Creates a logger with the default log4net configuration discovered (i.e. from the web.config)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.LoggerFor``1">
+            <summary>
+             Returns a logger for the type specified
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.LoggerFor(System.Object)">
+            <summary>
+            Returns a logger for the object's type
+            </summary>
+            <param name="getTypeFromInstance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.Info(System.Type,System.Func{System.String})">
+            <summary>
+            Traces if tracing is enabled.
+            </summary>
+            <param name="callingType"></param>
+            <param name="generateMessage"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.Info(System.Type,System.String,System.Func{System.Object}[])">
+            <summary>
+            Traces if tracing is enabled.
+            </summary>
+            <param name="type">The type for the logging namespace.</param>
+            <param name="generateMessageFormat">The message format.</param>
+            <param name="formatItems">The format items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.Debug(System.Type,System.Func{System.String})">
+            <summary>
+            Debugs if tracing is enabled.
+            </summary>
+            <param name="callingType"></param>
+            <param name="generateMessage"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Logger.Debug(System.Type,System.String,System.Func{System.Object}[])">
+            <summary>
+            Debugs if tracing is enabled.
+            </summary>
+            <param name="type">The type for the logging namespace.</param>
+            <param name="generateMessageFormat">The message format.</param>
+            <param name="formatItems">The format items.</param>
+        </member>
+        <member name="T:Umbraco.Core.Logging.AsynchronousRollingFileAppender">
+            <summary>
+            Based on https://github.com/cjbhaines/Log4Net.Async
+            which is based on code by Chris Haines http://cjbhaines.wordpress.com/2012/02/13/asynchronous-log4net-appenders/
+            This is an old/deprecated logger and has been superceded by ParallelForwardingAppender which is included in Umbraco and 
+            also by AsyncForwardingAppender in the Log4Net.Async library.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrors(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
+            <summary>
+                This task shouldn't be waited on (as it's not guaranteed to run), and you shouldn't wait on the parent task either (because it might throw an 
+                exception that doesn't get handled). If you want to be waiting on something, use LogErrorsWaitable instead.
+            
+                None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
+                errors yourself.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrorsWaitable(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
+            <summary>
+                This task can be waited on (as it's guaranteed to run), and you should wait on this rather than the parent task. Because it's
+                guaranteed to run, it may be slower than using LogErrors, and you should consider using that method if you don't want to wait.
+            
+                None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
+                errors yourself.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LogHelper">
+            <summary>
+             Used for logging, ILogger should be used instead but this is available for static access to logging
+            </summary>
+             <remarks>
+             this wraps ILogger 
+             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Error``1(System.String,System.Exception)">
+            <summary>
+            Adds an error log
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="message"></param>
+            <param name="exception"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Warn``1(System.String,System.Func{System.Object}[])">
+            <summary>
+            Adds a warn log
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="message"></param>
+            <param name="formatItems"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Info``1(System.Func{System.String})">
+            <summary>
+            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="generateMessage">The delegate to generate a message.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Info(System.Type,System.Func{System.String})">
+            <summary>
+            Traces if tracing is enabled.
+            </summary>
+            <param name="callingType"></param>
+            <param name="generateMessage"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Info(System.Type,System.String,System.Func{System.Object}[])">
+            <summary>
+            Traces if tracing is enabled.
+            </summary>
+            <param name="type">The type for the logging namespace.</param>
+            <param name="generateMessageFormat">The message format.</param>
+            <param name="formatItems">The format items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Info``1(System.String,System.Func{System.Object}[])">
+            <summary>
+            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="generateMessageFormat">The generate message format.</param>
+            <param name="formatItems">The format items.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Debug``1(System.Func{System.String})">
+            <summary>
+            Debugs a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="generateMessage">The delegate to generate a message.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Debug(System.Type,System.Func{System.String})">
+            <summary>
+            Debugs if tracing is enabled.
+            </summary>
+            <param name="callingType"></param>
+            <param name="generateMessage"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Debug(System.Type,System.String,System.Func{System.Object}[])">
+            <summary>
+            Debugs if tracing is enabled.
+            </summary>
+            <param name="type">The type for the logging namespace.</param>
+            <param name="generateMessageFormat">The message format.</param>
+            <param name="formatItems">The format items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Debug``1(System.String,System.Func{System.Object}[])">
+            <summary>
+            Debugs a message, only generating the message if debug is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="generateMessageFormat">The generate message format.</param>
+            <param name="formatItems">The format items.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHelper.Debug``1(System.String,System.Boolean,System.Func{System.Object}[])">
+            <summary>
+            Debugs a message and also writes to the TraceContext specified, useful for when you would like the debug
+            output also displayed in the Http trace output.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="generateMessageFormat"></param>
+            <param name="showHttpTrace"></param>
+            <param name="formatItems"></param>
+        </member>
+        <member name="T:Umbraco.Core.Models.AuditEntry">
+            <summary>
+            Represents an audited event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.PerformingUserId">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.PerformingDetails">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.PerformingIp">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.EventDateUtc">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.AffectedUserId">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.AffectedDetails">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.EventType">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.AuditEntry.EventDetails">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco.Core.Models.Consent">
+            <summary>
+            Represents a consent.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.Current">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.Source">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.Context">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.Action">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.State">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.Comment">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.History">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Consent.HistoryInternal">
+            <summary>
+            Gets the previous states of this consent.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.ConsentExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Umbraco.Core.Models.IConsent"/> interface.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.ConsentExtensions.IsGranted(Umbraco.Core.Models.IConsent)">
+            <summary>
+            Determines whether the consent is granted.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.ConsentExtensions.IsRevoked(Umbraco.Core.Models.IConsent)">
+            <summary>
+            Determines whether the consent is revoked.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.ConsentState">
+            <summary>
+            Represents the state of a consent.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.ConsentState.None">
+            <summary>
+            There is no consent.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.ConsentState.Pending">
+            <summary>
+            Consent is pending and has not been granted yet.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.ConsentState.Granted">
+            <summary>
+            Consent has been granted.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.ConsentState.Revoked">
+            <summary>
+            Consent has been revoked.
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Models.EntityBase.IRememberBeingDirty">
             <summary>
             An interface that defines if the object is tracking property changes and that is is also
@@ -5334,15 +5969,127 @@
             the same kind of identity as an Entity (with its Id).
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Models.IAuditEntry">
+            <summary>
+            Represents an audited event.
+            </summary>
+            <remarks>
+            <para>The free-form details properties can be used to capture relevant infos (for example,
+            a user email and identifier) at the time of the audited event, even though they may change
+            later on - but we want to keep a track of their value at that time.</para>
+            <para>Depending on audit loggers, these properties can be purely free-form text, or
+            contain json serialized objects.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.PerformingUserId">
+            <summary>
+            Gets or sets the identifier of the user triggering the audited event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.PerformingDetails">
+            <summary>
+            Gets or sets free-form details about the user triggering the audited event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.PerformingIp">
+            <summary>
+            Gets or sets the IP address or the request triggering the audited event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.EventDateUtc">
+            <summary>
+            Gets or sets the date and time of the audited event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.AffectedUserId">
+            <summary>
+            Gets or sets the identifier of the user affected by the audited event.
+            </summary>
+            <remarks>Not used when no single user is affected by the event.</remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.AffectedDetails">
+            <summary>
+            Gets or sets free-form details about the entity affected by the audited event.
+            </summary>
+            <remarks>The entity affected by the event can be another user, a member...</remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.EventType">
+            <summary>
+            Gets or sets the type of the audited event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IAuditEntry.EventDetails">
+            <summary>
+            Gets or sets free-form details about the audited event.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.IConsent">
+            <summary>
+            Represents a consent state.
+            </summary>
+            <remarks>
+            <para>A consent is fully identified by a source (whoever is consenting), a context (for
+            example, an application), and an action (whatever is consented).</para>
+            <para>A consent state registers the state of the consent (granted, revoked...).</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.Current">
+            <summary>
+            Determines whether the consent entity represents the current state.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.Source">
+            <summary>
+            Gets the unique identifier of whoever is consenting.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.Context">
+            <summary>
+            Gets the unique identifier of the context of the consent.
+            </summary>
+            <remarks>
+            <para>Represents the domain, application, scope... of the action.</para>
+            <para>When the action is a Udi, this should be the Udi type.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.Action">
+            <summary>
+            Gets the unique identifier of the consented action.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.State">
+            <summary>
+            Gets the state of the consent.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.Comment">
+            <summary>
+            Gets some additional free text.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IConsent.History">
+            <summary>
+            Gets the previous states of this consent.
+            </summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Models.Membership.ContentPermissionSet" -->
         <member name="T:Umbraco.Core.Models.Membership.EntityPermissionCollection">
             <summary>
             A <see cref="T:System.Collections.Generic.HashSet`1"/> of <see cref="T:Umbraco.Core.Models.Membership.EntityPermission"/>
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Models.Membership.EntityPermissionCollection.GetAllPermissions(System.Int32)">
+            <summary>
+            Returns the aggregate permissions in the permission set for a single node
+            </summary>
+            <returns></returns>
+            <remarks>
+            This value is only calculated once per node
+            </remarks>
+        </member>
         <member name="M:Umbraco.Core.Models.Membership.EntityPermissionCollection.GetAllPermissions">
             <summary>
-            Returns the aggregate permissions in the permission set
+            Returns the aggregate permissions in the permission set for all nodes
             </summary>
             <returns></returns>
             <remarks>
@@ -5568,6 +6315,11 @@
             Will hold the media file system relative path of the users custom avatar if they uploaded one
             </summary>
         </member>
+        <member name="P:Umbraco.Core.Models.Membership.IUser.TourData">
+            <summary>
+            A Json blob stored for recording tour data for a user
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Models.Membership.User">
             <summary>
             Represents a backoffice user
@@ -5608,6 +6360,11 @@
         <member name="P:Umbraco.Core.Models.Membership.User.SecurityStamp">
             <summary>
             The security stamp used by ASP.Net identity
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Membership.User.TourData">
+            <summary>
+            A Json blob stored for recording tour data for a user
             </summary>
         </member>
         <member name="P:Umbraco.Core.Models.Membership.User.SessionTimeout">
@@ -6044,6 +6801,30 @@
             <para>Use nested published property type when creating detached properties within a published content.</para>
             </remarks>
         </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserLoginDto.LoggedInUtc">
+            <summary>
+            Tracks when the session is created
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserLoginDto.LastValidatedUtc">
+            <summary>
+            Updated every time a user's session is validated
+            </summary>
+            <remarks>
+            This allows us to guess if a session is timed out if a user doesn't actively log out
+            and also allows us to trim the data in the table
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserLoginDto.LoggedOutUtc">
+            <summary>
+            Tracks when the session is removed when the user's account is logged out
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserLoginDto.IpAddress">
+            <summary>
+            Logs the IP address of the session if available
+            </summary>
+        </member>
         <member name="P:Umbraco.Core.Models.Rdbms.UserGroupDto.UserCount">
             <summary>
             This is only relevant when this column is included in the results (i.e. GetUserGroupsWithUserCounts)
@@ -6064,6 +6845,11 @@
             Will hold the media file system relative path of the users custom avatar if they uploaded one
             </summary>
         </member>
+        <member name="P:Umbraco.Core.Models.Rdbms.UserDto.TourData">
+            <summary>
+            A Json blob stored for recording tour data for a user
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Models.UserControl">
             <summary>
             Represents a UserControl file
@@ -6081,6 +6867,15 @@
             <summary>
             A model representing the value saved for the grid
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.AuditItem.#ctor(System.Int32,System.String,Umbraco.Core.Models.AuditType,System.Int32)">
+            <summary>
+            Constructor for creating an item to be created
+            </summary>
+            <param name="objectId"></param>
+            <param name="comment"></param>
+            <param name="type"></param>
+            <param name="userId"></param>
         </member>
         <member name="T:Umbraco.Core.Models.AuditType">
             <summary>
@@ -6300,6 +7095,12 @@
             
             </summary>
         </member>
+        <member name="P:Umbraco.Core.Models.Identity.IdentityUser`4.LastPasswordChangeDateUtc">
+            <summary>
+            DateTime in UTC when the password was last changed.
+            
+            </summary>
+        </member>
         <member name="P:Umbraco.Core.Models.Identity.IdentityUser`4.LockoutEnabled">
             <summary>
             Is lockout enabled for this user
@@ -6453,6 +7254,11 @@
         <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.UserName">
             <summary>
             Override UserName so we can track changes to it
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.LastPasswordChangeDateUtc">
+            <summary>
+            LastPasswordChangeDateUtc so we can track changes to it
             </summary>
         </member>
         <member name="P:Umbraco.Core.Models.Identity.BackOfficeIdentityUser.LastLoginDateUtc">
@@ -7057,6 +7863,18 @@
             True if any of the user defined PropertyType properties are dirty based on their alias, 
             otherwise False
             </returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentBase.GetDirtyProperties">
+            <summary>
+            Returns both instance dirty properties and property type properties
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentBase.GetPreviouslyDirtyProperties">
+            <summary>
+            Returns both instance dirty properties and property type properties
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Models.ContentExtensions.JustPublished(Umbraco.Core.Models.IContent)">
             <summary>
@@ -8624,6 +9442,13 @@
             <param name="propertyTypeAlias">PropertyType Alias of the Property to check</param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Models.IMemberType.IsSensitiveProperty(System.String)">
+            <summary>
+            Gets a boolean indicating whether a Property is marked as storing sensitive values on the Members profile.
+            </summary>
+            <param name="propertyTypeAlias">PropertyType Alias of the Property to check</param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Models.IMemberType.SetMemberCanEditProperty(System.String,System.Boolean)">
             <summary>
             Sets a boolean indicating whether a Property is editable by the Member.
@@ -8634,6 +9459,13 @@
         <member name="M:Umbraco.Core.Models.IMemberType.SetMemberCanViewProperty(System.String,System.Boolean)">
             <summary>
             Sets a boolean indicating whether a Property is visible on the Members profile.
+            </summary>
+            <param name="propertyTypeAlias">PropertyType Alias of the Property to set</param>
+            <param name="value">Boolean value, true or false</param>
+        </member>
+        <member name="M:Umbraco.Core.Models.IMemberType.SetIsSensitiveProperty(System.String,System.Boolean)">
+            <summary>
+            Sets a boolean indicating whether a Property is a sensitive value on the Members profile.
             </summary>
             <param name="propertyTypeAlias">PropertyType Alias of the Property to set</param>
             <param name="value">Boolean value, true or false</param>
@@ -8867,7 +9699,7 @@
         </member>
         <member name="P:Umbraco.Core.Models.MemberType.MemberTypePropertyTypes">
             <summary>
-            Gets or Sets a Dictionary of Tuples (MemberCanEdit, VisibleOnProfile) by the PropertyTypes' alias.
+            Gets or Sets a Dictionary of Tuples (MemberCanEdit, VisibleOnProfile, IsSensitive) by the PropertyTypes' alias.
             </summary>
         </member>
         <member name="M:Umbraco.Core.Models.MemberType.MemberCanEditProperty(System.String)">
@@ -8884,6 +9716,13 @@
             <param name="propertyTypeAlias">PropertyType Alias of the Property to check</param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Models.MemberType.IsSensitiveProperty(System.String)">
+            <summary>
+            Gets a boolean indicating whether a Property is marked as storing sensitive values on the Members profile.
+            </summary>
+            <param name="propertyTypeAlias">PropertyType Alias of the Property to check</param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Models.MemberType.SetMemberCanEditProperty(System.String,System.Boolean)">
             <summary>
             Sets a boolean indicating whether a Property is editable by the Member.
@@ -8894,6 +9733,13 @@
         <member name="M:Umbraco.Core.Models.MemberType.SetMemberCanViewProperty(System.String,System.Boolean)">
             <summary>
             Sets a boolean indicating whether a Property is visible on the Members profile.
+            </summary>
+            <param name="propertyTypeAlias">PropertyType Alias of the Property to set</param>
+            <param name="value">Boolean value, true or false</param>
+        </member>
+        <member name="M:Umbraco.Core.Models.MemberType.SetIsSensitiveProperty(System.String,System.Boolean)">
+            <summary>
+            Sets a boolean indicating whether a Property is a sensitive value on the Members profile.
             </summary>
             <param name="propertyTypeAlias">PropertyType Alias of the Property to set</param>
             <param name="value">Boolean value, true or false</param>
@@ -9526,7 +10372,7 @@
         </member>
         <member name="F:Umbraco.Core.Models.UmbracoObjectTypes.DocumentBlueprint">
             <summary>
-            Document
+            Document Blueprint
             </summary>
         </member>
         <member name="F:Umbraco.Core.Models.UmbracoObjectTypes.IdReservation">
@@ -9574,12 +10420,11 @@
             <param name="umbracoObjectType">UmbracoObjectTypes value</param>
             <returns>a string of the FriendlyName</returns>
         </member>
-        <member name="M:Umbraco.Core.Models.UserExtensions.GetCurrentUserAvatarUrls(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Services.IUserService,Umbraco.Core.Cache.ICacheProvider)">
+        <member name="M:Umbraco.Core.Models.UserExtensions.GetUserAvatarUrls(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Cache.ICacheProvider)">
             <summary>
             Tries to lookup the user's gravatar to see if the endpoint can be reached, if so it returns the valid URL
             </summary>
             <param name="user"></param>
-            <param name="userService"></param>
             <param name="staticCache"></param>
             <returns>
             A list of 5 different sized avatar URLs
@@ -9601,6 +10446,12 @@
             <returns>
             	<c>true</c> if this user is admin; otherwise, <c>false</c>.
             </returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.UserExtensions.HasAccessToSensitiveData(Umbraco.Core.Models.Membership.IUser)">
+            <summary>
+            Determines whether this user has access to view sensitive data
+            </summary>
+            <param name="user"></param>
         </member>
         <member name="T:Umbraco.Core.Models.Validation.RequiredForPersistenceAttribute">
             <summary>
@@ -11701,6 +12552,17 @@
             <see cref="T:System.DateTimeOffset"/>.
             </returns>
         </member>
+        <member name="P:Umbraco.Core.IO.IOHelper.ForceNotHosted">
+            <summary>
+            Gets or sets a value forcing Umbraco to consider it is non-hosted.
+            </summary>
+            <remarks>This should always be false, unless unit testing.</remarks>
+        </member>
+        <member name="P:Umbraco.Core.IO.IOHelper.IsHosted">
+            <summary>
+            Gets a value indicating whether Umbraco is hosted.
+            </summary>
+        </member>
         <member name="M:Umbraco.Core.IO.IOHelper.VerifyEditPath(System.String,System.String)">
             <summary>
             Verifies that the current filepath matches a directory where the user is allowed to edit a file.
@@ -11934,366 +12796,6 @@
             <summary>
             Gets the root path of the application
             </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.AsyncForwardingAppenderBase">
-            <summary>
-            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.AsyncForwardingAppenderBase.HttpContext">
-            <summary>
-            Returns HttpContext.Current
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.AsyncForwardingAppenderBase.InternalLoggerName">
-            <summary>
-            The logger name that will be used for logging internal errors.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.ImageProcessorLogger">
-            <summary>
-            A logger for explicitly logging ImageProcessor exceptions.
-            <remarks>
-            Creating this logger is enough for ImageProcessor to find and replace its in-built debug logger
-            without any additional configuration required. This class currently has to be public in order 
-            to do so.
-            </remarks>
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ImageProcessorLogger.Log``1(System.String,System.String,System.Int32)">
-            <summary>
-            Logs the specified message as an error.
-            </summary>
-            <typeparam name="T">The type calling the logger.</typeparam>
-            <param name="text">The message to log.</param>
-            <param name="callerName">The property or method name calling the log.</param>
-            <param name="lineNumber">The line number where the method is called.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ImageProcessorLogger.Log(System.Type,System.String,System.String,System.Int32)">
-            <summary>
-            Logs the specified message as an error.
-            </summary>
-            <param name="type">The type calling the logger.</param>
-            <param name="text">The message to log.</param>
-            <param name="callerName">The property or method name calling the log.</param>
-            <param name="lineNumber">The line number where the method is called.</param>
-        </member>
-        <member name="T:Umbraco.Core.Logging.IQueue`1">
-            <summary>
-            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LoggingEventContext">
-            <remarks>
-            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LoggingEventHelper">
-            <remarks>
-            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.RingBuffer`1">
-            <summary>
-            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Logging.OwinLogger.WriteCore(System.Diagnostics.TraceEventType,System.Int32,System.Object,System.Exception,System.Func{System.Object,System.Exception,System.String})">
-            <summary>
-            Aggregates most logging patterns to a single method.  This must be compatible with the Func representation in the OWIN environment.
-                        To check IsEnabled call WriteCore with only TraceEventType and check the return value, no event will be written.
-            </summary>
-            <param name="eventType"/><param name="eventId"/><param name="state"/><param name="exception"/><param name="formatter"/>
-            <returns/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.OwinLoggerFactory.Create(System.String)">
-            <summary>
-            Creates a new ILogger instance of the given name.
-            </summary>
-            <param name="name"/>
-            <returns/>
-        </member>
-        <member name="T:Umbraco.Core.Logging.ParallelForwardingAppender">
-            <summary>
-            An asynchronous appender based on <see cref="T:System.Collections.Concurrent.BlockingCollection`1"/>
-            </summary>
-            <remarks>
-            Borrowed from https://github.com/cjbhaines/Log4Net.Async - will reference Nuget packages directly in v8
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.DebugDiagnosticsLogger">
-            <summary>
-            Implements <see cref="T:Umbraco.Core.Logging.ILogger"/> on top of System.Diagnostics.Debug.
-            </summary>
-            <remarks>Useful for tests.</remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.AppDomainTokenConverter">
-            <summary>
-            Allows for outputting a normalized appdomainappid token in a log format
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LoggerExtensions">
-            <summary>
-            Allows for strongly typed log sources
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.String,System.Exception)">
-            <summary>
-            Adds an error log
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="logger"></param>
-            <param name="message"></param>
-            <param name="exception"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.String,System.Func{System.Object}[])">
-            <summary>
-            Adds a warn log
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="logger"></param>
-            <param name="message"></param>
-            <param name="formatItems"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.String,System.Func{System.Object}[])">
-            <summary>
-            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="logger"></param>
-            <param name="generateMessageFormat">The generate message format.</param>
-            <param name="formatItems">The format items.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.Func{System.String})">
-            <summary>
-            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="logger"></param>
-            <param name="generateMessage">The delegate to generate a message.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.Func{System.String})">
-            <summary>
-            Debugs a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="logger"></param>
-            <param name="generateMessage">The delegate to generate a message.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.String,System.Func{System.Object}[])">
-            <summary>
-            Debugs a message, only generating the message if debug is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="logger"></param>
-            <param name="generateMessageFormat">The generate message format.</param>
-            <param name="formatItems">The format items.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerResolver.SetLogger(Umbraco.Core.Logging.ILogger)">
-            <summary>
-            Method allowing to change the logger during startup
-            </summary>
-            <param name="profiler"></param>
-        </member>
-        <member name="P:Umbraco.Core.Logging.LoggerResolver.Logger">
-            <summary>
-            Gets the current logger
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.ProfilingLogger">
-            <summary>
-            Used to create DisposableTimer instances for debugging or tracing durations
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.ILogger">
-            <summary>
-            Interface for logging service.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.Logger">
-            <summary>
-             Used for logging
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.CreateWithDefaultLog4NetConfiguration">
-            <summary>
-            Creates a logger with the default log4net configuration discovered (i.e. from the web.config)
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.LoggerFor``1">
-            <summary>
-             Returns a logger for the type specified
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.LoggerFor(System.Object)">
-            <summary>
-            Returns a logger for the object's type
-            </summary>
-            <param name="getTypeFromInstance"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.Info(System.Type,System.Func{System.String})">
-            <summary>
-            Traces if tracing is enabled.
-            </summary>
-            <param name="callingType"></param>
-            <param name="generateMessage"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.Info(System.Type,System.String,System.Func{System.Object}[])">
-            <summary>
-            Traces if tracing is enabled.
-            </summary>
-            <param name="type">The type for the logging namespace.</param>
-            <param name="generateMessageFormat">The message format.</param>
-            <param name="formatItems">The format items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.Debug(System.Type,System.Func{System.String})">
-            <summary>
-            Debugs if tracing is enabled.
-            </summary>
-            <param name="callingType"></param>
-            <param name="generateMessage"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Logger.Debug(System.Type,System.String,System.Func{System.Object}[])">
-            <summary>
-            Debugs if tracing is enabled.
-            </summary>
-            <param name="type">The type for the logging namespace.</param>
-            <param name="generateMessageFormat">The message format.</param>
-            <param name="formatItems">The format items.</param>
-        </member>
-        <member name="T:Umbraco.Core.Logging.AsynchronousRollingFileAppender">
-            <summary>
-            Based on https://github.com/cjbhaines/Log4Net.Async
-            which is based on code by Chris Haines http://cjbhaines.wordpress.com/2012/02/13/asynchronous-log4net-appenders/
-            This is an old/deprecated logger and has been superceded by ParallelForwardingAppender which is included in Umbraco and 
-            also by AsyncForwardingAppender in the Log4Net.Async library.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrors(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
-            <summary>
-                This task shouldn't be waited on (as it's not guaranteed to run), and you shouldn't wait on the parent task either (because it might throw an 
-                exception that doesn't get handled). If you want to be waiting on something, use LogErrorsWaitable instead.
-            
-                None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
-                errors yourself.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrorsWaitable(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
-            <summary>
-                This task can be waited on (as it's guaranteed to run), and you should wait on this rather than the parent task. Because it's
-                guaranteed to run, it may be slower than using LogErrors, and you should consider using that method if you don't want to wait.
-            
-                None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
-                errors yourself.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LogHelper">
-            <summary>
-             Used for logging, ILogger should be used instead but this is available for static access to logging
-            </summary>
-             <remarks>
-             this wraps ILogger 
-             </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Error``1(System.String,System.Exception)">
-            <summary>
-            Adds an error log
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="message"></param>
-            <param name="exception"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Warn``1(System.String,System.Func{System.Object}[])">
-            <summary>
-            Adds a warn log
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="message"></param>
-            <param name="formatItems"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Info``1(System.Func{System.String})">
-            <summary>
-            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="generateMessage">The delegate to generate a message.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Info(System.Type,System.Func{System.String})">
-            <summary>
-            Traces if tracing is enabled.
-            </summary>
-            <param name="callingType"></param>
-            <param name="generateMessage"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Info(System.Type,System.String,System.Func{System.Object}[])">
-            <summary>
-            Traces if tracing is enabled.
-            </summary>
-            <param name="type">The type for the logging namespace.</param>
-            <param name="generateMessageFormat">The message format.</param>
-            <param name="formatItems">The format items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Info``1(System.String,System.Func{System.Object}[])">
-            <summary>
-            Traces a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="generateMessageFormat">The generate message format.</param>
-            <param name="formatItems">The format items.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Debug``1(System.Func{System.String})">
-            <summary>
-            Debugs a message, only generating the message if tracing is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="generateMessage">The delegate to generate a message.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Debug(System.Type,System.Func{System.String})">
-            <summary>
-            Debugs if tracing is enabled.
-            </summary>
-            <param name="callingType"></param>
-            <param name="generateMessage"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Debug(System.Type,System.String,System.Func{System.Object}[])">
-            <summary>
-            Debugs if tracing is enabled.
-            </summary>
-            <param name="type">The type for the logging namespace.</param>
-            <param name="generateMessageFormat">The message format.</param>
-            <param name="formatItems">The format items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Debug``1(System.String,System.Func{System.Object}[])">
-            <summary>
-            Debugs a message, only generating the message if debug is actually enabled. Use this method to avoid calling any long-running methods such as "ToDebugString" if logging is disabled.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="generateMessageFormat">The generate message format.</param>
-            <param name="formatItems">The format items.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHelper.Debug``1(System.String,System.Boolean,System.Func{System.Object}[])">
-            <summary>
-            Debugs a message and also writes to the TraceContext specified, useful for when you would like the debug
-            output also displayed in the Http trace output.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="generateMessageFormat"></param>
-            <param name="showHttpTrace"></param>
-            <param name="formatItems"></param>
         </member>
         <member name="T:Umbraco.Core.MainDom">
             <summary>
@@ -15378,6 +15880,14 @@
             </param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Factories.MediaFactory.TryMatch(System.String,System.String@)">
+            <summary>
+            Try getting a media path out of the string being stored for media
+            </summary>
+            <param name="text"></param>
+            <param name="mediaPath"></param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Core.Persistence.LocalDb">
             <summary>
             Manages LocalDB databases.
@@ -15741,7 +16251,7 @@
         </member>
         <member name="M:Umbraco.Core.Persistence.LocalDb.QuotedName(System.String,System.Char)">
             <summary>
-            Returns a Unicode string with the delimiters added to make the input string a valid SQL Server delimited identifier. 
+            Returns a Unicode string with the delimiters added to make the input string a valid SQL Server delimited identifier.
             </summary>
             <param name="name">The name to quote.</param>
             <param name="quote">A quote character.</param>
@@ -15750,6 +16260,26 @@
             This is a C# implementation of T-SQL QUOTEDNAME.
             <paramref name="quote"/> is optional, it can be '[' (default), ']', '\'' or '"'.
             </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Mappers.AuditEntryMapper">
+            <summary>
+            Represents a mapper for audit entry entities.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Mappers.AuditEntryMapper.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Persistence.Mappers.AuditEntryMapper"/> class.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Mappers.ConsentMapper">
+            <summary>
+            Represents a mapper for consent entities.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Mappers.ConsentMapper.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Persistence.Mappers.ConsentMapper"/> class.
+            </summary>
         </member>
         <member name="T:Umbraco.Core.Persistence.Mappers.UserGroupMapper">
             <summary>
@@ -15897,6 +16427,11 @@
             implementation to that of the database's DTO as sql: [tableName].[columnName].
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenTwelveZero.SetDefaultTagsStorageType">
+            <summary>
+            Set the default storageType for the tags datatype to "CSV" to ensure backwards compatibilty since the default is going to be JSON in new versions
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenSevenZero.EnsureContentTemplatePermissions">
             <summary>
             Ensures the built-in user groups have the blueprint permission by default on upgrade
@@ -15936,6 +16471,13 @@
             Courier on v. 7.4+ will handle ContentTypes using GUIDs instead of
             alias, so we need to ensure that these are initially consistent on
             all environments (based on the alias).
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenTenZero.RenamePreviewFolder">
+            <summary>
+            Renames the preview folder containing static html files to ensure it does not interfere with the MVC route
+            that is now supposed to render these views dynamically. We don't want to delete as people may have made
+            customizations to these files that would need to be migrated to the new .cshtml view files.
             </summary>
         </member>
         <member name="T:Umbraco.Core.Persistence.Migrations.Upgrades.TargetVersionSevenThreeTwo.EnsureMigrationsTableIdentityIsCorrect">
@@ -16059,6 +16601,16 @@
             <summary>
             Validates the schema of the current database
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Migrations.Initial.DatabaseSchemaCreation.ValidateDbConstraints(Umbraco.Core.Persistence.Migrations.Initial.DatabaseSchemaResult)">
+            <summary>
+            This validates the Primary/Foreign keys in the database
+            </summary>
+            <param name="result"></param>
+            <remarks>
+            This does not validate any database constraints that are not PKs or FKs because Umbraco does not create a database with non PK/FK contraints.
+            Any unique "constraints" in the database are done with unique indexes.
+            </remarks>
         </member>
         <member name="T:Umbraco.Core.Persistence.Migrations.Initial.DatabaseSchemaCreation.DatabaseEventHandler">
             <summary>
@@ -16442,6 +16994,66 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.AuditEntryRepository">
+            <summary>
+            Represents the PetaPoco implementatino of <see cref="T:Umbraco.Core.Persistence.Repositories.IAuditEntryRepository"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.#ctor(Umbraco.Core.Persistence.UnitOfWork.IScopeUnitOfWork,Umbraco.Core.CacheHelper,Umbraco.Core.Logging.ILogger,Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Persistence.Repositories.AuditEntryRepository"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.PerformGet(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.PerformGetAll(System.Int32[])">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.PerformGetByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditEntry})">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.GetBaseQuery(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.GetBaseWhereClause">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.GetDeleteClauses">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.PersistNewItem(Umbraco.Core.Models.IAuditEntry)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.PersistUpdatedItem(Umbraco.Core.Models.IAuditEntry)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.GetPage(System.Int64,System.Int32,System.Int64@)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditEntryRepository.IsAvailable">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.AuditRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem},System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
+            <summary>
+            Return the audit items as paged result
+            </summary>
+            <param name="query">
+            The query coming from the service
+            </param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderDirection"></param>
+            <param name="auditTypeFilter">
+            Since we currently do not have enum support with our expression parser, we cannot query on AuditType in the query or the custom filter
+            so we need to do that here
+            </param>
+            <param name="customFilter">
+            A user supplied custom filter
+            </param>
+            <returns></returns>
+        </member>
         <member name="F:Umbraco.Core.Persistence.Repositories.BaseQueryType.FullSingle">
             <summary>
             A query to return all information for a single item
@@ -16468,6 +17080,46 @@
             A query to return the count for items 
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.ConsentRepository">
+            <summary>
+            Represents the PetaPoco implementation of <see cref="T:Umbraco.Core.Persistence.Repositories.IConsentRepository"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.#ctor(Umbraco.Core.Persistence.UnitOfWork.IScopeUnitOfWork,Umbraco.Core.CacheHelper,Umbraco.Core.Logging.ILogger,Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Persistence.Repositories.ConsentRepository"/> class.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Repositories.ConsentRepository.NodeObjectTypeId">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.ClearCurrent(System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.PerformGet(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.PerformGetAll(System.Int32[])">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.PerformGetByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IConsent})">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.GetBaseQuery(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.GetBaseWhereClause">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.GetDeleteClauses">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.PersistNewItem(Umbraco.Core.Models.IConsent)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.ConsentRepository.PersistUpdatedItem(Umbraco.Core.Models.IConsent)">
+            <inheritdoc />
+        </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.ContentBlueprintRepository">
             <summary>
             Override the base content repository so we can change the node object type
@@ -16483,6 +17135,52 @@
             <summary>
             An internal repository for managing entity containers such as doc type, media type, data type containers.
             </summary>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.IAuditEntryRepository">
+            <summary>
+            Represents a repository for <see cref="T:Umbraco.Core.Models.IAuditEntry"/> entities.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IAuditEntryRepository.GetPage(System.Int64,System.Int32,System.Int64@)">
+            <summary>
+            Gets a page of entries.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IAuditEntryRepository.IsAvailable">
+            <summary>
+            Determines whether the repository is available.
+            </summary>
+            <remarks>During an upgrade, the repository may not be available, until the table has been created.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Persistence.Repositories.IConsentRepository">
+            <summary>
+            Represents a repository for <see cref="T:Umbraco.Core.Models.IConsent"/> entities.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IConsentRepository.ClearCurrent(System.String,System.String,System.String)">
+            <summary>
+            Clears the current flag.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IAuditRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem},System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
+            <summary>
+            Return the audit items as paged result
+            </summary>
+            <param name="query">
+            The query coming from the service
+            </param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderDirection"></param>
+            <param name="auditTypeFilter">
+            Since we currently do not have enum support with our expression parser, we cannot query on AuditType in the query or the custom filter
+            so we need to do that here
+            </param>
+            <param name="customFilter">
+            A user supplied custom filter
+            </param>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.IRedirectUrlRepository">
             <summary>
@@ -17266,7 +17964,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.IContentRepository.CountPublished">
+        <member name="M:Umbraco.Core.Persistence.Repositories.IContentRepository.CountPublished(System.String)">
             <summary>
             Get the count of published items
             </summary>
@@ -17750,6 +18448,13 @@
             TODO: This is ugly and to fix we need to decouple the IRepositoryQueryable -> IRepository -> IReadRepository which should all be separate things!
             Then we can do the same thing with repository instances and we wouldn't need to leave all these methods as not implemented because we wouldn't need to implement them
             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.MediaRepository.GetMediaByPath(System.String)">
+            <summary>
+            Gets an <see cref="T:Umbraco.Core.Models.IMedia"/> object from the path stored in the for the media item.
+            </summary>
+            <param name="mediaPath">Path of the media item to retrieve (for example: /media/1024/koala_403x328.jpg)</param>
+            <returns><see cref="T:Umbraco.Core.Models.IMedia"/></returns>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.MediaRepository.GetPagedResultsByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IMedia},System.Int64,System.Int32,System.Int64@,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.Boolean,Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IMedia})">
             <summary>
@@ -18704,10 +19409,46 @@
             Defines an SqlSyntaxProvider
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider.GetConstraintsPerTable(Umbraco.Core.Persistence.Database)">
+            <summary>
+            Returns all constraints defined in the database (Primary keys, foreign keys, unique constraints...) (does not include indexes)
+            </summary>
+            <param name="db"></param>
+            <returns>
+            A Tuple containing: TableName, ConstraintName
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider.GetConstraintsPerColumn(Umbraco.Core.Persistence.Database)">
+            <summary>
+            Returns all constraints defined in the database (Primary keys, foreign keys, unique constraints...) (does not include indexes)
+            </summary>
+            <param name="db"></param>
+            <returns>
+            A Tuple containing: TableName, ColumnName, ConstraintName
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider.GetDefinedIndexes(Umbraco.Core.Persistence.Database)">
+            <summary>
+            Returns all defined Indexes in the database excluding primary keys
+            </summary>
+            <param name="db"></param>
+            <returns>
+            A Tuple containing: TableName, IndexName, ColumnName, IsUnique
+            </returns>
+        </member>
         <member name="T:Umbraco.Core.Persistence.SqlSyntax.MySqlSyntaxProvider">
             <summary>
             Represents an SqlSyntaxProvider for MySql
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.MySqlSyntaxProvider.GetConstraintsPerTable(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.MySqlSyntaxProvider.GetConstraintsPerColumn(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.MySqlSyntaxProvider.GetDefinedIndexes(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Persistence.SqlSyntax.MySqlSyntaxProvider.FormatDateTime(System.DateTime,System.Boolean)">
             <summary>
@@ -18731,6 +19472,15 @@
             SqlCe doesn't support the Truncate Table syntax, so we just have to do a DELETE FROM which is slower but we have no choice.
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.SqlCeSyntaxProvider.GetConstraintsPerTable(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.SqlCeSyntaxProvider.GetConstraintsPerColumn(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.SqlCeSyntaxProvider.GetDefinedIndexes(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
         <member name="T:Umbraco.Core.Persistence.SqlSyntax.SqlServerSyntaxProvider">
             <summary>
             Represents an SqlSyntaxProvider for Sql Server.
@@ -18747,6 +19497,15 @@
             server type that does this, therefore this method doesn't exist on any other syntax provider
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.SqlServerSyntaxProvider.GetConstraintsPerTable(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.SqlServerSyntaxProvider.GetConstraintsPerColumn(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Persistence.SqlSyntax.SqlServerSyntaxProvider.GetDefinedIndexes(Umbraco.Core.Persistence.Database)">
+            <inheritdoc />
         </member>
         <member name="T:Umbraco.Core.Persistence.SqlSyntax.SqlSyntaxProviderAttribute">
             <summary>
@@ -20040,6 +20799,26 @@
             Extension methods adding strong types to PetaPoco's Sql Builder
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Persistence.PetaPocoSqlExtensions.Select``1(Umbraco.Core.Persistence.Sql,Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider,System.Linq.Expressions.Expression{System.Func{``0,System.Object}}[])">
+            <summary>
+            Defines the column to select in the generated SQL query
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">Sql object</param>
+            <param name="sqlSyntax">Sql syntax</param>
+            <param name="fields">Columns to select</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.PetaPocoSqlExtensions.AndSelect``1(Umbraco.Core.Persistence.Sql,Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider,System.Linq.Expressions.Expression{System.Func{``0,System.Object}}[])">
+            <summary>
+            Adds another set of field to select. This method must be used with "Select" when fecthing fields from different tables.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">Sql object</param>
+            <param name="sqlSyntax">Sql syntax</param>
+            <param name="fields">Additional columns to select</param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Core.Persistence.RepositoryFactory">
             <summary>
             Used to instantiate each repository type
@@ -20149,6 +20928,15 @@
             <summary>
             A validator that validates that the value is a valid decimal
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.PropertyEditors.ValueConverters.FlexibleDropdownPropertyValueConverter.IsMultipleDataType(System.Int32,System.String)">
+            <summary>
+            Determines if the "enable multiple choice" prevalue has been ticked.
+            </summary>
+            <param name="dataTypeId">The ID of this particular datatype instance.</param>
+            <param name="propertyEditorAlias">The property editor alias.</param>
+            <returns><value>true</value> if the data type has been configured to return multiple values.
+            </returns>
         </member>
         <member name="T:Umbraco.Core.PropertyEditors.ValueConverters.GridValueConverter">
             <summary>
@@ -22105,10 +22893,23 @@
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeCookieAuthenticationProvider.ValidateIdentity(Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext)">
             <summary>
-            Ensures that the culture is set correctly for the current back office user
+            Ensures that the culture is set correctly for the current back office user and that the user's session token is valid
             </summary>
             <param name="context"/>
             <returns/>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeCookieAuthenticationProvider.EnsureValidSessionId(Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext)">
+            <summary>
+            Ensures that the user has a valid session id
+            </summary>
+            <remarks>
+            So that we are not overloading the database this throttles it's check to every minute
+            </remarks>
+        </member>
+        <member name="F:Umbraco.Core.Security.BackOfficeCookieAuthenticationProvider.UserCultures">
+            <summary>
+            Used so that we aren't creating a new CultureInfo object for every single request
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeSignInManager.PasswordSignInAsync(System.String,System.String,System.Boolean,System.Boolean)">
             <summary>
@@ -22158,6 +22959,33 @@
             Get the username that has been verified already or null.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeSignInManager.TwoFactorSignInAsync(System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Two factor verification step
+            </summary>
+            <param name="provider"></param>
+            <param name="code"></param>
+            <param name="isPersistent"></param>
+            <param name="rememberBrowser"></param>
+            <returns></returns>
+            <remarks>
+            This is implemented because we cannot override GetVerifiedUserIdAsync and instead we have to shadow it
+            so due to this and because we are using an INT as the TKey and not an object, it can never be null. Adding to that
+            the default(int) value returned by the base class is always a valid user (i.e. the admin) so we just have to duplicate
+            all of this code to check for -1 instead.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeSignInManager.SendTwoFactorCodeAsync(System.String)">
+            <summary>Send a two factor code to a user</summary>
+            <param name="provider"></param>
+            <returns></returns>
+            <remarks>
+            This is implemented because we cannot override GetVerifiedUserIdAsync and instead we have to shadow it
+            so due to this and because we are using an INT as the TKey and not an object, it can never be null. Adding to that
+            the default(int) value returned by the base class is always a valid user (i.e. the admin) so we just have to duplicate
+            all of this code to check for -1 instead.
+            </remarks>
         </member>
         <member name="T:Umbraco.Core.Security.BackOfficeUserManager">
             <summary>
@@ -22218,6 +23046,14 @@
             <param name="contentSectionConfig"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.ValidateSessionIdAsync(System.Int32,System.String)">
+            <summary>
+            Used to validate a user's session
+            </summary>
+            <param name="userId"></param>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.GetDefaultPasswordHasher(Umbraco.Core.Security.MembershipProviderBase)">
             <summary>
             This will determine which password hasher to use based on what is defined in config
@@ -22267,6 +23103,19 @@
             have to implement/override this class.
             </remarks>
         </member>
+        <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.ChangePasswordWithResetAsync(System.Int32,System.String,System.String)">
+            <summary>
+            This is a special method that will reset the password but will raise the Password Changed event instead of the reset event
+            </summary>
+            <param name="userId"></param>
+            <param name="token"></param>
+            <param name="newPassword"></param>
+            <returns></returns>
+            <remarks>
+            We use this because in the back office the only way an admin can change another user's password without first knowing their password
+            is to generate a token and reset it, however, when we do this we want to track a password change, not a password reset
+            </remarks>
+        </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.VerifyPasswordAsync(Microsoft.AspNet.Identity.IUserPasswordStore{`0,System.Int32},`0,System.String)">
             <summary>
             Override to determine how to hash the password
@@ -22307,6 +23156,7 @@
             </summary>
             <returns></returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Security.BackOfficeUserManager`1.AccessFailedAsync(System.Int32)" -->
         <member name="M:Umbraco.Core.Security.BackOfficeUserManager`1.GetCurrentRequestIpAddress">
             <summary>
             Returns the current request IP address for logging if there is one
@@ -22329,7 +23179,7 @@
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserStore.DisposeResources">
             <summary>
-            Handles the disposal of resources. Derived from abstract class <see cref="T:Umbraco.Core.DisposableObject"/> which handles common required locking logic.
+            Handles the disposal of resources. Derived from abstract class <see cref="T:Umbraco.Core.DisposableObjectSlim"/> which handles common required locking logic.
             </summary>
         </member>
         <member name="M:Umbraco.Core.Security.BackOfficeUserStore.CreateAsync(Umbraco.Core.Models.Identity.BackOfficeIdentityUser)">
@@ -22606,6 +23456,13 @@
             <typeparam name="TKey"></typeparam>
             <typeparam name="TUser"></typeparam>
         </member>
+        <member name="T:Umbraco.Core.Security.IUserSessionStore`2">
+            <summary>
+            An IUserStore interface part to implement if the store supports validating user session Ids
+            </summary>
+            <typeparam name="TUser"></typeparam>
+            <typeparam name="TKey"></typeparam>
+        </member>
         <member name="T:Umbraco.Core.Security.MachineKeyGenerator">
             <summary>
             Used to generate a machine key
@@ -22632,6 +23489,13 @@
             Ensure that both the normal password validator rules are processed along with the underlying memberhsip provider rules
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Security.OwinExtensions.TryGetHttpContext(Microsoft.Owin.IOwinContext)">
+            <summary>
+            Nasty little hack to get httpcontextbase from an owin context
+            </summary>
+            <param name="owinContext"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Security.OwinExtensions.GetBackOfficeSignInManager(Microsoft.Owin.IOwinContext)">
             <summary>
             Gets the back office sign in manager out of OWIN
@@ -22649,6 +23513,18 @@
             This is required because to extract the user manager we need to user a custom service since owin only deals in generics and 
             developers could register their own user manager types
             </remarks> 
+        </member>
+        <member name="T:Umbraco.Core.Security.SessionIdValidator">
+            <summary>
+            Static helper class used to configure a CookieAuthenticationProvider to validate a cookie against a user's session id
+            </summary>
+            <remarks>
+            This uses another cookie to track the last checked time which is done for a few reasons:    
+            * We can't use the user's auth ticket to do thsi because we'd be re-issuing the auth ticket all of the time and it would never expire
+                plus the auth ticket size is much larger than this small value
+            * This will execute quite often (every minute per user) and in some cases there might be several requests that end up re-issuing the cookie so the cookie value should be small
+            * We want to avoid the user lookup if it's not required so that will only happen when the time diff is great enough in the cookie
+            </remarks>
         </member>
         <member name="T:Umbraco.Core.Security.UmbracoEmailMessage">
             <summary>
@@ -23290,10 +24166,15 @@
             Use this constructor to create/assign new UserData to the ticket
             </summary>
             <param name="sessionId">
-            The security stamp for the user
+            The current sessionId for the user
             </param>
         </member>
         <member name="P:Umbraco.Core.Security.UserData.SessionId">
+            <summary>
+            This is the 'sessionId' for validation
+            </summary>        
+        </member>
+        <member name="P:Umbraco.Core.Security.UserData.SecurityStamp">
             <summary>
             This is the 'security stamp' for validation
             </summary>        
@@ -23404,6 +24285,70 @@
             <param name="throwException">set to true if an exception is to be thrown if there is an error during instantiation</param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Services.AuditService.GetPagedItemsByEntity(System.Int32,System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
+            <summary>
+            Returns paged items in the audit trail for a given entity
+            </summary>
+            <param name="entityId"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderDirection">
+            By default this will always be ordered descending (newest first)
+            </param>
+            <param name="auditTypeFilter">
+            Since we currently do not have enum support with our expression parser, we cannot query on AuditType in the query or the custom filter
+            so we need to do that here
+            </param>
+            <param name="customFilter">
+            Optional filter to be applied
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.AuditService.GetPagedItemsByUser(System.Int32,System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
+            <summary>
+            Returns paged items in the audit trail for a given user
+            </summary>
+            <param name="userId"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderDirection">
+            By default this will always be ordered descending (newest first)
+            </param>
+            <param name="auditTypeFilter">
+            Since we currently do not have enum support with our expression parser, we cannot query on AuditType in the query or the custom filter
+            so we need to do that here
+            </param>
+            <param name="customFilter">
+            Optional filter to be applied
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.AuditService.Write(System.Int32,System.String,System.String,System.DateTime,System.Int32,System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Services.AuditService.DetermineIsAvailable">
+            <summary>
+            Determines whether the repository is available.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Services.ConsentService">
+            <summary>
+            Implements <see cref="T:Umbraco.Core.Services.IConsentService"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.ConsentService.#ctor(Umbraco.Core.Persistence.UnitOfWork.IScopeUnitOfWorkProvider,Umbraco.Core.Persistence.RepositoryFactory,Umbraco.Core.Logging.ILogger,Umbraco.Core.Events.IEventMessagesFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Services.ContentService"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.ConsentService.RegisterConsent(System.String,System.String,System.String,Umbraco.Core.Models.ConsentState,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Services.ConsentService.LookupConsent(System.String,System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <inheritdoc />
+        </member>
         <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetAvailableCompositeContentTypes(Umbraco.Core.Services.IContentTypeService,Umbraco.Core.Models.IContentTypeComposition,Umbraco.Core.Models.IContentTypeComposition[],System.String[],System.String[])">
             <summary>
             Returns the available composite content types for a given content type
@@ -23422,12 +24367,58 @@
             </param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetWhereCompositionIsUsedInContentTypes(Umbraco.Core.Services.IContentTypeService,Umbraco.Core.Models.IContentTypeComposition,Umbraco.Core.Models.IContentTypeComposition[])">
+            <summary>
+            Returns the list of content types the composition is used in
+            </summary>
+            <param name="allContentTypes"></param>
+            <param name="ctService"></param>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetDirectOrIndirect(Umbraco.Core.Models.IContentTypeComposition)">
             <summary>
             Get those that we use directly
             </summary>
             <param name="ctype"></param>
             <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Services.IConsentService">
+            <summary>
+            A service for handling lawful data processing requirements
+            </summary>
+            <remarks>
+            <para>Consent can be given or revoked or changed via the <see cref="M:Umbraco.Core.Services.IConsentService.RegisterConsent(System.String,System.String,System.String,Umbraco.Core.Models.ConsentState,System.String)"/> method, which
+            creates a new <see cref="T:Umbraco.Core.Models.IConsent"/> entity to track the consent. Revoking a consent is performed by
+            registering a revoked consent.</para>
+            <para>A consent can be revoked, by registering a revoked consent, but cannot be deleted.</para>
+            <para>Getter methods return the current state of a consent, i.e. the latest <see cref="T:Umbraco.Core.Models.IConsent"/>
+            entity that was created.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Services.IConsentService.RegisterConsent(System.String,System.String,System.String,Umbraco.Core.Models.ConsentState,System.String)">
+            <summary>
+            Registers consent.
+            </summary>
+            <param name="source">The source, i.e. whoever is consenting.</param>
+            <param name="context"></param>
+            <param name="action"></param>
+            <param name="state">The state of the consent.</param>
+            <param name="comment">Additional free text.</param>
+            <returns>The corresponding consent entity.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IConsentService.LookupConsent(System.String,System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Retrieves consents.
+            </summary>
+            <param name="source">The optional source.</param>
+            <param name="context">The optional context.</param>
+            <param name="action">The optional action.</param>
+            <param name="sourceStartsWith">Determines whether <paramref name="source"/> is a start pattern.</param>
+            <param name="contextStartsWith">Determines whether <paramref name="context"/> is a start pattern.</param>
+            <param name="actionStartsWith">Determines whether <paramref name="action"/> is a start pattern.</param>
+            <param name="includeHistory">Determines whether to include the history of consents.</param>
+            <returns>Consents matching the paramters.</returns>
         </member>
         <member name="T:Umbraco.Core.Services.IContentServiceBase">
             <summary>
@@ -23491,6 +24482,70 @@
             Deletes all user logins - normally used when a member is deleted
             </summary>
             <param name="userId"></param>
+        </member>
+        <member name="T:Umbraco.Core.Services.IAuditService">
+            <summary>
+            Represents a service for handling audit.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IAuditService.GetPagedItemsByEntity(System.Int32,System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
+            <summary>
+            Returns paged items in the audit trail for a given entity
+            </summary>
+            <param name="entityId"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderDirection">
+            By default this will always be ordered descending (newest first)
+            </param>
+            <param name="auditTypeFilter">
+            Since we currently do not have enum support with our expression parser, we cannot query on AuditType in the query or the custom filter
+            so we need to do that here
+            </param>
+            <param name="customFilter">
+            Optional filter to be applied
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IAuditService.GetPagedItemsByUser(System.Int32,System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
+            <summary>
+            Returns paged items in the audit trail for a given user
+            </summary>
+            <param name="userId"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="totalRecords"></param>
+            <param name="orderDirection">
+            By default this will always be ordered descending (newest first)
+            </param>
+            <param name="auditTypeFilter">
+            Since we currently do not have enum support with our expression parser, we cannot query on AuditType in the query or the custom filter
+            so we need to do that here
+            </param>
+            <param name="customFilter">
+            Optional filter to be applied
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IAuditService.Write(System.Int32,System.String,System.String,System.DateTime,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Writes an audit entry for an audited event.
+            </summary>
+            <param name="performingUserId">The identifier of the user triggering the audited event.</param>
+            <param name="perfomingDetails">Free-form details about the user triggering the audited event.</param>
+            <param name="performingIp">The IP address or the request triggering the audited event.</param>
+            <param name="eventDateUtc">The date and time of the audited event.</param>
+            <param name="affectedUserId">The identifier of the user affected by the audited event.</param>
+            <param name="affectedDetails">Free-form details about the entity affected by the audited event.</param>
+            <param name="eventType">
+            The type of the audited event - must contain only alphanumeric chars and hyphens with forward slashes separating categories.
+            <example>
+            The eventType will generally be formatted like: {application}/{entity-type}/{category}/{sub-category}
+            Example: umbraco/user/sign-in/failed
+            </example>
+            </param>
+            <param name="eventDetails">Free-form details about the audited event.</param>
         </member>
         <member name="T:Umbraco.Core.Services.IRedirectUrlService">
             <summary>
@@ -24727,6 +25782,20 @@
             <param name="raiseEvents"></param>
             <returns>True if sorting succeeded, otherwise False</returns>
         </member>
+        <member name="M:Umbraco.Core.Services.ContentService.Sort(System.Int32[],System.Int32,System.Boolean)">
+            <summary>
+            Sorts a collection of <see cref="T:Umbraco.Core.Models.IContent"/> objects by updating the SortOrder according
+            to the ordering of node Ids passed in.
+            </summary>
+            <remarks>
+            Using this method will ensure that the Published-state is maintained upon sorting
+            so the cache is updated accordingly - as needed.
+            </remarks>
+            <param name="ids"></param>
+            <param name="userId"></param>
+            <param name="raiseEvents"></param>
+            <returns>True if sorting succeeded, otherwise False</returns>
+        </member>
         <member name="M:Umbraco.Core.Services.ContentService.GetPagedXmlEntries(System.String,System.Int64,System.Int32,System.Int64@)">
             <summary>
             Gets paged content descendants as XML by path
@@ -25919,6 +26988,16 @@
             The template created
             </returns>
         </member>
+        <member name="M:Umbraco.Core.Services.FileService.CreateTemplateWithIdentity(System.String,System.String,Umbraco.Core.Models.ITemplate,System.Int32)">
+            <summary>
+            Create a new template, setting the content if a view exists in the filesystem
+            </summary>
+            <param name="name"></param>
+            <param name="content"></param>
+            <param name="masterTemplate"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.FileService.GetTemplates(System.String[])">
             <summary>
             Gets a list of all <see cref="T:Umbraco.Core.Models.ITemplate"/> objects
@@ -26766,6 +27845,20 @@
             so the cache is updated accordingly - as needed.
             </remarks>
             <param name="items"></param>
+            <param name="userId"></param>
+            <param name="raiseEvents"></param>
+            <returns>True if sorting succeeded, otherwise False</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IContentService.Sort(System.Int32[],System.Int32,System.Boolean)">
+            <summary>
+            Sorts a collection of <see cref="T:Umbraco.Core.Models.IContent"/> objects by updating the SortOrder according
+            to the ordering of node Ids passed in.
+            </summary>
+            <remarks>
+            Using this method will ensure that the Published-state is maintained upon sorting
+            so the cache is updated accordingly - as needed.
+            </remarks>
+            <param name="ids"></param>
             <param name="userId"></param>
             <param name="raiseEvents"></param>
             <returns>True if sorting succeeded, otherwise False</returns>
@@ -29241,6 +30334,15 @@
             <param name="loadBaseType">Optional bool to load the complete object graph when set to <c>False</c></param>
             <returns>An enumerable list of <see cref="T:System.Tuple"/> with <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/></returns>
         </member>
+        <member name="M:Umbraco.Core.Services.IRelationService.Relate(System.Int32,System.Int32,Umbraco.Core.Models.IRelationType)">
+            <summary>
+            Relates two objects by their entity Ids.
+            </summary>
+            <param name="parentId">Id of the parent</param>
+            <param name="childId">Id of the child</param>
+            <param name="relationType">The type of relation to create</param>
+            <returns>The created <see cref="T:Umbraco.Core.Models.Relation"/></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.IRelationService.Relate(Umbraco.Core.Models.EntityBase.IUmbracoEntity,Umbraco.Core.Models.EntityBase.IUmbracoEntity,Umbraco.Core.Models.IRelationType)">
             <summary>
             Relates two objects that are based on the <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/> interface.
@@ -29248,6 +30350,15 @@
             <param name="parent">Parent entity</param>
             <param name="child">Child entity</param>
             <param name="relationType">The type of relation to create</param>
+            <returns>The created <see cref="T:Umbraco.Core.Models.Relation"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IRelationService.Relate(System.Int32,System.Int32,System.String)">
+            <summary>
+            Relates two objects by their entity Ids.
+            </summary>
+            <param name="parentId">Id of the parent</param>
+            <param name="childId">Id of the child</param>
+            <param name="relationTypeAlias">Alias of the type of relation to create</param>
             <returns>The created <see cref="T:Umbraco.Core.Models.Relation"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.IRelationService.Relate(Umbraco.Core.Models.EntityBase.IUmbracoEntity,Umbraco.Core.Models.EntityBase.IUmbracoEntity,System.String)">
@@ -29716,6 +30827,34 @@
             <summary>
             Defines the UserService, which is an easy access to operations involving <see cref="T:Umbraco.Core.Models.Membership.IProfile"/> and eventually Users.
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.CreateLoginSession(System.Int32,System.String)">
+            <summary>
+            Creates a database entry for starting a new login session for a user
+            </summary>
+            <param name="userId"></param>
+            <param name="requestingIpAddress"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.ValidateLoginSession(System.Int32,System.Guid)">
+            <summary>
+            Validates that a user login session is valid/current and hasn't been closed
+            </summary>
+            <param name="userId"></param>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.ClearLoginSession(System.Guid)">
+            <summary>
+            Removes the session's validity
+            </summary>
+            <param name="sessionId"></param>
+        </member>
+        <member name="M:Umbraco.Core.Services.IUserService.ClearLoginSessions(System.Int32)">
+            <summary>
+            Removes all valid sessions for the user
+            </summary>
+            <param name="userId"></param>
         </member>
         <member name="M:Umbraco.Core.Services.IUserService.GetUserStates">
             <summary>
@@ -31141,6 +32280,17 @@
             <param name="raiseEvents">Optional parameter to raise events.
             Default is <c>True</c> otherwise set to <c>False</c> to not raise events</param>
         </member>
+        <member name="M:Umbraco.Core.Services.MemberService.ExportMember(System.Guid)">
+            <summary>
+            Used to export a member
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+            <remarks>
+            This is internal for now and is used to export a member in the member editor, it will raise an event so that auditing 
+            logs can be created
+            </remarks>
+        </member>
         <member name="E:Umbraco.Core.Services.MemberService.Deleting">
             <summary>
             Occurs before Delete
@@ -31529,6 +32679,15 @@
             <param name="loadBaseType">Optional bool to load the complete object graph when set to <c>False</c></param>
             <returns>An enumerable list of <see cref="T:System.Tuple"/> with <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/></returns>
         </member>
+        <member name="M:Umbraco.Core.Services.RelationService.Relate(System.Int32,System.Int32,Umbraco.Core.Models.IRelationType)">
+            <summary>
+            Relates two objects by their entity Ids.
+            </summary>
+            <param name="parentId">Id of the parent</param>
+            <param name="childId">Id of the child</param>
+            <param name="relationType">The type of relation to create</param>
+            <returns>The created <see cref="T:Umbraco.Core.Models.Relation"/></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.RelationService.Relate(Umbraco.Core.Models.EntityBase.IUmbracoEntity,Umbraco.Core.Models.EntityBase.IUmbracoEntity,Umbraco.Core.Models.IRelationType)">
             <summary>
             Relates two objects that are based on the <see cref="T:Umbraco.Core.Models.EntityBase.IUmbracoEntity"/> interface.
@@ -31536,6 +32695,15 @@
             <param name="parent">Parent entity</param>
             <param name="child">Child entity</param>
             <param name="relationType">The type of relation to create</param>
+            <returns>The created <see cref="T:Umbraco.Core.Models.Relation"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.RelationService.Relate(System.Int32,System.Int32,System.String)">
+            <summary>
+            Relates two objects by their entity Ids.
+            </summary>
+            <param name="parentId">Id of the parent</param>
+            <param name="childId">Id of the child</param>
+            <param name="relationTypeAlias">Alias of the type of relation to create</param>
             <returns>The created <see cref="T:Umbraco.Core.Models.Relation"/></returns>
         </member>
         <member name="M:Umbraco.Core.Services.RelationService.Relate(Umbraco.Core.Models.EntityBase.IUmbracoEntity,Umbraco.Core.Models.EntityBase.IUmbracoEntity,System.String)">
@@ -32195,36 +33363,10 @@
             <see cref="T:Umbraco.Core.Services.IFileService"/>, <see cref="T:Umbraco.Core.Services.ILocalizationService"/> and <see cref="T:Umbraco.Core.Services.IMediaService"/>.
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Services.ServiceContext.#ctor(Umbraco.Core.Services.IContentService,Umbraco.Core.Services.IMediaService,Umbraco.Core.Services.IContentTypeService,Umbraco.Core.Services.IDataTypeService,Umbraco.Core.Services.IFileService,Umbraco.Core.Services.ILocalizationService,Umbraco.Core.Services.IPackagingService,Umbraco.Core.Services.IEntityService,Umbraco.Core.Services.IRelationService,Umbraco.Core.Services.IMemberGroupService,Umbraco.Core.Services.IMemberTypeService,Umbraco.Core.Services.IMemberService,Umbraco.Core.Services.IUserService,Umbraco.Core.Services.ISectionService,Umbraco.Core.Services.IApplicationTreeService,Umbraco.Core.Services.ITagService,Umbraco.Core.Services.INotificationService,Umbraco.Core.Services.ILocalizedTextService,Umbraco.Core.Services.IAuditService,Umbraco.Core.Services.IDomainService,Umbraco.Core.Services.ITaskService,Umbraco.Core.Services.IMacroService,Umbraco.Core.Services.IPublicAccessService,Umbraco.Core.Services.IExternalLoginService,Umbraco.Core.Services.IMigrationEntryService,Umbraco.Core.Services.IRedirectUrlService)">
+        <member name="M:Umbraco.Core.Services.ServiceContext.#ctor(Umbraco.Core.Services.IContentService,Umbraco.Core.Services.IMediaService,Umbraco.Core.Services.IContentTypeService,Umbraco.Core.Services.IDataTypeService,Umbraco.Core.Services.IFileService,Umbraco.Core.Services.ILocalizationService,Umbraco.Core.Services.IPackagingService,Umbraco.Core.Services.IEntityService,Umbraco.Core.Services.IRelationService,Umbraco.Core.Services.IMemberGroupService,Umbraco.Core.Services.IMemberTypeService,Umbraco.Core.Services.IMemberService,Umbraco.Core.Services.IUserService,Umbraco.Core.Services.ISectionService,Umbraco.Core.Services.IApplicationTreeService,Umbraco.Core.Services.ITagService,Umbraco.Core.Services.INotificationService,Umbraco.Core.Services.ILocalizedTextService,Umbraco.Core.Services.IAuditService,Umbraco.Core.Services.IDomainService,Umbraco.Core.Services.ITaskService,Umbraco.Core.Services.IMacroService,Umbraco.Core.Services.IPublicAccessService,Umbraco.Core.Services.IExternalLoginService,Umbraco.Core.Services.IMigrationEntryService,Umbraco.Core.Services.IRedirectUrlService,Umbraco.Core.Services.IConsentService)">
             <summary>
             public ctor - will generally just be used for unit testing all items are optional and if not specified, the defaults will be used
             </summary>
-            <param name="contentService"></param>
-            <param name="mediaService"></param>
-            <param name="contentTypeService"></param>
-            <param name="dataTypeService"></param>
-            <param name="fileService"></param>
-            <param name="localizationService"></param>
-            <param name="packagingService"></param>
-            <param name="entityService"></param>
-            <param name="relationService"></param>
-            <param name="memberGroupService"></param>
-            <param name="memberTypeService"></param>
-            <param name="memberService"></param>
-            <param name="userService"></param>
-            <param name="sectionService"></param>
-            <param name="treeService"></param>
-            <param name="tagService"></param>
-            <param name="notificationService"></param>
-            <param name="localizedTextService"></param>
-            <param name="auditService"></param>
-            <param name="domainService"></param>
-            <param name="taskService"></param>
-            <param name="macroService"></param>
-            <param name="publicAccessService"></param>
-            <param name="externalLoginService"></param>
-            <param name="migrationEntryService"></param>
-            <param name="redirectUrlService"></param>
         </member>
         <member name="M:Umbraco.Core.Services.ServiceContext.#ctor(Umbraco.Core.Persistence.RepositoryFactory,Umbraco.Core.Persistence.UnitOfWork.IScopeUnitOfWorkProvider,Umbraco.Core.CacheHelper,Umbraco.Core.Logging.ILogger,Umbraco.Core.Events.IEventMessagesFactory)">
             <summary>
@@ -32369,6 +33511,11 @@
         <member name="P:Umbraco.Core.Services.ServiceContext.RedirectUrlService">
             <summary>
             Gets the RedirectUrlService.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Services.ServiceContext.ConsentService">
+            <summary>
+            Gets the <see cref="T:Umbraco.Core.Services.IConsentService"/> implementation.
             </summary>
         </member>
         <member name="T:Umbraco.Core.Services.TagExtractor">
@@ -32622,9 +33769,9 @@
         </member>
         <member name="M:Umbraco.Core.Services.UserService.Delete(Umbraco.Core.Models.Membership.IUser)">
             <summary>
-            Deletes an <see cref="T:Umbraco.Core.Models.Membership.IUser"/>
+            Disables an <see cref="T:Umbraco.Core.Models.Membership.IUser"/>
             </summary>
-            <param name="membershipUser"><see cref="T:Umbraco.Core.Models.Membership.IUser"/> to Delete</param>
+            <param name="membershipUser"><see cref="T:Umbraco.Core.Models.Membership.IUser"/> to disable</param>
         </member>
         <member name="M:Umbraco.Core.Services.UserService.Delete(Umbraco.Core.Models.Membership.IUser,System.Boolean)">
             <summary>
@@ -32796,7 +33943,7 @@
             </summary>
             <param name="userGroup">UserGroup to save</param>
             <param name="userIds">
-            If null than no changes are made to the users who are assigned to this group, however if a value is passed in 
+            If null than no changes are made to the users who are assigned to this group, however if a value is passed in
             than all users will be removed from this group and only these users will be added
             </param>
             <param name="raiseEvents">Optional parameter to raise events.
@@ -32876,7 +34023,7 @@
             Returns the resulting permission set for a group for the path based on all permissions provided for the branch
             </summary>
             <param name="pathPermissions">
-            The collective set of permissions provided to calculate the resulting permissions set for the path 
+            The collective set of permissions provided to calculate the resulting permissions set for the path
             based on a single group
             </param>
             <param name="pathIds">Must be ordered deepest to shallowest (right to left)</param>
@@ -32920,6 +34067,16 @@
             </summary>
         </member>
         <member name="E:Umbraco.Core.Services.UserService.SavedUserGroup">
+            <summary>
+            Occurs after Save
+            </summary>
+        </member>
+        <member name="E:Umbraco.Core.Services.UserService.SavingUserGroup2">
+            <summary>
+            Occurs after Save
+            </summary>
+        </member>
+        <member name="E:Umbraco.Core.Services.UserService.SavedUserGroup2">
             <summary>
             Occurs after Save
             </summary>
@@ -33927,7 +35084,7 @@
             Cleans a string.
             </summary>
             <param name="text">The text to clean.</param>
-            <param name="stringType">A flag indicating the target casing and encoding of the string. By default, 
+            <param name="stringType">A flag indicating the target casing and encoding of the string. By default,
             strings are cleaned up to camelCase and Ascii.</param>
             <returns>The clean string.</returns>
             <remarks>The string is cleaned in the context of the default culture.</remarks>
@@ -33937,7 +35094,7 @@
             Cleans a string, using a specified separator.
             </summary>
             <param name="text">The text to clean.</param>
-            <param name="stringType">A flag indicating the target casing and encoding of the string. By default, 
+            <param name="stringType">A flag indicating the target casing and encoding of the string. By default,
             strings are cleaned up to camelCase and Ascii.</param>
             <param name="separator">The separator.</param>
             <returns>The clean string.</returns>
@@ -33948,7 +35105,7 @@
             Cleans a string in the context of a specified culture.
             </summary>
             <param name="text">The text to clean.</param>
-            <param name="stringType">A flag indicating the target casing and encoding of the string. By default, 
+            <param name="stringType">A flag indicating the target casing and encoding of the string. By default,
             strings are cleaned up to camelCase and Ascii.</param>
             <param name="culture">The culture.</param>
             <returns>The clean string.</returns>
@@ -33958,7 +35115,7 @@
             Cleans a string in the context of a specified culture, using a specified separator.
             </summary>
             <param name="text">The text to clean.</param>
-            <param name="stringType">A flag indicating the target casing and encoding of the string. By default, 
+            <param name="stringType">A flag indicating the target casing and encoding of the string. By default,
             strings are cleaned up to camelCase and Ascii.</param>
             <param name="separator">The separator.</param>
             <param name="culture">The culture.</param>
@@ -35371,7 +36528,7 @@
         </member>
         <member name="M:Umbraco.Core.DisposableTimer.DisposeResources">
             <summary>
-            Handles the disposal of resources. Derived from abstract class <see cref="T:Umbraco.Core.DisposableObject"/> which handles common required locking logic.
+            Handles the disposal of resources. Derived from abstract class <see cref="T:Umbraco.Core.DisposableObjectSlim"/> which handles common required locking logic.
             </summary>
         </member>
         <member name="T:Umbraco.Core.ExpressionHelper">
@@ -35615,18 +36772,18 @@
             </summary>
         </member>
         <member name="M:Umbraco.Core.ObjectExtensions.AsEnumerableOfOne``1(``0)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="input"></param>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
+             </summary>
+             <param name="input"></param>
+             <typeparam name="T"></typeparam>
+             <returns></returns>
         </member>
         <member name="M:Umbraco.Core.ObjectExtensions.DisposeIfDisposable(System.Object)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="input"></param>
+             </summary>
+             <param name="input"></param>
         </member>
         <member name="M:Umbraco.Core.ObjectExtensions.SafeCast``1(System.Object)">
             <summary>
@@ -35639,20 +36796,30 @@
         </member>
         <member name="M:Umbraco.Core.ObjectExtensions.TryConvertTo``1(System.Object)">
             <summary>
-            Tries to convert the input object to the output type using TypeConverters
+            Attempts to convert the input object to the output type.
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="input"></param>
-            <returns></returns>
+            <remarks>This code is an optimized version of the original Umbraco method</remarks>
+            <typeparam name="T">The type to convert to</typeparam>
+            <param name="input">The input.</param>
+            <returns>The <see cref="T:Umbraco.Core.Attempt`1"/></returns>
         </member>
         <member name="M:Umbraco.Core.ObjectExtensions.TryConvertTo(System.Object,System.Type)">
             <summary>
-            Tries to convert the input object to the output type using TypeConverters. If the destination
-            type is a superclass of the input type, if will use <see cref="M:System.Convert.ChangeType(System.Object,System.Type)"/>.
+            Attempts to convert the input object to the output type.
             </summary>
+            <remarks>This code is an optimized version of the original Umbraco method</remarks>
             <param name="input">The input.</param>
-            <param name="destinationType">Type of the destination.</param>
-            <returns></returns>
+            <param name="target">The type to convert to</param>
+            <returns>The <see cref="T:Umbraco.Core.Attempt`1"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.ObjectExtensions.TryConvertToFromString(System.String,System.Type)">
+            <summary>
+            Attempts to convert the input string to the output type.
+            </summary>
+            <remarks>This code is an optimized version of the original Umbraco method</remarks>
+            <param name="input">The input.</param>
+            <param name="target">The type to convert to</param>
+            <returns>The <see cref="T:System.Nullable`1"/></returns>
         </member>
         <member name="M:Umbraco.Core.ObjectExtensions.ToDictionary``3(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}}[])">
             <summary>
@@ -35893,12 +37060,6 @@
             and debugging purposes.</para>
             </remarks>
         </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerMessenger.SyncFilePath">
-            <summary>
-            Gets the sync file path for the local server.
-            </summary>
-            <returns>The sync file path for the local server.</returns>
-        </member>
         <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.GetAllInstructions(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JToken})">
             <summary>
             Parses out the individual instructions to be processed
@@ -35975,6 +37136,18 @@
             The time span to wait before considering a server stale, after it has last been accessed.
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Sync.RefreshInstruction.#ctor(umbraco.interfaces.ICacheRefresher,Umbraco.Core.Sync.RefreshMethodType,System.String,System.Int32)">
+            <summary>
+            A private constructor to create a new instance
+            </summary>
+            <param name="refresher"></param>
+            <param name="refreshType"></param>
+            <param name="json"></param>
+            <param name="idCount">
+            When the refresh method is <see cref="F:Umbraco.Core.Sync.RefreshMethodType.RefreshByIds"/> we know how many Ids are being refreshed so we know the instruction
+            count which will be taken into account when we store this count in the database. 
+            </param>
+        </member>
         <member name="P:Umbraco.Core.Sync.RefreshInstruction.RefreshType">
             <summary>
             Gets or sets the refresh action type.
@@ -35999,6 +37172,14 @@
             <summary>
             Gets or sets the ids data value.
             </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonIdCount">
+            <summary>
+            Gets or sets the number of Ids contained in the JsonIds json value
+            </summary>
+            <remarks>
+            This is used to determine the instruction count per row
+            </remarks>
         </member>
         <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonPayload">
             <summary>
@@ -37731,9 +38912,12 @@
             <returns></returns>
         </member>
         <member name="M:Umbraco.Core.StringExtensions.IsNullOrWhiteSpace(System.String)">
-            <summary>Is null or white space.</summary>
-            <param name="str">The str.</param>
-            <returns>The is null or white space.</returns>
+            <summary>Indicates whether a specified string is null, empty, or
+            consists only of white-space characters.</summary>
+            <param name="value">The value to check.</param>
+            <returns>Returns <see langword="true"/> if the value is null,
+            empty, or consists only of white-space characters, otherwise
+            returns <see langword="false"/>.</returns>
         </member>
         <member name="M:Umbraco.Core.StringExtensions.ToDelimitedList(System.String,System.String)">
             <summary>The to delimited list.</summary>
@@ -38157,6 +39341,16 @@
             </summary>
             <param name="s">Current instance of the string.</param>
             <returns>The string in a C# format.</returns>
+        </member>
+        <member name="M:Umbraco.Core.StringExtensions.ContainsAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.StringComparison)">
+            <summary>
+            Checks whether a string "haystack" contains within it any of the strings in the "needles" collection and returns true if it does or false if it doesn't
+            </summary>
+            <param name="haystack">The string to check</param>
+            <param name="needles">The collection of strings to check are contained within the first string</param>
+            <param name="comparison">The type of comparision to perform - defaults to <see cref="F:System.StringComparison.CurrentCulture"/></param>
+            <returns>True if any of the needles are contained with haystack; otherwise returns false</returns>
+            Added fix to ensure the comparison is used - see http://issues.umbraco.org/issue/U4-11313
         </member>
         <member name="M:Umbraco.Core.StringExtensions.ToValidXmlString(System.String)">
             <summary>

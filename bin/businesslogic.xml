@@ -466,41 +466,6 @@
             Summary description for Log.
             </summary>
         </member>
-        <member name="M:umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes,umbraco.BusinessLogic.User,System.Int32,System.String)">
-            <summary>
-            Adds the specified log item to the log.
-            </summary>
-            <param name="type">The log type.</param>
-            <param name="user">The user adding the item.</param>
-            <param name="nodeId">The affected node id.</param>
-            <param name="comment">Comment.</param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.Log.AddLocally(umbraco.BusinessLogic.LogTypes,umbraco.BusinessLogic.User,System.Int32,System.String)">
-            <summary>
-            Adds the specified log item to the Umbraco log no matter if an external logger has been defined.
-            </summary>
-            <param name="type">The log type.</param>
-            <param name="user">The user adding the item.</param>
-            <param name="nodeId">The affected node id.</param>
-            <param name="comment">Comment.</param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes,System.Int32,System.String)">
-            <summary>
-            Adds the specified log item to the log without any user information attached.
-            </summary>
-            <param name="type">The log type.</param>
-            <param name="nodeId">The affected node id.</param>
-            <param name="comment">Comment.</param>
-        </member>
-        <member name="M:umbraco.BusinessLogic.Log.AddSynced(umbraco.BusinessLogic.LogTypes,System.Int32,System.Int32,System.String)">
-            <summary>
-            Adds a log item to the log immidiately instead of Queuing it as a work item.
-            </summary>
-            <param name="type">The type.</param>
-            <param name="userId">The user id.</param>
-            <param name="nodeId">The node id.</param>
-            <param name="comment">The comment.</param>
-        </member>
         <member name="M:umbraco.BusinessLogic.Log.GetAuditLogReader(System.Int32)">
             <summary>
             Gets a reader for the audit log.
@@ -825,6 +790,12 @@
         <member name="P:umbraco.BusinessLogic.User.LoginName">
             <summary>
             Gets or sets the users  login name
+            </summary>
+            <value>The loginname.</value>
+        </member>
+        <member name="P:umbraco.BusinessLogic.User.SecurityStamp">
+            <summary>
+            Gets the security stamp
             </summary>
             <value>The loginname.</value>
         </member>
@@ -1346,17 +1317,6 @@
             Gets or sets the umbraco user context ID.
             </summary>
             <value>The umbraco user context ID.</value>
-        </member>
-        <member name="M:umbraco.BasePages.BasePage.ClearLogin">
-            <summary>
-            Clears the login.
-            </summary>
-        </member>
-        <member name="M:umbraco.BasePages.BasePage.doLogin(umbraco.BusinessLogic.User)">
-            <summary>
-            Logs a user in.
-            </summary>
-            <param name="u">The user</param>
         </member>
         <member name="M:umbraco.BasePages.BasePage.getUser">
             <summary>

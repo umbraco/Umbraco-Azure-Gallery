@@ -31,6 +31,12 @@ app.config(function ($routeProvider) {
                             userService.getCurrentUser({ broadcastEvent: broadcast }).then(function (user) {
                                 //is auth, check if we allow or reject
                                 if (isRequired) {
+
+                                    //This checks the current section and will force a redirect to 'content' as the default
+                                    if ($route.current.params.section.toLowerCase() === "default" || $route.current.params.section.toLowerCase() === "umbraco" || $route.current.params.section === "") {
+                                        $route.current.params.section = "content";
+                                    }
+
                                     // U4-5430, Benjamin Howarth
                                     // We need to change the current route params if the user only has access to a single section
                                     // To do this we need to grab the current user's allowed sections, then reject the promise with the correct path.
@@ -98,14 +104,12 @@ app.config(function ($routeProvider) {
             resolve: doLogout()
         })
         .when('/:section', {
+            
             //This allows us to dynamically change the template for this route since you cannot inject services into the templateUrl method.
             template: "<div ng-include='templateUrl'></div>",
             //This controller will execute for this route, then we can execute some code in order to set the template Url
             controller: function ($scope, $route, $routeParams, $location, sectionService) {
-                if ($routeParams.section.toLowerCase() === "default" || $routeParams.section.toLowerCase() === "umbraco" || $routeParams.section === "") {
-                    $routeParams.section = "content";
-                }
-
+                
                 //We are going to check the currently loaded sections for the user and if the section we are navigating
                 //to has a custom route path we'll use that 
                 sectionService.getSectionsForUser().then(function(sections) {
@@ -137,13 +141,32 @@ app.config(function ($routeProvider) {
             resolve: canRoute(true)
         })
         .when('/:section/:tree/:method', {
-            templateUrl: function (rp) {
+            //This allows us to dynamically change the template for this route since you cannot inject services into the templateUrl method.
+            template: "<div ng-include='templateUrl'></div>",
+            //This controller will execute for this route, then we replace the template dynamnically based on the current tree.
+            controller: function ($scope, $route, $routeParams, treeService) {
 
-                //if there is no method registered for this then show the dashboard
-                if (!rp.method)
-                    return "views/common/dashboard.html";
-                
-                return ('views/' + rp.tree + '/' + rp.method + '.html');
+                if (!$routeParams.method) {
+                    $scope.templateUrl = "views/common/dashboard.html";
+                }
+
+                // Here we need to figure out if this route is for a package tree and if so then we need
+                // to change it's convention view path to:
+                // /App_Plugins/{mypackage}/backoffice/{treetype}/{method}.html
+
+                // otherwise if it is a core tree we use the core paths:
+                // views/{treetype}/{method}.html
+
+                var packageTreeFolder = treeService.getTreePackageFolder($routeParams.tree);
+
+                if (packageTreeFolder) {
+                    $scope.templateUrl = (Umbraco.Sys.ServerVariables.umbracoSettings.appPluginsPath +
+                        "/" + packageTreeFolder +
+                        "/backoffice/" + $routeParams.tree + "/" + $routeParams.method + ".html");
+                }
+                else {
+                    $scope.templateUrl = ('views/' + $routeParams.tree + '/' + $routeParams.method + '.html');
+                }
             },
             resolve: canRoute(true)
         })
