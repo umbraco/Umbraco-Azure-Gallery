@@ -1,5 +1,7 @@
 (function () {
+    'use strict';
     angular.module('umbraco.filters', []);
+    'use strict';
     angular.module('umbraco.filters').filter('compareArrays', function () {
         return function inArray(array, compareArray, compareProperty) {
             var result = [];
@@ -17,6 +19,7 @@
             return result;
         };
     });
+    'use strict';
     // Filter to take a node id and grab it's name instead
     // Usage: {{ pickerAlias | ncNodeName }}
     // Cache for node names so we don't make a ton of requests
@@ -64,6 +67,7 @@
             return $('<div/>').html(input).text();
         };
     });
+    'use strict';
     /**
 * @ngdoc filter
 * @name umbraco.filters.preserveNewLineInHtml
@@ -78,6 +82,16 @@
             return text.replace(/\n/g, '<br />');
         };
     });
+    'use strict';
+    angular.module('umbraco.filters').filter('safe_html', [
+        '$sce',
+        function ($sce) {
+            return function (text) {
+                return $sce.trustAsHtml(text);
+            };
+        }
+    ]);
+    'use strict';
     angular.module('umbraco.filters').filter('timespan', function () {
         return function (input) {
             var sec_num = parseInt(input, 10);
@@ -97,6 +111,39 @@
             return time;
         };
     });
+    'use strict';
+    /**
+ * @ngdoc filter
+ * @name umbraco.filters.filter:truncate
+ * @namespace truncateFilter
+ * 
+ * param {any} wordwise if true, the string will be cut after last fully displayed word.
+ * param {any} max max length of the outputtet string
+ * param {any} tail option tail, defaults to: ' ...'
+ *
+ * @description
+ * Limits the length of a string, if a cut happens only the string will be appended with three dots to indicate that more is available.
+ */
+    angular.module('umbraco.filters').filter('truncate', function () {
+        return function (value, wordwise, max, tail) {
+            if (!value)
+                return '';
+            max = parseInt(max, 10);
+            if (!max)
+                return value;
+            if (value.length <= max)
+                return value;
+            value = value.substr(0, max);
+            if (wordwise) {
+                var lastspace = value.lastIndexOf(' ');
+                if (lastspace != -1) {
+                    value = value.substr(0, lastspace);
+                }
+            }
+            return value + (tail || (wordwise ? ' \u2026' : '\u2026'));
+        };
+    });
+    'use strict';
     /**
  * @ngdoc filter
  * @name umbraco.filters.filter:umbWordLimit
