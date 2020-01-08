@@ -683,9 +683,10 @@
      *
      * @param {Array} pathArray string array of paths to the files to load
      * @param {Scope} scope optional scope to pass into the loader
+     * @param {string} defaultAssetType optional default asset type used to load assets with no extension 
      * @returns {Promise} Promise object which resolves when all the files has loaded
      */
-            load: function load(pathArray, scope) {
+            load: function load(pathArray, scope, defaultAssetType) {
                 var promise;
                 if (!angular.isArray(pathArray)) {
                     throw 'pathArray must be an array';
@@ -720,12 +721,28 @@
                 //gives a central monitoring of all assets to load
                 promise = $q.all(promises);
                 // Split into css and js asset arrays, and use LazyLoad on each array
-                var cssAssets = _.filter(assets, function (asset) {
-                    return asset.path.match(/(\.css$|\.css\?)/ig);
-                });
-                var jsAssets = _.filter(assets, function (asset) {
-                    return asset.path.match(/(\.js$|\.js\?)/ig);
-                });
+                var cssAssets = [];
+                var jsAssets = [];
+                for (var i = 0; i < assets.length; i++) {
+                    var asset = assets[i];
+                    if (asset.path.match(/(\.css$|\.css\?)/ig)) {
+                        cssAssets.push(asset);
+                    } else if (asset.path.match(/(\.js$|\.js\?)/ig)) {
+                        jsAssets.push(asset);
+                    } else {
+                        // Handle unknown assets
+                        switch (defaultAssetType) {
+                        case 'css':
+                            cssAssets.push(asset);
+                            break;
+                        case 'js':
+                            jsAssets.push(asset);
+                            break;
+                        default:
+                            throw 'Found unknown asset without a valid defaultAssetType specified';
+                        }
+                    }
+                }
                 function assetLoaded(asset) {
                     asset.state = 'loaded';
                     if (!scope) {
@@ -859,7 +876,7 @@
  * The service has a set way for defining a data-set by a entryType and alias, which later will be used to retrive the posible entries for a paste scenario.
  *
  */
-    function clipboardService(notificationsService, eventsService, localStorageService) {
+    function clipboardService(notificationsService, eventsService, localStorageService, iconHelper) {
         var STORAGE_KEY = 'umbClipboardService';
         var retriveStorage = function retriveStorage() {
             if (localStorageService.isSupported === false) {
@@ -890,6 +907,22 @@
             }
             return false;
         };
+        var prepareEntryForStorage = function prepareEntryForStorage(entryData) {
+            var shallowCloneData = Object.assign({}, entryData);
+            // Notice only a shallow copy, since we dont need to deep copy. (that will happen when storing the data)
+            delete shallowCloneData.key;
+            delete shallowCloneData.$$hashKey;
+            return shallowCloneData;
+        };
+        var isEntryCompatible = function isEntryCompatible(entry, type, allowedAliases) {
+            return entry.type === type && (entry.alias && allowedAliases.filter(function (allowedAlias) {
+                return allowedAlias === entry.alias;
+            }).length > 0 || entry.aliases && entry.aliases.filter(function (entryAlias) {
+                return allowedAliases.filter(function (allowedAlias) {
+                    return allowedAlias === entryAlias;
+                }).length > 0;
+            }).length === entry.aliases.length);
+        };
         var service = {};
         /**
   * @ngdoc method
@@ -898,33 +931,72 @@
   *
   * @param {string} type A string defining the type of data to storing, example: 'elementType', 'contentNode'
   * @param {string} alias A string defining the alias of the data to store, example: 'product'
-  * @param {object} data A object containing the properties to be saved.
+  * @param {object} entry A object containing the properties to be saved, this could be the object of a ElementType, ContentNode, ...
+  * @param {string} displayLabel (optional) A string swetting the label to display when showing paste entries.
   *
   * @description
   * Saves a single JS-object with a type and alias to the clipboard.
   */
-        service.copy = function (type, alias, data) {
+        service.copy = function (type, alias, data, displayLabel) {
             var storage = retriveStorage();
-            var shallowCloneData = Object.assign({}, data);
-            // Notice only a shallow copy, since we dont need to deep copy. (that will happen when storing the data)
-            delete shallowCloneData.key;
-            delete shallowCloneData.$$hashKey;
-            var key = data.key || data.$$hashKey || console.error('missing unique key for this content');
+            var uniqueKey = data.key || data.$$hashKey || console.error('missing unique key for this content');
             // remove previous copies of this entry:
             storage.entries = storage.entries.filter(function (entry) {
-                return entry.unique !== key;
+                return entry.unique !== uniqueKey;
             });
             var entry = {
-                unique: key,
+                unique: uniqueKey,
                 type: type,
                 alias: alias,
-                data: shallowCloneData
+                data: prepareEntryForStorage(data),
+                label: displayLabel || data.name,
+                icon: iconHelper.convertFromLegacyIcon(data.icon)
             };
             storage.entries.push(entry);
             if (saveStorage(storage) === true) {
                 notificationsService.success('Clipboard', 'Copied to clipboard.');
             } else {
-                notificationsService.success('Clipboard', 'Couldnt copy this data to clipboard.');
+                notificationsService.error('Clipboard', 'Couldnt copy this data to clipboard.');
+            }
+        };
+        /**
+  * @ngdoc method
+  * @name umbraco.services.clipboardService#copyArray
+  * @methodOf umbraco.services.clipboardService
+  *
+  * @param {string} type A string defining the type of data to storing, example: 'elementTypeArray', 'contentNodeArray'
+  * @param {string} aliases An array of strings defining the alias of the data to store, example: ['banana', 'apple']
+  * @param {object} datas An array of objects containing the properties to be saved, example: [ElementType, ElementType, ...]
+  * @param {string} displayLabel A string setting the label to display when showing paste entries.
+  * @param {string} displayIcon A string setting the icon to display when showing paste entries.
+  * @param {string} uniqueKey A string prodiving an identifier for this entry, existing entries with this key will be removed to ensure that you only have the latest copy of this data.
+  *
+  * @description
+  * Saves a single JS-object with a type and alias to the clipboard.
+  */
+        service.copyArray = function (type, aliases, datas, displayLabel, displayIcon, uniqueKey) {
+            var storage = retriveStorage();
+            // Clean up each entry
+            var copiedDatas = datas.map(function (data) {
+                return prepareEntryForStorage(data);
+            });
+            // remove previous copies of this entry:
+            storage.entries = storage.entries.filter(function (entry) {
+                return entry.unique !== uniqueKey;
+            });
+            var entry = {
+                unique: uniqueKey,
+                type: type,
+                aliases: aliases,
+                data: copiedDatas,
+                label: displayLabel,
+                icon: displayIcon
+            };
+            storage.entries.push(entry);
+            if (saveStorage(storage) === true) {
+                notificationsService.success('Clipboard', 'Copied to clipboard.');
+            } else {
+                notificationsService.error('Clipboard', 'Couldnt copy this data to clipboard.');
             }
         };
         /**
@@ -966,13 +1038,11 @@
   * @description
   * Returns an array of entries matching the given type and one of the provided aliases.
   */
-        service.retriveEntriesOfType = function (type, aliases) {
+        service.retriveEntriesOfType = function (type, allowedAliases) {
             var storage = retriveStorage();
             // Find entries that are fulfilling the criteria for this nodeType and nodeTypesAliases.
             var filteretEntries = storage.entries.filter(function (entry) {
-                return entry.type === type && aliases.filter(function (alias) {
-                    return alias === entry.alias;
-                }).length > 0;
+                return isEntryCompatible(entry, type, allowedAliases);
             });
             return filteretEntries;
         };
@@ -1003,13 +1073,11 @@
   * @description
   * Removes entries matching the given type and one of the provided aliases.
   */
-        service.clearEntriesOfType = function (type, aliases) {
+        service.clearEntriesOfType = function (type, allowedAliases) {
             var storage = retriveStorage();
             // Find entries that are NOT fulfilling the criteria for this nodeType and nodeTypesAliases.
             var filteretEntries = storage.entries.filter(function (entry) {
-                return !(entry.type === type && aliases.filter(function (alias) {
-                    return alias === entry.alias;
-                }).length > 0);
+                return !isEntryCompatible(entry, type, allowedAliases);
             });
             storage.entries = filteretEntries;
             saveStorage(storage);
@@ -1065,6 +1133,12 @@
                 if (args.showNotifications === undefined) {
                     args.showNotifications = true;
                 }
+                // needed for infinite editing to create new items
+                if (args.create === undefined) {
+                    if ($routeParams.create) {
+                        args.create = true;
+                    }
+                }
                 if (args.softRedirect === undefined) {
                     //when true, the url will change but it won't actually re-route
                     //this is merely here for compatibility, if only the content/media/members used this service we'd prob be ok but tons of editors
@@ -1078,21 +1152,23 @@
                         scope: args.scope,
                         action: args.action
                     })) {
-                    return args.saveMethod(args.content, $routeParams.create, fileManager.getFiles(), args.showNotifications).then(function (data) {
+                    return args.saveMethod(args.content, args.create, fileManager.getFiles(), args.showNotifications).then(function (data) {
                         formHelper.resetForm({ scope: args.scope });
-                        self.handleSuccessfulSave({
-                            scope: args.scope,
-                            savedContent: data,
-                            softRedirect: args.softRedirect,
-                            rebindCallback: function rebindCallback() {
-                                _rebindCallback.apply(self, [
-                                    args.content,
-                                    data
-                                ]);
-                            }
-                        });
-                        //update editor state to what is current
-                        editorState.set(args.content);
+                        if (!args.infiniteMode) {
+                            self.handleSuccessfulSave({
+                                scope: args.scope,
+                                savedContent: data,
+                                softRedirect: args.softRedirect,
+                                rebindCallback: function rebindCallback() {
+                                    _rebindCallback.apply(self, [
+                                        args.content,
+                                        data
+                                    ]);
+                                }
+                            });
+                            //update editor state to what is current
+                            editorState.set(args.content);
+                        }
                         return $q.resolve(data);
                     }, function (err) {
                         self.handleSaveError({
@@ -1433,6 +1509,8 @@
                         'properties',
                         'apps',
                         'createDateFormatted',
+                        'releaseDateFormatted',
+                        'expireDateFormatted',
                         'releaseDate',
                         'expireDate'
                     ], function (i) {
@@ -1456,7 +1534,7 @@
                 var savedVariants = [];
                 if (origContent.variants) {
                     isContent = true;
-                    //it's contnet so assign the variants as they exist
+                    //it's content so assign the variants as they exist
                     origVariants = origContent.variants;
                     savedVariants = savedContent.variants;
                 } else {
@@ -1476,7 +1554,7 @@
                     var savedVariant = savedVariants[j];
                     //special case for content, don't sync this variant if it wasn't tagged
                     //for saving in the first place
-                    if (!origVariant.save) {
+                    if (isContent && !origVariant.save) {
                         continue;
                     }
                     //if it's content (not media/members), then we need to sync the variant specific data
@@ -1551,7 +1629,7 @@
                                 notificationsService.error('Validation', args.err.data.ModelState[e][0]);
                             }
                         }
-                        if (!this.redirectToCreatedContent(args.err.data.id) || args.softRedirect) {
+                        if (!this.redirectToCreatedContent(args.err.data.id, args.softRedirect) || args.softRedirect) {
                             // If we are not redirecting it's because this is not newly created content, else in some cases we are
                             // soft-redirecting which means the URL will change but the route wont (i.e. creating content). 
                             // In this case we need to detect what properties have changed and re-bind them with the server data.
@@ -1589,7 +1667,7 @@
                 if (!args.savedContent) {
                     throw 'args.savedContent cannot be null';
                 }
-                if (!this.redirectToCreatedContent(args.redirectId ? args.redirectId : args.savedContent.id) || args.softRedirect) {
+                if (!this.redirectToCreatedContent(args.redirectId ? args.redirectId : args.savedContent.id, args.softRedirect) || args.softRedirect) {
                     // If we are not redirecting it's because this is not newly created content, else in some cases we are
                     // soft-redirecting which means the URL will change but the route wont (i.e. creating content). 
                     // In this case we need to detect what properties have changed and re-bind them with the server data.
@@ -1609,7 +1687,7 @@
      * We need to decide if we need to redirect to edito mode or if we will remain in create mode.
      * We will only need to maintain create mode if we have not fulfilled the basic requirements for creating an entity which is at least having a name and ID
      */
-            redirectToCreatedContent: function redirectToCreatedContent(id) {
+            redirectToCreatedContent: function redirectToCreatedContent(id, softRedirect) {
                 //only continue if we are currently in create mode and not in infinite mode and if the resulting ID is valid
                 if ($routeParams.create && isValidIdentifier(id)) {
                     //need to change the location to not be in 'create' mode. Currently the route will be something like:
@@ -1618,6 +1696,9 @@
                     // /belle/#/content/edit/9876 (where 9876 is the new id)
                     //clear the query strings
                     navigationService.clearSearch(['cculture']);
+                    if (softRedirect) {
+                        navigationService.setSoftRedirect();
+                    }
                     //change to new path
                     $location.path('/' + $routeParams.section + '/' + $routeParams.tree + '/' + $routeParams.method + '/' + id);
                     //don't add a browser history for this
@@ -2096,6 +2177,9 @@
         throw new TypeError('Invalid attempt to destructure non-iterable instance');
     }
     function _iterableToArrayLimit(arr, i) {
+        if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === '[object Arguments]')) {
+            return;
+        }
         var _arr = [];
         var _n = true;
         var _d = false;
@@ -2367,7 +2451,7 @@ When building a custom infinite editor view you can use the same components as a
      *
      * @param {Object} editor rendering options
      * @param {String} editor.view Path to view
-     * @param {String} editor.size Sets the size of the editor ("small"). If nothing is set it will use full width.
+     * @param {String} editor.size Sets the size of the editor ("small" || "medium"). If nothing is set it will use full width.
      */
             function open(editor) {
                 /* keyboard shortcuts will be overwritten by the new infinite editor
@@ -2375,7 +2459,7 @@ When building a custom infinite editor view you can use the same components as a
           when the infinite editor closes
       */
                 unbindKeyboardShortcuts();
-                // set flag so we know when the editor is open in "infinie mode"
+                // set flag so we know when the editor is open in "infinite mode"
                 editor.infiniteMode = true;
                 editors.push(editor);
                 var args = {
@@ -2431,13 +2515,17 @@ When building a custom infinite editor view you can use the same components as a
      * @methodOf umbraco.services.editorService
      *
      * @description
-     * Opens a media editor in infinite editing, the submit callback returns the updated content item
+     * Opens a content editor in infinite editing, the submit callback returns the updated content item
      * @param {Object} editor rendering options
      * @param {String} editor.id The id of the content item
      * @param {Boolean} editor.create Create new content item
      * @param {Function} editor.submit Callback function when the publish and close button is clicked. Returns the editor model object
      * @param {Function} editor.close Callback function when the close button is clicked.
-     *
+     * @param {String} editor.parentId If editor.create is true, provide parentId for the creation of the content item
+     * @param {String} editor.documentTypeAlias If editor.create is true, provide document type alias for the creation of the content item
+     * @param {Boolean} editor.allowSaveAndClose If editor is being used in infinite editing allows the editor to close when the save action is performed
+     * @param {Boolean} editor.allowPublishAndClose If editor is being used in infinite editing allows the editor to close when the publish action is performed
+     * 
      * @returns {Object} editor object
      */
             function contentEditor(editor) {
@@ -2486,6 +2574,50 @@ When building a custom infinite editor view you can use the same components as a
                 editor.size = 'small';
                 editor.section = 'settings';
                 editor.treeAlias = 'documentTypes';
+                open(editor);
+            }
+            /**
+     * @ngdoc method
+     * @name umbraco.services.editorService#mediaTypePicker
+     * @methodOf umbraco.services.editorService
+     *
+     * @description
+     * Opens a media type picker in infinite editing, the submit callback returns an array of selected items
+     *
+     * @param {Object} editor rendering options
+     * @param {Boolean} editor.multiPicker Pick one or multiple items
+     * @param {Function} editor.submit Callback function when the submit button is clicked. Returns the editor model object
+     * @param {Function} editor.close Callback function when the close button is clicked.
+     *
+     * @returns {Object} editor object
+     */
+            function mediaTypePicker(editor) {
+                editor.view = 'views/common/infiniteeditors/treepicker/treepicker.html';
+                editor.size = 'small';
+                editor.section = 'settings';
+                editor.treeAlias = 'mediaTypes';
+                open(editor);
+            }
+            /**
+     * @ngdoc method
+     * @name umbraco.services.editorService#memberTypePicker
+     * @methodOf umbraco.services.editorService
+     *
+     * @description
+     * Opens a member type picker in infinite editing, the submit callback returns an array of selected items
+     *
+     * @param {Object} editor rendering options
+     * @param {Boolean} editor.multiPicker Pick one or multiple items
+     * @param {Function} editor.submit Callback function when the submit button is clicked. Returns the editor model object
+     * @param {Function} editor.close Callback function when the close button is clicked.
+     *
+     * @returns {Object} editor object
+     */
+            function memberTypePicker(editor) {
+                editor.view = 'views/common/infiniteeditors/treepicker/treepicker.html';
+                editor.size = 'small';
+                editor.section = 'settings';
+                editor.treeAlias = 'memberTypes';
                 open(editor);
             }
             /**
@@ -2605,6 +2737,7 @@ When building a custom infinite editor view you can use the same components as a
      * @param {Boolean} editor.multiPicker Pick one or multiple items
      * @param {Boolean} editor.onlyImages Only display files that have an image file-extension
      * @param {Boolean} editor.disableFolderSelect Disable folder selection
+     * @param {Boolean} editor.disableFocalPoint Disable focal point editor for selected media
      * @param {Array} editor.updatedMediaNodes A list of ids for media items that have been updated through the media picker
      * @param {Callback} editor.submit Submits the editor
      * @param {Callback} editor.close Closes the editor
@@ -2641,10 +2774,12 @@ When building a custom infinite editor view you can use the same components as a
      * @methodOf umbraco.services.editorService
      *
      * @description
-     * Opens the document type editor in infinite editing, the submit callback returns the saved document type
+     * Opens the document type editor in infinite editing, the submit callback returns the alias of the saved document type.
      * @param {Object} editor rendering options
-     * @param {Callback} editor.submit Submits the editor
-     * @param {Callback} editor.close Closes the editor
+     * @param {Callback} editor.id Indicates the ID of the document type to be edited. Alternatively the ID may be set to `-1` in combination with `create` being set to `true` to open the document type editor for creating a new document type.
+     * @param {Callback} editor.create Set to `true` to open the document type editor for creating a new document type.
+     * @param {Callback} editor.submit Submits the editor.
+     * @param {Callback} editor.close Closes the editor.
      * @returns {Object} editor object
      */
             function documentTypeEditor(editor) {
@@ -2918,6 +3053,26 @@ When building a custom infinite editor view you can use the same components as a
                 editor.treeAlias = 'member';
                 open(editor);
             }
+            /**
+     * @ngdoc method
+     * @name umbraco.services.editorService#memberEditor
+     * @methodOf umbraco.services.editorService
+     *
+     * @description
+     * Opens a member editor in infinite editing, the submit callback returns the updated member
+     * @param {Object} editor rendering options
+     * @param {String} editor.id The id (GUID) of the member
+     * @param {Boolean} editor.create Create new member
+     * @param {Function} editor.submit Callback function when the submit button is clicked. Returns the editor model object
+     * @param {Function} editor.close Callback function when the close button is clicked.
+     * @param {String} editor.doctype If editor.create is true, provide member type for the creation of the member
+     * 
+     * @returns {Object} editor object
+     */
+            function memberEditor(editor) {
+                editor.view = 'views/member/edit.html';
+                open(editor);
+            }
             ///////////////////////
             /**
      * @ngdoc method
@@ -2934,9 +3089,8 @@ When building a custom infinite editor view you can use the same components as a
                 editorsKeyboardShorcuts.push(shortcuts);
                 // unbind the current shortcuts because we only want to
                 // shortcuts from the newly opened editor working
-                var _arr = Object.entries(shortcuts);
-                for (var _i = 0; _i < _arr.length; _i++) {
-                    var _arr$_i = _slicedToArray(_arr[_i], 2), key = _arr$_i[0], value = _arr$_i[1];
+                for (var _i = 0, _Object$entries = Object.entries(shortcuts); _i < _Object$entries.length; _i++) {
+                    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2), key = _Object$entries$_i[0], value = _Object$entries$_i[1];
                     keyboardService.unbind(key);
                 }
             }
@@ -2954,9 +3108,8 @@ When building a custom infinite editor view you can use the same components as a
                 var lastSetOfShortcutsIndex = editorsKeyboardShorcuts.length - 1;
                 var lastSetOfShortcuts = editorsKeyboardShorcuts[lastSetOfShortcutsIndex];
                 // rebind shortcuts
-                var _arr2 = Object.entries(lastSetOfShortcuts);
-                for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-                    var _arr2$_i = _slicedToArray(_arr2[_i2], 2), key = _arr2$_i[0], value = _arr2$_i[1];
+                for (var _i2 = 0, _Object$entries2 = Object.entries(lastSetOfShortcuts); _i2 < _Object$entries2.length; _i2++) {
+                    var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2), key = _Object$entries2$_i[0], value = _Object$entries2$_i[1];
                     keyboardService.bind(key, value.callback, value.opt);
                 }
                 // remove the shortcuts from the collection
@@ -2972,6 +3125,8 @@ When building a custom infinite editor view you can use the same components as a
                 contentEditor: contentEditor,
                 contentPicker: contentPicker,
                 contentTypePicker: contentTypePicker,
+                mediaTypePicker: mediaTypePicker,
+                memberTypePicker: memberTypePicker,
                 copy: copy,
                 move: move,
                 embed: embed,
@@ -2994,7 +3149,8 @@ When building a custom infinite editor view you can use the same components as a
                 itemPicker: itemPicker,
                 macroPicker: macroPicker,
                 memberGroupPicker: memberGroupPicker,
-                memberPicker: memberPicker
+                memberPicker: memberPicker,
+                memberEditor: memberEditor
             };
             return service;
         }
@@ -5513,19 +5669,22 @@ When building a custom infinite editor view you can use the same components as a
      * @param {boolean} thumbnail Whether to return the thumbnail url or normal url
      */
             resolveFileFromEntity: function resolveFileFromEntity(mediaEntity, thumbnail) {
-                if (!angular.isObject(mediaEntity.metaData) || !mediaEntity.metaData.MediaPath) {
+                var mediaPath = angular.isObject(mediaEntity.metaData) ? mediaEntity.metaData.MediaPath : null;
+                if (!mediaPath) {
                     //don't throw since this image legitimately might not contain a media path, but output a warning
                     $log.warn('Cannot resolve the file url from the mediaEntity, it does not contain the required metaData');
                     return null;
                 }
                 if (thumbnail) {
-                    if (this.detectIfImageByExtension(mediaEntity.metaData.MediaPath)) {
-                        return this.getThumbnailFromPath(mediaEntity.metaData.MediaPath);
+                    if (this.detectIfImageByExtension(mediaPath)) {
+                        return this.getThumbnailFromPath(mediaPath);
+                    } else if (this.getFileExtension(mediaPath) === 'svg') {
+                        return this.getThumbnailFromPath(mediaPath);
                     } else {
                         return null;
                     }
                 } else {
-                    return mediaEntity.metaData.MediaPath;
+                    return mediaPath;
                 }
             },
             /**
@@ -5658,7 +5817,15 @@ When building a custom infinite editor view you can use the same components as a
      * @param {string} imagePath Image path, ex: /media/1234/my-image.jpg
      */
             getThumbnailFromPath: function getThumbnailFromPath(imagePath) {
-                //If the path is not an image we cannot get a thumb
+                // Check if file is a svg
+                if (this.getFileExtension(imagePath) === 'svg') {
+                    return imagePath;
+                }
+                // Check if file is a svg
+                if (this.getFileExtension(imagePath) === 'svg') {
+                    return imagePath;
+                }
+                // If the path is not an image we cannot get a thumb
                 if (!this.detectIfImageByExtension(imagePath)) {
                     return null;
                 }
@@ -5724,7 +5891,7 @@ When building a custom infinite editor view you can use the same components as a
      */
             getFileExtension: function getFileExtension(filePath) {
                 if (!filePath) {
-                    return false;
+                    return null;
                 }
                 var lowered = filePath.toLowerCase();
                 var ext = lowered.substr(lowered.lastIndexOf('.') + 1);
@@ -5925,14 +6092,10 @@ When building a custom infinite editor view you can use the same components as a
         var nonRoutingQueryStrings = [
             'mculture',
             'cculture',
-            'lq'
+            'lq',
+            'sr'
         ];
         var retainedQueryStrings = ['mculture'];
-        //A list of trees that don't cause a route when creating new items (TODO: eventually all trees should do this!)
-        var nonRoutingTreesOnCreate = [
-            'content',
-            'contentblueprints'
-        ];
         function setMode(mode) {
             switch (mode) {
             case 'tree':
@@ -6029,9 +6192,8 @@ When building a custom infinite editor view you can use the same components as a
                 if (angular.isString(nextUrlParams)) {
                     nextUrlParams = pathToRouteParts(nextUrlParams);
                 }
-                //first check if this is a ?create=true url being redirected to it's true url
-                if (currUrlParams.create === 'true' && currUrlParams.id && currUrlParams.section && currUrlParams.tree && currUrlParams.method === 'edit' && !nextUrlParams.create && nextUrlParams.id && nextUrlParams.section === currUrlParams.section && nextUrlParams.tree === currUrlParams.tree && nextUrlParams.method === currUrlParams.method && nonRoutingTreesOnCreate.indexOf(nextUrlParams.tree.toLowerCase()) >= 0) {
-                    //this means we're coming from a path like /content/content/edit/1234?create=true to the created path like /content/content/edit/9999
+                //check if there is a query string to indicate that a "soft redirect" is taking place, if so we are not changing navigation
+                if (nextUrlParams.sr === true) {
                     return false;
                 }
                 var allowRoute = true;
@@ -6086,6 +6248,17 @@ When building a custom infinite editor view you can use the same components as a
             },
             /**
      * @ngdoc method
+     * @name umbraco.services.navigationService#setSoftRedirect
+     * @methodOf umbraco.services.navigationService
+     *
+     * @description
+     * utility to set a special query string to indicate that the pending navigation change is a soft redirect
+     */
+            setSoftRedirect: function setSoftRedirect() {
+                $location.search('sr', true);
+            },
+            /**
+     * @ngdoc method
      * @name umbraco.services.navigationService#retainQueryStrings
      * @methodOf umbraco.services.navigationService
      *
@@ -6099,7 +6272,8 @@ When building a custom infinite editor view you can use the same components as a
                 var toRetain = angular.copy(nextRouteParams);
                 var updated = false;
                 _.each(retainedQueryStrings, function (r) {
-                    if (currRouteParams[r] && !nextRouteParams[r]) {
+                    // if mculture is set to null in nextRouteParams, the value will be undefined and we will not retain any query string that has a value of "null"
+                    if (currRouteParams[r] && nextRouteParams[r] !== undefined && !nextRouteParams[r]) {
                         toRetain[r] = currRouteParams[r];
                         updated = true;
                     }
@@ -6194,6 +6368,21 @@ When building a custom infinite editor view you can use the same components as a
                 }
                 return navReadyPromise.promise.then(function () {
                     return mainTreeApi.syncTree(args);
+                });
+            },
+            /**     
+     * @ngdoc method
+     * @name umbraco.services.navigationService#hasTree
+     * @methodOf umbraco.services.navigationService
+     *
+     * @description
+     * Checks if a tree with the given alias exists.
+     * 
+     * @param {String} treeAlias the tree alias to check
+     */
+            hasTree: function hasTree(treeAlias) {
+                return navReadyPromise.promise.then(function () {
+                    return mainTreeApi.hasTree(treeAlias);
                 });
             },
             /**
@@ -6300,6 +6489,7 @@ When building a custom infinite editor view you can use the same components as a
                 if (!section) {
                     throw 'section cannot be null';
                 }
+                appState.setMenuState('currentNode', node);
                 if (action.metaData && action.metaData['actionRoute'] && angular.isString(action.metaData['actionRoute'])) {
                     //first check if the menu item simply navigates to a route
                     var parts = action.metaData['actionRoute'].split('?');
@@ -6824,10 +7014,39 @@ When building a custom infinite editor view you can use the same components as a
                 };
                 open(overlay);
             }
+            function confirm(overlay) {
+                if (!overlay.closeButtonLabelKey)
+                    overlay.closeButtonLabelKey = 'general_cancel';
+                if (!overlay.view)
+                    overlay.view = 'views/common/overlays/confirm/confirm.html';
+                if (!overlay.close)
+                    overlay.close = function () {
+                        _close();
+                    };
+                switch (overlay.confirmType) {
+                case 'delete':
+                    if (!overlay.confirmMessageStyle)
+                        overlay.confirmMessageStyle = 'danger';
+                    if (!overlay.submitButtonStyle)
+                        overlay.submitButtonStyle = 'danger';
+                    if (!overlay.submitButtonLabelKey)
+                        overlay.submitButtonLabelKey = 'contentTypeEditor_yesDelete';
+                    break;
+                default:
+                    if (!overlay.submitButtonLabelKey)
+                        overlay.submitButtonLabelKey = 'general_confirm';
+                }
+                open(overlay);
+            }
+            function confirmDelete(overlay) {
+                confirm(overlay);
+            }
             var service = {
                 open: open,
                 close: _close,
-                ysod: ysod
+                ysod: ysod,
+                confirm: confirm,
+                confirmDelete: confirmDelete
             };
             return service;
         }
@@ -7660,7 +7879,8 @@ When building a custom infinite editor view you can use the same components as a
                 '[tabindex]',
                 'audio[controls]',
                 'video[controls]',
-                '[contenteditable]:not([contenteditable="false"])'
+                '[contenteditable]:not([contenteditable="false"])',
+                'iframe[data-mce-style]'
             ];
             var candidateSelector = candidateSelectors.join(',');
             var matches = typeof Element === 'undefined' ? function () {
@@ -7800,7 +8020,13 @@ When building a custom infinite editor view you can use the same components as a
                 });
                 if (cached)
                     return cached[1];
-                nodeComputedStyle = nodeComputedStyle || this.doc.defaultView.getComputedStyle(node);
+                if (!nodeComputedStyle) {
+                    if (node instanceof DocumentFragment) {
+                        return true;    // though DocumentFragment doesn't directly have display 'none', we know that it will never be visible, and therefore we return true. (and do not cache this, cause it will change if appended to the DOM)
+                    } else {
+                        nodeComputedStyle = this.doc.defaultView.getComputedStyle(node);
+                    }
+                }
                 var result = false;
                 if (nodeComputedStyle.display === 'none') {
                     result = true;
@@ -8152,7 +8378,7 @@ When building a custom infinite editor view you can use the same components as a
  * @description
  * A service containing all logic for all of the Umbraco TinyMCE plugins
  */
-    function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, stylesheetResource, macroResource, macroService, $routeParams, umbRequestHelper, angularHelper, userService, editorService, entityResource) {
+    function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, stylesheetResource, macroResource, macroService, $routeParams, umbRequestHelper, angularHelper, userService, editorService, entityResource, eventsService, localStorageService) {
         //These are absolutely required in order for the macros to render inline
         //we put these as extended elements because they get merged on top of the normal allowed elements by tiny mce
         var extendedValidElements = '@[id|class|style],-div[id|dir|class|align|style],ins[datetime|cite],-ul[class|style],-li[class|style],-h1[id|dir|class|align|style],-h2[id|dir|class|align|style],-h3[id|dir|class|align|style],-h4[id|dir|class|align|style],-h5[id|dir|class|align|style],-h6[id|style|dir|class|align],span[id|class|style]';
@@ -8251,6 +8477,9 @@ When building a custom infinite editor view you can use the same components as a
                 styleFormats = fallbackStyles;
             }
             return $q.all(promises).then(function () {
+                // Always push our Umbraco RTE stylesheet
+                // So we can style macros, embed items etc...
+                stylesheets.push(''.concat(Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath, '/assets/css/rte-content.css'));
                 return $q.when({
                     stylesheets: stylesheets,
                     styleFormats: styleFormats
@@ -8309,6 +8538,79 @@ When building a custom infinite editor view you can use the same components as a
                 selectionToolbar: selectionToolbar
             };
         }
+        function uploadImageHandler(blobInfo, success, failure, progress) {
+            var xhr, formData;
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', Umbraco.Sys.ServerVariables.umbracoUrls.tinyMceApiBaseUrl + 'UploadImage');
+            xhr.onloadstart = function (e) {
+                angularHelper.safeApply($rootScope, function () {
+                    eventsService.emit('rte.file.uploading');
+                });
+            };
+            xhr.onloadend = function (e) {
+                angularHelper.safeApply($rootScope, function () {
+                    eventsService.emit('rte.file.uploaded');
+                });
+            };
+            xhr.upload.onprogress = function (e) {
+                progress(e.loaded / e.total * 100);
+            };
+            xhr.onerror = function () {
+                failure('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+            };
+            xhr.onload = function () {
+                var json;
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    failure('HTTP Error: ' + xhr.status);
+                    return;
+                }
+                json = JSON.parse(xhr.responseText);
+                if (!json || typeof json.tmpLocation !== 'string') {
+                    failure('Invalid JSON: ' + xhr.responseText);
+                    return;
+                }
+                // Put temp location into localstorage (used to update the img with data-tmpimg later on)
+                localStorageService.set('tinymce__'.concat(blobInfo.blobUri()), json.tmpLocation);
+                // We set the img src url to be the same as we started
+                // The Blob URI is stored in TinyMce's cache
+                // so the img still shows in the editor
+                success(blobInfo.blobUri());
+            };
+            formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.blob().name);
+            xhr.send(formData);
+        }
+        function cleanupPasteData(plugin, args) {
+            // Remove spans
+            args.content = args.content.replace(/<\s*span[^>]*>(.*?)<\s*\/\s*span>/g, '$1');
+            // Convert b to strong.
+            args.content = args.content.replace(/<\s*b([^>]*)>(.*?)<\s*\/\s*b([^>]*)>/g, '<strong$1>$2</strong$3>');
+            // convert i to em
+            args.content = args.content.replace(/<\s*i([^>]*)>(.*?)<\s*\/\s*i([^>]*)>/g, '<em$1>$2</em$3>');
+        }
+        function sizeImageInEditor(editor, imageDomElement, imgUrl) {
+            var size = editor.dom.getSize(imageDomElement);
+            if (editor.settings.maxImageSize && editor.settings.maxImageSize !== 0) {
+                var newSize = imageHelper.scaleToMaxSize(editor.settings.maxImageSize, size.w, size.h);
+                editor.dom.setAttrib(imageDomElement, 'width', newSize.width);
+                editor.dom.setAttrib(imageDomElement, 'height', newSize.height);
+                // Images inserted via Media Picker will have a URL we can use for ImageResizer QueryStrings
+                // Images pasted/dragged in are not persisted to media until saved & thus will need to be added
+                if (imgUrl) {
+                    var src = imgUrl + '?width=' + newSize.width + '&height=' + newSize.height;
+                    editor.dom.setAttrib(imageDomElement, 'data-mce-src', src);
+                }
+            }
+        }
+        function isMediaPickerEnabled(toolbarItemArray) {
+            var insertMediaButtonFound = false;
+            toolbarItemArray.forEach(function (toolbarItem) {
+                if (toolbarItem.indexOf('umbmediapicker') > -1) {
+                    insertMediaButtonFound = true;
+                }
+            });
+            return insertMediaButtonFound;
+        }
         return {
             /**
      * Returns a promise of the configuration object to initialize the TinyMCE editor
@@ -8316,6 +8618,10 @@ When building a custom infinite editor view you can use the same components as a
      * @returns {}
      */
             getTinyMceEditorConfig: function getTinyMceEditorConfig(args) {
+                //global defaults, called before/during init
+                tinymce.DOM.events.domLoaded = true;
+                tinymce.baseURL = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + '/lib/tinymce/';
+                // trailing slash important
                 var promises = [
                     this.configuration(),
                     getStyles(args.stylesheets)
@@ -8353,9 +8659,7 @@ When building a custom infinite editor view you can use the same components as a
                     }
                     //create a baseline Config to exten upon
                     var config = {
-                        selector: '#' + args.htmlId,
                         theme: modeTheme,
-                        //skin: "umbraco",
                         inline: modeInline,
                         plugins: plugins,
                         valid_elements: tinyMceConfig.validElements,
@@ -8375,11 +8679,50 @@ When building a custom infinite editor view you can use the same components as a
                         selection_toolbar: toolbars.selectionToolbar,
                         body_class: 'umb-rte',
                         //see http://archive.tinymce.com/wiki.php/Configuration:cache_suffix
-                        cache_suffix: '?umb__rnd=' + Umbraco.Sys.ServerVariables.application.cacheBuster,
-                        //this is used to style the inline macro bits, sorry hard coding this form now since we don't have a standalone
-                        //stylesheet to load in for this with only these styles (the color is @pinkLight)
-                        content_style: '.mce-content-body .umb-macro-holder { border: 3px dotted #f5c1bc; padding: 7px; display: block; margin: 3px; } .umb-rte .mce-content-body .umb-macro-holder.loading {background: url(assets/img/loader.gif) right no-repeat; background-size: 18px; background-position-x: 99%;}'
+                        cache_suffix: '?umb__rnd=' + Umbraco.Sys.ServerVariables.application.cacheBuster
                     };
+                    // Need to check if we are allowed to UPLOAD images
+                    // This is done by checking if the insert image toolbar button is available
+                    if (isMediaPickerEnabled(args.toolbar)) {
+                        // Update the TinyMCE Config object to allow pasting
+                        config.images_upload_handler = uploadImageHandler;
+                        config.automatic_uploads = false;
+                        config.images_replace_blob_uris = false;
+                        // This allows images to be pasted in & stored as Base64 until they get uploaded to server
+                        config.paste_data_images = true;
+                    }
+                    if (args.htmlId) {
+                        config.selector = '#' + args.htmlId;
+                    } else if (args.target) {
+                        config.target = args.target;
+                    }
+                    /*
+        // We are not ready to limit the pasted elements further than default, we will return to this feature. ( TODO: Make this feature an option. )
+        // We keep spans here, cause removing spans here also removes b-tags inside of them, instead we strip them out later. (TODO: move this definition to the config file... )
+        var validPasteElements = "-strong/b,-em/i,-u,-span,-p,-ol,-ul,-li,-p/div,-a[href|name],sub,sup,strike,br,del,table[width],tr,td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody,img[src|alt|width|height],ul,ol,li,hr,pre,dl,dt,figure,figcaption,wbr"
+        
+        // add elements from user configurated styleFormats to our list of validPasteElements.
+        // (This means that we only allow H3-element if its configured as a styleFormat on this specific propertyEditor.)
+        var style, i = 0;
+        for(; i < styles.styleFormats.length; i++) {
+            style = styles.styleFormats[i];
+            if(style.block) {
+                validPasteElements += "," + style.block;
+            }
+        }
+        */
+                    /**
+         The default paste config can be overwritten by defining these properties in the customConfig.
+         */
+                    var pasteConfig = {
+                        paste_remove_styles: true,
+                        paste_text_linebreaktype: true,
+                        //Converts plaintext linebreaks to br or p elements.
+                        paste_strip_class_attributes: 'none',
+                        //paste_word_valid_elements: validPasteElements,
+                        paste_preprocess: cleanupPasteData
+                    };
+                    angular.extend(config, pasteConfig);
                     if (tinyMceConfig.customConfig) {
                         //if there is some custom config, we need to see if the string value of each item might actually be json and if so, we need to
                         // convert it to json instead of having it as a string since this is what tinymce requires
@@ -8410,7 +8753,7 @@ When building a custom infinite editor view you can use the same components as a
                         }
                         angular.extend(config, tinyMceConfig.customConfig);
                     }
-                    return $q.when(config);
+                    return config;
                 });
             },
             /**
@@ -8471,17 +8814,51 @@ When building a custom infinite editor view you can use the same components as a
                 editor.addButton('umbembeddialog', {
                     icon: 'custom icon-tv',
                     tooltip: 'Embed',
+                    stateSelector: 'div[data-embed-url]',
                     onclick: function onclick() {
+                        // Get the selected element
+                        // Check nodename is a DIV and the claslist contains 'embeditem'
+                        var selectedElm = editor.selection.getNode();
+                        var nodeName = selectedElm.nodeName;
+                        var modify = null;
+                        if (nodeName.toUpperCase() === 'DIV' && selectedElm.classList.contains('embeditem')) {
+                            // See if we can go and get the attributes
+                            var embedUrl = editor.dom.getAttrib(selectedElm, 'data-embed-url');
+                            var embedWidth = editor.dom.getAttrib(selectedElm, 'data-embed-width');
+                            var embedHeight = editor.dom.getAttrib(selectedElm, 'data-embed-height');
+                            var embedConstrain = editor.dom.getAttrib(selectedElm, 'data-embed-constrain');
+                            modify = {
+                                url: embedUrl,
+                                width: parseInt(embedWidth) || 0,
+                                height: parseInt(embedHeight) || 0,
+                                constrain: embedConstrain
+                            };
+                        }
                         if (callback) {
                             angularHelper.safeApply($rootScope, function () {
-                                callback();
+                                // pass the active element along so we can retrieve it later
+                                callback(selectedElm, modify);
                             });
                         }
                     }
                 });
             },
-            insertEmbeddedMediaInEditor: function insertEmbeddedMediaInEditor(editor, preview) {
-                editor.insertContent(preview);
+            insertEmbeddedMediaInEditor: function insertEmbeddedMediaInEditor(editor, embed, activeElement) {
+                // Wrap HTML preview content here in a DIV with non-editable class of .mceNonEditable
+                // This turns it into a selectable/cutable block to move about
+                var wrapper = tinymce.activeEditor.dom.create('div', {
+                    'class': 'mceNonEditable embeditem',
+                    'data-embed-url': embed.url,
+                    'data-embed-height': embed.height,
+                    'data-embed-width': embed.width,
+                    'data-embed-constrain': embed.constrain,
+                    'contenteditable': false
+                }, embed.preview);
+                if (activeElement) {
+                    activeElement.replaceWith(wrapper);    // directly replaces the html node
+                } else {
+                    editor.selection.setNode(wrapper);
+                }
             },
             createAceCodeEditor: function createAceCodeEditor(editor, callback) {
                 editor.addButton('ace', {
@@ -8510,12 +8887,14 @@ When building a custom infinite editor view you can use the same components as a
                 editor.addButton('umbmediapicker', {
                     icon: 'custom icon-picture',
                     tooltip: 'Media Picker',
-                    stateSelector: 'img',
+                    stateSelector: 'img[data-udi]',
                     onclick: function onclick() {
-                        var selectedElm = editor.selection.getNode(), currentTarget;
+                        var selectedElm = editor.selection.getNode(), currentTarget, imgDomElement;
                         if (selectedElm.nodeName === 'IMG') {
                             var img = $(selectedElm);
+                            imgDomElement = selectedElm;
                             var hasUdi = img.attr('data-udi') ? true : false;
+                            var hasDataTmpImg = img.attr('data-tmpimg') ? true : false;
                             currentTarget = {
                                 altText: img.attr('alt'),
                                 url: img.attr('src')
@@ -8525,41 +8904,77 @@ When building a custom infinite editor view you can use the same components as a
                             } else {
                                 currentTarget['id'] = img.attr('rel');
                             }
+                            if (hasDataTmpImg) {
+                                currentTarget['tmpimg'] = img.attr('data-tmpimg');
+                            }
                         }
                         userService.getCurrentUser().then(function (userData) {
                             if (callback) {
                                 angularHelper.safeApply($rootScope, function () {
-                                    callback(currentTarget, userData);
+                                    callback(currentTarget, userData, imgDomElement);
                                 });
                             }
                         });
                     }
                 });
             },
-            insertMediaInEditor: function insertMediaInEditor(editor, img) {
+            insertMediaInEditor: function insertMediaInEditor(editor, img, imgDomElement) {
                 if (img) {
-                    var data = {
-                        alt: img.altText || '',
-                        src: img.url ? img.url : 'nothing.jpg',
-                        id: '__mcenew',
-                        'data-udi': img.udi
-                    };
-                    editor.selection.setContent(editor.dom.createHTML('img', data));
-                    $timeout(function () {
-                        var imgElm = editor.dom.get('__mcenew');
-                        var size = editor.dom.getSize(imgElm);
-                        if (editor.settings.maxImageSize && editor.settings.maxImageSize !== 0) {
-                            var newSize = imageHelper.scaleToMaxSize(editor.settings.maxImageSize, size.w, size.h);
-                            var s = 'width: ' + newSize.width + 'px; height:' + newSize.height + 'px;';
-                            editor.dom.setAttrib(imgElm, 'style', s);
-                            if (img.url) {
-                                var src = img.url + '?width=' + newSize.width + '&height=' + newSize.height;
-                                editor.dom.setAttrib(imgElm, 'data-mce-src', src);
-                            }
+                    // imgElement is only definied if updating an image
+                    // if null/undefinied then its a BRAND new image
+                    if (imgDomElement) {
+                        // Check if the img src has changed
+                        // If it has we will need to do some resizing/recalc again
+                        var hasImageSrcChanged = false;
+                        if (img.url !== editor.dom.getAttrib(imgDomElement, 'src')) {
+                            hasImageSrcChanged = true;
                         }
-                        editor.dom.setAttrib(imgElm, 'id', null);
-                        editor.fire('Change');
-                    }, 500);
+                        // If null/undefinied it will remove the attribute
+                        editor.dom.setAttrib(imgDomElement, 'alt', img.altText);
+                        // It's possible to pick a NEW image - so need to ensure this gets updated
+                        if (img.udi) {
+                            editor.dom.setAttrib(imgDomElement, 'data-udi', img.udi);
+                        }
+                        // It's possible to pick a NEW image - so need to ensure this gets updated
+                        if (img.url) {
+                            editor.dom.setAttrib(imgDomElement, 'src', img.url);
+                        }
+                        // Remove width & height attributes (ONLY if imgSrc changed)
+                        // So native image size is used as this needed to re-calc width & height
+                        // For the function sizeImageInEditor() & apply the image resizing querystrings etc..
+                        if (hasImageSrcChanged) {
+                            editor.dom.setAttrib(imgDomElement, 'width', null);
+                            editor.dom.setAttrib(imgDomElement, 'height', null);
+                            //Re-calc the image dimensions
+                            sizeImageInEditor(editor, imgDomElement, img.url);
+                        }
+                    } else {
+                        // We need to create a NEW DOM <img> element to insert
+                        // setting an attribute of ID to __mcenew, so we can gather a reference to the node, to be able to update its size accordingly to the size of the image.
+                        var data = {
+                            alt: img.altText || '',
+                            src: img.url ? img.url : 'nothing.jpg',
+                            id: '__mcenew',
+                            'data-udi': img.udi
+                        };
+                        editor.selection.setContent(editor.dom.createHTML('img', data));
+                        // Using settimeout to wait for a DoM-render, so we can find the new element by ID.
+                        $timeout(function () {
+                            var imgElm = editor.dom.get('__mcenew');
+                            editor.dom.setAttrib(imgElm, 'id', null);
+                            // When image is loaded we are ready to call sizeImageInEditor.
+                            var onImageLoaded = function onImageLoaded() {
+                                sizeImageInEditor(editor, imgElm, img.url);
+                                editor.fire('Change');
+                            };
+                            // Check if image already is loaded.
+                            if (imgElm.complete === true) {
+                                onImageLoaded();
+                            } else {
+                                imgElm.onload = onImageLoaded;
+                            }
+                        });
+                    }
                 }
             },
             /**
@@ -8593,7 +9008,7 @@ When building a custom infinite editor view you can use the same components as a
                 editor.on('SetContent', function (o) {
                     //get all macro divs and load their content
                     $(editor.dom.select('.umb-macro-holder.mceNonEditable')).each(function () {
-                        self.loadMacroContent($(this), null);
+                        self.loadMacroContent($(this), null, editor);
                     });
                 });
                 /**
@@ -8686,11 +9101,12 @@ When building a custom infinite editor view you can use the same components as a
                     editor.selection.setNode(macroDiv);
                 }
                 var $macroDiv = $(editor.dom.select('div.umb-macro-holder.' + uniqueId));
+                editor.setDirty(true);
                 //async load the macro content
-                this.loadMacroContent($macroDiv, macroObject);
+                this.loadMacroContent($macroDiv, macroObject, editor);
             },
             /** loads in the macro content async from the server */
-            loadMacroContent: function loadMacroContent($macroDiv, macroData) {
+            loadMacroContent: function loadMacroContent($macroDiv, macroData, editor) {
                 //if we don't have the macroData, then we'll need to parse it from the macro div
                 if (!macroData) {
                     var contents = $macroDiv.contents();
@@ -8707,6 +9123,10 @@ When building a custom infinite editor view you can use the same components as a
                 var $ins = $macroDiv.find('ins');
                 //show the throbber
                 $macroDiv.addClass('loading');
+                // Add the contenteditable="false" attribute
+                // As just the CSS class of .mceNonEditable is not working by itself?!
+                // TODO: At later date - use TinyMCE editor DOM manipulation as opposed to jQuery
+                $macroDiv.attr('contenteditable', 'false');
                 var contentId = $routeParams.id;
                 //need to wrap in safe apply since this might be occuring outside of angular
                 angularHelper.safeApply($rootScope, function () {
@@ -8714,7 +9134,11 @@ When building a custom infinite editor view you can use the same components as a
                         $macroDiv.removeClass('loading');
                         htmlResult = htmlResult.trim();
                         if (htmlResult !== '') {
+                            var wasDirty = editor.isDirty();
                             $ins.html(htmlResult);
+                            if (!wasDirty) {
+                                editor.undoManager.clear();
+                            }
                         }
                     });
                 });
@@ -8917,6 +9341,13 @@ When building a custom infinite editor view you can use the same components as a
                     context: 'insert',
                     prependToContext: true
                 });
+                // the editor frame catches Ctrl+S and handles it with the system save dialog
+                // - we want to handle it in the content controller, so we'll emit an event instead
+                editor.addShortcut('Ctrl+S', '', function () {
+                    angularHelper.safeApply($rootScope, function () {
+                        eventsService.emit('rte.shortcut.save');
+                    });
+                });
             },
             insertLinkInEditor: function insertLinkInEditor(editor, target, anchorElm) {
                 var href = target.url;
@@ -9005,9 +9436,9 @@ When building a custom infinite editor view you can use the same components as a
                 // set padding in top of mce so the content does not "jump" up
                 tinyMceEditArea.css('padding-top', toolbarHeight);
                 if (tinyMceTop < 177 && 177 + toolbarHeight < tinyMceBottom) {
-                    toolbar.css('visibility', 'visible').css('position', 'fixed').css('top', '177px').css('margin-top', '0').css('width', tinyMceWidth);
+                    toolbar.css('position', 'fixed').css('top', '177px').css('left', 'auto').css('right', 'auto').css('width', tinyMceWidth);
                 } else {
-                    toolbar.css('visibility', 'visible').css('position', 'absolute').css('top', 'auto').css('margin-top', '0').css('width', tinyMceWidth);
+                    toolbar.css('position', 'absolute').css('left', '').css('right', '').css('top', '').css('width', '');
                 }
             },
             unpinToolbar: function unpinToolbar(editor) {
@@ -9057,12 +9488,71 @@ When building a custom infinite editor view you can use the same components as a
                     //re-watch the value
                     startWatch();
                 }
+                // If we can not find the insert image/media toolbar button
+                // Then we need to add an event listener to the editor
+                // That will update native browser drag & drop events
+                // To update the icon to show you can NOT drop something into the editor
+                var toolbarItems = args.editor.settings.toolbar.split(' ');
+                if (isMediaPickerEnabled(toolbarItems) === false) {
+                    // Wire up the event listener
+                    args.editor.on('dragend dragover draggesture dragdrop drop drag', function (e) {
+                        e.preventDefault();
+                        e.dataTransfer.effectAllowed = 'none';
+                        e.dataTransfer.dropEffect = 'none';
+                        e.stopPropagation();
+                    });
+                }
+                args.editor.on('SetContent', function (e) {
+                    var content = e.content;
+                    // Upload BLOB images (dragged/pasted ones)
+                    // find src attribute where value starts with `blob:`
+                    // search is case-insensitive and allows single or double quotes 
+                    if (content.search(/src=["']blob:.*?["']/gi) !== -1) {
+                        args.editor.uploadImages(function (data) {
+                            // Once all images have been uploaded
+                            data.forEach(function (item) {
+                                // Select img element
+                                var img = item.element;
+                                // Get img src
+                                var imgSrc = img.getAttribute('src');
+                                var tmpLocation = localStorageService.get('tinymce__'.concat(imgSrc));
+                                // Select the img & add new attr which we can search for
+                                // When its being persisted in RTE property editor
+                                // To create a media item & delete this tmp one etc
+                                tinymce.activeEditor.$(img).attr({ 'data-tmpimg': tmpLocation });
+                                // Resize the image to the max size configured
+                                // NOTE: no imagesrc passed into func as the src is blob://...
+                                // We will append ImageResizing Querystrings on perist to DB with node save
+                                sizeImageInEditor(args.editor, img);
+                            });
+                        });
+                        // Get all img where src starts with blob: AND does NOT have a data=tmpimg attribute
+                        // This is most likely seen as a duplicate image that has already been uploaded
+                        // editor.uploadImages() does not give us any indiciation that the image been uploaded already
+                        var blobImageWithNoTmpImgAttribute = args.editor.dom.select('img[src^=\'blob:\']:not([data-tmpimg])');
+                        //For each of these selected items
+                        blobImageWithNoTmpImgAttribute.forEach(function (imageElement) {
+                            var blobSrcUri = args.editor.dom.getAttrib(imageElement, 'src');
+                            // Find the same image uploaded (Should be in LocalStorage)
+                            // May already exist in the editor as duplicate image
+                            // OR added to the RTE, deleted & re-added again
+                            // So lets fetch the tempurl out of localstorage for that blob URI item
+                            var tmpLocation = localStorageService.get('tinymce__'.concat(blobSrcUri));
+                            if (tmpLocation) {
+                                sizeImageInEditor(args.editor, imageElement);
+                                args.editor.dom.setAttrib(imageElement, 'data-tmpimg', tmpLocation);
+                            }
+                        });
+                    }
+                });
                 args.editor.on('init', function (e) {
                     if (args.model.value) {
                         args.editor.setContent(args.model.value);
                     }
                     //enable browser based spell checking
                     args.editor.getBody().setAttribute('spellcheck', true);
+                    //start watching the value
+                    startWatch();
                 });
                 args.editor.on('Change', function (e) {
                     syncContent();
@@ -9106,7 +9596,7 @@ When building a custom infinite editor view you can use the same components as a
                     });
                 });
                 //Create the insert media plugin
-                self.createMediaPicker(args.editor, function (currentTarget, userData) {
+                self.createMediaPicker(args.editor, function (currentTarget, userData, imgDomElement) {
                     var startNodeId, startNodeIsVirtual;
                     if (!args.model.config.startNodeId) {
                         if (args.model.config.ignoreUserStartNodes === true) {
@@ -9122,11 +9612,12 @@ When building a custom infinite editor view you can use the same components as a
                         onlyImages: true,
                         showDetails: true,
                         disableFolderSelect: true,
+                        disableFocalPoint: true,
                         startNodeId: startNodeId,
                         startNodeIsVirtual: startNodeIsVirtual,
                         dataTypeKey: args.model.dataTypeKey,
                         submit: function submit(model) {
-                            self.insertMediaInEditor(args.editor, model.selection[0]);
+                            self.insertMediaInEditor(args.editor, model.selection[0], imgDomElement);
                             editorService.close();
                         },
                         close: function close() {
@@ -9136,10 +9627,11 @@ When building a custom infinite editor view you can use the same components as a
                     editorService.mediaPicker(mediaPicker);
                 });
                 //Create the embedded plugin
-                self.createInsertEmbeddedMedia(args.editor, function () {
+                self.createInsertEmbeddedMedia(args.editor, function (activeElement, modify) {
                     var embed = {
+                        modify: modify,
                         submit: function submit(model) {
-                            self.insertEmbeddedMediaInEditor(args.editor, model.embed.preview);
+                            self.insertEmbeddedMediaInEditor(args.editor, model.embed, activeElement);
                             editorService.close();
                         },
                         close: function close() {
@@ -9185,8 +9677,6 @@ When building a custom infinite editor view you can use the same components as a
                     };
                     editorService.open(aceEditor);
                 });
-                //start watching the value
-                startWatch(args.editor);
             }
         };
     }
@@ -9504,9 +9994,11 @@ When building a custom infinite editor view you can use the same components as a
                         //this means that the node's path supercedes this path stored so we can remove the current 'p' and replace it with node.path
                         expandedPaths.splice(expandedPaths.indexOf(p), 1);
                         //remove it
-                        expandedPaths.push(childPath);    //replace it
+                        if (expandedPaths.indexOf(childPath) === -1) {
+                            expandedPaths.push(childPath);    //replace it
+                        }
                     } else if (p.startsWith(childPath + ',')) {
-                    } else {
+                    } else if (expandedPaths.indexOf(childPath) === -1) {
                         expandedPaths.push(childPath);    //track it
                     }
                 });

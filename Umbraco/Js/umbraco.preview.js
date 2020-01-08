@@ -154,6 +154,9 @@
                 setPageUrl();
             }
         };
+        $scope.isCurrentCulture = function (culture) {
+            return $location.search().culture === culture;
+        };
     }).component('previewIFrame', {
         template: '<div style=\'width:100%;height:100%;margin:0 auto;overflow:hidden;\'><iframe id=\'resultFrame\' src=\'about:blank\' ng-src="{{vm.src}}" frameborder=\'0\'></iframe></div>',
         controller: function controller($element, $scope, angularHelper) {

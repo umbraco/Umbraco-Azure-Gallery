@@ -2589,13 +2589,52 @@
             <summary>
             One unique instance per request.
             </summary>
+            <remarks>
+            <para>
+            Any instance created with this lifetime will be disposed at the end of a request.
+            </para>
+            Corresponds to
+            <para>
+            PerRequestLifeTime in LightInject - means transient but disposed at the end of the current web request.
+            see: https://github.com/seesharper/LightInject/issues/494#issuecomment-518493262
+            </para>
+            <para>
+            Scoped in MS.DI - means one per web request.
+            see https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.2#service-lifetimes</para>
+            <para>
+            InstancePerRequest in Autofac - means one per web request.
+            see https://autofaccn.readthedocs.io/en/latest/lifetime/instance-scope.html#instance-per-request
+            But "Behind the scenes, though, it’s still just instance per matching lifetime scope."
+            </para>
+            <para>
+            LifestylePerWebRequest in Castle Windsor - means one per web request.
+            see https://github.com/castleproject/Windsor/blob/master/docs/mvc-tutorial-part-7-lifestyles.md#the-perwebrequest-lifestyle
+            </para>
+            </remarks>        
         </member>
         <member name="F:Umbraco.Core.Composing.Lifetime.Scope">
             <summary>
-            One unique instance per container scope.
+            One unique instance per scope.
             </summary>
-            <remarks>Corresponds to Scope in LightInject, Scoped in MS.DI
-            or Castle Windsor, PerLifetimeScope in Autofac.</remarks>
+            <remarks>
+            <para>
+            Any instance created with this lifetime will be disposed at the end of the current scope.
+            </para>
+            Corresponds to
+            <para>PerScopeLifetime in LightInject (when in a request, means one per web request)</para>
+            <para>
+            Scoped in MS.DI (when in a request, means one per web request)
+            see https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.2#service-lifetimes</para>
+            <para>
+            InstancePerLifetimeScope in Autofac (when in a request, means one per web request)
+            see https://autofaccn.readthedocs.io/en/latest/lifetime/instance-scope.html#instance-per-lifetime-scope
+            Also note that Autofac's InstancePerRequest is the same as this, see https://autofaccn.readthedocs.io/en/latest/lifetime/instance-scope.html#instance-per-request
+            it says "Behind the scenes, though, it’s still just instance per matching lifetime scope."
+            </para>
+            <para>
+            LifestyleScoped in Castle Windsor
+            </para>
+            </remarks>
         </member>
         <member name="F:Umbraco.Core.Composing.Lifetime.Singleton">
             <summary>
@@ -3612,6 +3651,81 @@
             Registers a unique service with an implementing instance.
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Exceptions.PanicException">
+            <summary>
+            Internal exception that in theory should never ben thrown, it is only thrown in circumstances that should never happen
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException">
+            <summary>
+            The exception that is thrown when a null reference, or an empty argument,
+            is passed to a method that does not accept it as a valid argument.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException"/> class
+            with the name of the parameter that caused this exception.
+            </summary>
+            <param name="paramName">The named of the parameter that caused the exception.</param>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException"/> class
+            with a specified error message and the name of the parameter that caused this exception.
+            </summary>
+            <param name="paramName">The named of the parameter that caused the exception.</param>
+            <param name="message">A message that describes the error.</param>
+        </member>
+        <member name="T:Umbraco.Core.Exceptions.BootFailedException">
+            <summary>
+            An exception that is thrown if the Umbraco application cannot boot.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Exceptions.BootFailedException.DefaultMessage">
+            <summary>
+            Defines the default boot failed exception message.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.BootFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Exception"/> class with a specified error message.
+            </summary>
+            <param name="message">The message that describes the error. </param>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.BootFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Exception"/> class with a specified error message
+            and a reference to the inner exception which is the cause of this exception.
+            </summary>
+            <param name="message">The message that describes the error. </param>
+            <param name="inner">The inner exception, or null.</param>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.BootFailedException.Rethrow(Umbraco.Core.Exceptions.BootFailedException)">
+            <summary>
+            Rethrows a captured <see cref="T:Umbraco.Core.Exceptions.BootFailedException"/>.
+            </summary>
+            <remarks>The exception can be null, in which case a default message is used.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Exceptions.WontImplementException">
+            <summary>
+            The exception that is thrown when a requested method or operation is not, and will not be, implemented.
+            </summary>
+            <remarks>The <see cref="T:System.NotImplementedException"/> is to be used when some code is not implemented,
+            but should eventually be implemented (i.e. work in progress) and is reported by tools such as ReSharper.
+            This exception is to be used when some code is not implemented, and is not meant to be, for whatever
+            reason.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.WontImplementException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.WontImplementException"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.WontImplementException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.WontImplementException"/> class with a specified reason message.
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.FactoryExtensions">
             <summary>
             Provides extension methods to the <see cref="T:Umbraco.Core.Composing.IFactory"/> class.
@@ -4331,6 +4445,12 @@
             Returns a list of all unique message templates and their counts
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogLevel">
+            <summary>
+            Gets the current Serilog minimum log level
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogs(Umbraco.Core.Logging.Viewer.LogTimePeriod,System.Int32,System.Int32,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String,System.String[])">
             <summary>
             Returns the collection of logs
@@ -4370,6 +4490,12 @@
             <summary>
             Get all logs from your chosen data source back as Serilog LogEvents
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.LogViewerSourceBase.GetLogLevel">
+            <summary>
+            Get the Serilog minimum-level value from the config file. 
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Core.Logging.IProfilingLogger">
             <summary>
@@ -7381,6 +7507,117 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "P:Umbraco.Core.Migrations.MigrationExpressionBase.Name" -->
+        <member name="T:Umbraco.Core.Models.ContentEditing.ContentAppBadge">
+            <summary>
+            Represents a content app badge
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentEditing.ContentAppBadge.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.ContentEditing.ContentAppBadge"/> class.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentAppBadge.Count">
+            <summary>
+            Gets or sets the number displayed in the badge
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentAppBadge.Type">
+            <summary>
+            Gets or sets the type of badge to display
+            </summary>
+            <remarks>
+            <para>This controls the background color of the badge.</para>
+            <para>Warning will display a dark yellow badge</para>
+            <para>Alert will display a red badge</para>
+            <para>Default will display a turquoise badge</para>
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Models.ContentEditing.ContentAppBadgeType">
+            <summary>
+            Represent the content app badge types
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.ContentEditing.ContentApp">
+            <summary>
+            Represents a content app.
+            </summary>
+            <remarks>
+            <para>Content apps are editor extensions.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Name">
+            <summary>
+            Gets the name of the content app.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Alias">
+            <summary>
+            Gets the unique alias of the content app.
+            </summary>
+            <remarks>
+            <para>Must be a valid javascript identifier, ie no spaces etc.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Weight">
+            <summary>
+            Gets or sets the weight of the content app.
+            </summary>
+            <remarks>
+            <para>Content apps are ordered by weight, from left (lowest values) to right (highest values).</para>
+            <para>Some built-in apps have special weights: listview is -666, content is -100 and infos is +100.</para>
+            <para>The default weight is 0, meaning somewhere in-between content and infos, but weight could
+            be used for ordering between user-level apps, or anything really.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Icon">
+            <summary>
+            Gets the icon of the content app.
+            </summary>
+            <remarks>
+            <para>Must be a valid helveticons class name (see http://hlvticons.ch/).</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.View">
+            <summary>
+            Gets the view for rendering the content app.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.ViewModel">
+            <summary>
+            The view model specific to this app
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Active">
+            <summary>
+            Gets a value indicating whether the app is active.
+            </summary>
+            <remarks>
+            <para>Normally reserved for Angular to deal with but in some cases this can be set on the server side.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Badge">
+            <summary>
+            Gets or sets the content app badge.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.ContentEditing.IContentAppFactory">
+            <summary>
+            Represents a content app factory.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentEditing.IContentAppFactory.GetContentAppFor(System.Object,System.Collections.Generic.IEnumerable{Umbraco.Core.Models.Membership.IReadOnlyUserGroup})">
+            <summary>
+            Gets the content app for an object.
+            </summary>
+            <param name="source">The source object.</param>
+            <returns>The content app for the object, or null.</returns>
+            <remarks>
+            <para>The definition must determine, based on <paramref name="source"/>, whether
+            the content app should be displayed or not, and return either a <see cref="T:Umbraco.Core.Models.ContentEditing.ContentApp"/>
+            instance, or null.</para>
+            </remarks>
+        </member>
         <member name="M:Umbraco.Core.Models.Entities.EntityExtensions.UpdatingEntity(Umbraco.Core.Models.Entities.IEntity)">
             <summary>
             Updates the entity when it is being saved.
@@ -7405,6 +7642,12 @@
             <summary>
             Implements <see cref="T:Umbraco.Core.Models.Entities.IMediaEntitySlim"/>.
             </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.Entities.MemberEntitySlim.ContentTypeIcon">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Models.Entities.MemberEntitySlim.ContentTypeThumbnail">
+            <inheritdoc />
         </member>
         <member name="T:Umbraco.Core.Models.Entities.BeingDirty">
             <summary>
@@ -8075,6 +8318,20 @@
             nor indirectly (ImpactsAllCultures).
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Models.PagedResult">
+            <summary>
+            Represents a paged result for a model collection
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Models.PagedResult.GetSkipSize">
+            <summary>
+            Calculates the skip size based on the paged parameters specified
+            </summary>
+            <remarks>
+            Returns 0 if the page number or page size is zero
+            </remarks>
+        </member>
         <member name="T:Umbraco.Core.Models.PublishedContent.ILivePublishedModelFactory">
             <summary>
             Provides a live published model creation service.
@@ -8742,6 +8999,16 @@
             <param name="variations">The variations.</param>
             <remarks>Is used by <see cref="T:Umbraco.Core.Models.PublishedContent.PublishedContentType"/> constructor to create special property types.</remarks>
         </member>
+        <member name="M:Umbraco.Core.Models.PublishedContent.IPublishedContentTypeFactory.CreateCorePropertyType(Umbraco.Core.Models.PublishedContent.IPublishedContentType,System.String,System.Int32,Umbraco.Core.Models.ContentVariation)">
+            <summary>
+            Creates a core (non-user) published property type.
+            </summary>
+            <param name="contentType">The published content type owning the property.</param>
+            <param name="propertyTypeAlias">The property type alias.</param>
+            <param name="dataTypeId">The datatype identifier.</param>
+            <param name="variations">The variations.</param>
+            <remarks>Is used by <see cref="T:Umbraco.Core.Models.PublishedContent.PublishedContentType"/> constructor to create special property types.</remarks>
+        </member>
         <member name="M:Umbraco.Core.Models.PublishedContent.IPublishedContentTypeFactory.GetDataType(System.Int32)">
             <summary>
             Gets a published datatype.
@@ -9074,6 +9341,9 @@
             <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Models.PublishedContent.PublishedContentTypeFactory.CreatePropertyType(Umbraco.Core.Models.PublishedContent.IPublishedContentType,System.String,System.Int32,Umbraco.Core.Models.ContentVariation)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Models.PublishedContent.PublishedContentTypeFactory.CreateCorePropertyType(Umbraco.Core.Models.PublishedContent.IPublishedContentType,System.String,System.Int32,Umbraco.Core.Models.ContentVariation)">
             <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Models.PublishedContent.PublishedContentTypeFactory.CreatePropertyType(System.String,System.Int32,System.Boolean,Umbraco.Core.Models.ContentVariation)">
@@ -9652,81 +9922,6 @@
             Consent has been revoked.
             </summary>
         </member>
-        <member name="T:Umbraco.Core.Models.ContentEditing.ContentApp">
-            <summary>
-            Represents a content app.
-            </summary>
-            <remarks>
-            <para>Content apps are editor extensions.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Name">
-            <summary>
-            Gets the name of the content app.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Alias">
-            <summary>
-            Gets the unique alias of the content app.
-            </summary>
-            <remarks>
-            <para>Must be a valid javascript identifier, ie no spaces etc.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Weight">
-            <summary>
-            Gets or sets the weight of the content app.
-            </summary>
-            <remarks>
-            <para>Content apps are ordered by weight, from left (lowest values) to right (highest values).</para>
-            <para>Some built-in apps have special weights: listview is -666, content is -100 and infos is +100.</para>
-            <para>The default weight is 0, meaning somewhere in-between content and infos, but weight could
-            be used for ordering between user-level apps, or anything really.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Icon">
-            <summary>
-            Gets the icon of the content app.
-            </summary>
-            <remarks>
-            <para>Must be a valid helveticons class name (see http://hlvticons.ch/).</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.View">
-            <summary>
-            Gets the view for rendering the content app.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.ViewModel">
-            <summary>
-            The view model specific to this app
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Models.ContentEditing.ContentApp.Active">
-            <summary>
-            Gets a value indicating whether the app is active.
-            </summary>
-            <remarks>
-            <para>Normally reserved for Angular to deal with but in some cases this can be set on the server side.</para>
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Models.ContentEditing.IContentAppFactory">
-            <summary>
-            Represents a content app factory.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Models.ContentEditing.IContentAppFactory.GetContentAppFor(System.Object,System.Collections.Generic.IEnumerable{Umbraco.Core.Models.Membership.IReadOnlyUserGroup})">
-            <summary>
-            Gets the content app for an object.
-            </summary>
-            <param name="source">The source object.</param>
-            <returns>The content app for the object, or null.</returns>
-            <remarks>
-            <para>The definition must determine, based on <paramref name="source"/>, whether
-            the content app should be displayed or not, and return either a <see cref="T:Umbraco.Core.Models.ContentEditing.ContentApp"/>
-            instance, or null.</para>
-            </remarks>
-        </member>
         <member name="T:Umbraco.Core.Models.ContentRepositoryExtensions">
             <summary>
             Extension methods used to manipulate content variations by the document repository
@@ -9762,6 +9957,22 @@
             <param name="impact"></param>
             <returns>A value indicating whether it was possible to publish the names and values for the specified
             culture(s). The method may fail if required names are not set, but it does NOT validate property data</returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentRepositoryExtensions.UnpublishCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Returns false if the culture is already unpublished
+            </summary>
+            <param name="content"></param>
+            <param name="culture"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentRepositoryExtensions.ClearPublishInfo(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Returns false if the culture is already unpublished
+            </summary>
+            <param name="content"></param>
+            <param name="culture"></param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Models.ContentRepositoryExtensions.TouchCulture(Umbraco.Core.Models.IContentBase,System.String)">
             <summary>
@@ -12637,7 +12848,7 @@
         </member>
         <member name="P:Umbraco.Core.Models.IContentTypeBase.PropertyTypes">
             <summary>
-            Gets all local property types belonging to a group, across all local property groups.
+            Gets all local property types all local property groups or ungrouped.
             </summary>
         </member>
         <member name="P:Umbraco.Core.Models.IContentTypeBase.NoGroupPropertyTypes">
@@ -13796,14 +14007,6 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Umbraco.Core.Models.PagedResult`1.GetSkipSize">
-            <summary>
-            Calculates the skip size based on the paged parameters specified
-            </summary>
-            <remarks>
-            Returns 0 if the page number or page size is zero
-            </remarks>
-        </member>
         <member name="T:Umbraco.Core.Models.PartialView">
             <summary>
             Represents a Partial View file
@@ -14897,6 +15100,17 @@
             <summary>
             Determines whether an object has all required values for persistence.
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.PropertyEditors.ConfigurationFieldsExtensions.Add(System.Collections.Generic.List{Umbraco.Core.PropertyEditors.ConfigurationField},System.String,System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Adds a configuration field.
+            </summary>
+            <param name="fields">The list of configuration fields.</param>
+            <param name="key">The key (alias) of the field.</param>
+            <param name="name">The name (label) of the field.</param>
+            <param name="description">The description for the field.</param>
+            <param name="view">The path to the editor view to be used for the field.</param>
+            <param name="config">Optional configuration used for field's editor.</param>
         </member>
         <member name="T:Umbraco.Core.PropertyEditors.IIgnoreUserStartNodesConfig">
             <summary>
@@ -16534,11 +16748,23 @@
             Gets the children of the content item.
             </summary>
             <param name="content">The content item.</param>
-            <param name="culture">The specific culture to get the url children for. If null is used the current culture is used (Default is null).</param>
+            <param name="culture">
+            The specific culture to get the url children for. Default is null which will use the current culture in <see cref="T:Umbraco.Core.Models.PublishedContent.VariationContext"/>        
+            </param>
             <remarks>
             <para>Gets children that are available for the specified culture.</para>
             <para>Children are sorted by their sortOrder.</para>
-            <para>The '*' culture and supported and returns everything.</para>
+            <para>
+            For culture, 
+            if null is used the current culture is used.
+            If an empty string is used only invariant children are returned.
+            If "*" is used all children are returned.
+            </para>
+            <para>
+            If a variant culture is specified or there is a current culture in the <see cref="T:Umbraco.Core.Models.PublishedContent.VariationContext"/> then the Children returned
+            will include both the variant children matching the culture AND the invariant children because the invariant children flow with the current culture.
+            However, if an empty string is specified only invariant children are returned.
+            </para>
             </remarks>
         </member>
         <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LoggedInUtc">
@@ -16846,6 +17072,20 @@
             <remarks>Exposes shared functionality</remarks>
             <typeparam name="TEntity"></typeparam>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.Implement.ContentTypeRepositoryBase`1.CorrectPropertyTypeVariations(Umbraco.Core.Models.IContentTypeComposition)">
+            <summary>
+            Corrects the property type variations for the given entity
+            to make sure the property type variation is compatible with the
+            variation set on the entity itself.        
+            </summary>
+            <param name="entity">Entity to correct properties for</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.Implement.ContentTypeRepositoryBase`1.ValidateVariations(Umbraco.Core.Models.IContentTypeComposition)">
+            <summary>
+            Ensures that no property types are flagged for a variance that is not supported by the content type itself
+            </summary>
+            <param name="entity">The entity for which the property types will be validated</param>
+        </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.Implement.ContentTypeRepositoryBase`1.Clear301Redirects(Umbraco.Core.Models.IContentTypeComposition)">
             <summary>
             Clear any redirects associated with content for a content type
@@ -16882,6 +17122,18 @@
             <param name="targetLanguageId">The target language (can be null ie invariant)</param>
             <param name="propertyTypeIds">The property type identifiers.</param>
             <param name="contentTypeIds">The content type identifiers.</param>
+        </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.Implement.ContentTypeRepositoryBase`1.RenormalizeDocumentEditedFlags(System.Collections.Generic.IReadOnlyCollection{System.Int32},System.Collections.Generic.IReadOnlyCollection{System.Int32})">
+            <summary>
+            Re-normalizes the edited value in the umbracoDocumentCultureVariation and umbracoDocument table when variations are changed
+            </summary>
+            <param name="propertyTypeIds"></param>
+            <param name="contentTypeIds"></param>
+            <remarks>
+            If this is not done, then in some cases the "edited" value for a particular culture for a document will remain true when it should be false
+            if the property was changed to invariant. In order to do this we need to recalculate this value based on the values stored for each
+            property, culture and current/published version.
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.Implement.ContentTypeRepositoryBase`1.AssignDataTypeFromPropertyEditor(Umbraco.Core.Models.PropertyType)">
             <summary>
@@ -17740,6 +17992,13 @@
             <param name="contentPath"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IDataTypeRepository.FindUsages(System.Int32)">
+            <summary>
+            Returns a dictionary of content type <see cref="T:Umbraco.Core.Udi"/>s and the property type aliases that use a <see cref="T:Umbraco.Core.Models.IDataType"/>
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.ILanguageRepository.GetIdByIsoCode(System.String,System.Boolean)">
             <summary>
             Gets a language identifier from its ISO code.
@@ -18233,7 +18492,10 @@
             <param name="properties">The properties to map</param>
             <param name="languageRepository"></param>
             <param name="edited">out parameter indicating that one or more properties have been edited</param>
-            <param name="editedCultures">out parameter containing a collection of edited cultures when the contentVariation varies by culture</param>
+            <param name="editedCultures">
+            Out parameter containing a collection of edited cultures when the contentVariation varies by culture.
+            The value of this will be used to populate the edited cultures in the umbracoDocumentCultureVariation table.
+            </param>
             <returns></returns>
         </member>
         <member name="T:Umbraco.Core.Persistence.Mappers.AuditEntryMapper">
@@ -21600,6 +21862,11 @@
             <para>Matches "(table.column) AS (alias)" where table, column and alias are properly escaped.</para>
             </remarks>
         </member>
+        <member name="P:Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider.DefaultIsolationLevel">
+            <summary>
+            Returns the default isolation level for the database
+            </summary>
+        </member>
         <member name="M:Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider.GetConstraintsPerTable(NPoco.IDatabase)">
             <summary>
             Returns all constraints defined in the database (Primary keys, foreign keys, unique constraints...) (does not include indexes)
@@ -21886,12 +22153,14 @@
             <param name="factory"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.PublishedModelFactoryExtensions.WithSafeLiveFactory(Umbraco.Core.Models.PublishedContent.IPublishedModelFactory,System.Action)">
+        <member name="M:Umbraco.Core.PublishedModelFactoryExtensions.WithSafeLiveFactoryReset(Umbraco.Core.Models.PublishedContent.IPublishedModelFactory,System.Action)">
             <summary>
-            Executes an action with a safe live factory
+            Sets a flag to reset the ModelsBuilder models if the <see cref="T:Umbraco.Core.Models.PublishedContent.IPublishedModelFactory"/> is <see cref="T:Umbraco.Core.Models.PublishedContent.ILivePublishedModelFactory"/>
             </summary>
+            <param name="factory"></param>
+            <param name="action"></param>
             <remarks>
-            <para>If the factory is a live factory, ensures it is refreshed and locked while executing the action.</para>
+            This does not recompile the pure live models, only sets a flag to tell models builder to recompile when they are requested.
             </remarks>
         </member>
         <member name="M:Umbraco.Core.Services.PropertyValidationService.IsPropertyDataValid(Umbraco.Core.Models.IContent,Umbraco.Core.Models.Property[]@,Umbraco.Core.Models.CultureImpact)">
@@ -22376,6 +22645,25 @@
              <para>The document is *always* saved, even when publishing fails.</para>
              </remarks>
         </member>
+        <member name="M:Umbraco.Core.Services.Implement.ContentService.CommitDocumentChangesInternal(Umbraco.Core.Scoping.IScope,Umbraco.Core.Models.IContent,Umbraco.Core.Events.ContentSavingEventArgs,System.Collections.Generic.IReadOnlyCollection{Umbraco.Core.Models.ILanguage},System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Handles a lot of business logic cases for how the document should be persisted
+            </summary>
+            <param name="scope"></param>
+            <param name="content"></param>
+            <param name="saveEventArgs"></param>
+            <param name="userId"></param>
+            <param name="raiseEvents"></param>
+            <param name="branchOne"></param>
+            <param name="branchRoot"></param>
+            <returns></returns>
+            <remarks>
+            <para>
+            Business logic cases such: as unpublishing a mandatory culture, or unpublishing the last culture, checking for pending scheduled publishing, etc... is dealt with in this method.
+            There is quite a lot of cases to take into account along with logic that needs to deal with scheduled saving/publishing, branch saving/publishing, etc...       
+            </para>
+            </remarks>
+        </member>
         <member name="M:Umbraco.Core.Services.Implement.ContentService.PerformScheduledPublish(System.DateTime)">
             <inheritdoc />
         </member>
@@ -22634,7 +22922,7 @@
             Occurs after a blueprint has been deleted.
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Services.Implement.ContentService.StrategyCanPublish(Umbraco.Core.Scoping.IScope,Umbraco.Core.Models.IContent,System.Boolean,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyCollection{System.String},Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.ContentSavingEventArgs)">
+        <member name="M:Umbraco.Core.Services.Implement.ContentService.StrategyCanPublish(Umbraco.Core.Scoping.IScope,Umbraco.Core.Models.IContent,System.Boolean,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyCollection{System.String},Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.ContentSavingEventArgs,System.Collections.Generic.IReadOnlyCollection{Umbraco.Core.Models.ILanguage})">
             <summary>
             Ensures that a document can be published
             </summary>
@@ -22657,7 +22945,7 @@
             <param name="culturesPublishing"></param>
             <returns></returns>
             <remarks>
-            It is assumed that all publishing checks have passed before calling this method like <see cref="M:Umbraco.Core.Services.Implement.ContentService.StrategyCanPublish(Umbraco.Core.Scoping.IScope,Umbraco.Core.Models.IContent,System.Boolean,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyCollection{System.String},Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.ContentSavingEventArgs)"/>
+            It is assumed that all publishing checks have passed before calling this method like <see cref="M:Umbraco.Core.Services.Implement.ContentService.StrategyCanPublish(Umbraco.Core.Scoping.IScope,Umbraco.Core.Models.IContent,System.Boolean,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyCollection{System.String},Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.ContentSavingEventArgs,System.Collections.Generic.IReadOnlyCollection{Umbraco.Core.Models.ILanguage})"/>
             </remarks>
         </member>
         <member name="M:Umbraco.Core.Services.Implement.ContentService.StrategyCanUnpublish(Umbraco.Core.Scoping.IScope,Umbraco.Core.Models.IContent,Umbraco.Core.Events.EventMessages)">
@@ -25525,7 +25813,14 @@
             <param name="mediaService"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetAvailableCompositeContentTypes(Umbraco.Core.Services.IContentTypeService,Umbraco.Core.Models.IContentTypeComposition,Umbraco.Core.Models.IContentTypeComposition[],System.String[],System.String[])">
+        <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetAllElementTypes(Umbraco.Core.Services.IContentTypeService)">
+            <summary>
+            Gets all of the element types (e.g. content types that have been marked as an element type).
+            </summary>
+            <param name="contentTypeService">The content type service.</param>
+            <returns>Returns all the element types.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetAvailableCompositeContentTypes(Umbraco.Core.Services.IContentTypeService,Umbraco.Core.Models.IContentTypeComposition,Umbraco.Core.Models.IContentTypeComposition[],System.String[],System.String[],System.Boolean)">
             <summary>
             Returns the available composite content types for a given content type
             </summary>
@@ -25541,6 +25836,7 @@
             This is required because in the case of creating/modifying a content type because new property types being added to it are not yet persisted so cannot
             be looked up via the db, they need to be passed in.
             </param>
+            <param name="isElement">Wether the composite content types should be applicable for an element type</param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetDirectOrIndirect(Umbraco.Core.Models.IContentTypeComposition)">
@@ -26144,6 +26440,13 @@
             <summary>
             Defines the DataType Service, which is an easy access to operations involving <see cref="T:Umbraco.Core.Models.IDataType"/>
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IDataTypeService.GetReferences(System.Int32)">
+            <summary>
+            Returns a dictionary of content type <see cref="T:Umbraco.Core.Udi"/>s and the property type aliases that use a <see cref="T:Umbraco.Core.Models.IDataType"/>
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Services.IDataTypeService.GetDataType(System.String)">
             <summary>
@@ -29121,6 +29424,11 @@
             The specified document culture was unpublished, and was a mandatory culture, therefore the document itself was unpublished.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Services.PublishResultType.SuccessUnpublishLastCulture">
+            <summary>
+            The specified document culture was unpublished, and was the last published culture in the document, therefore the document itself was unpublished.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Services.PublishResultType.SuccessMixedCulture">
             <summary>
             Specified document cultures were successfully published and unpublished (in the same operation).
@@ -29178,7 +29486,7 @@
         </member>
         <member name="F:Umbraco.Core.Services.PublishResultType.FailedPublishNothingToPublish">
             <summary>
-            The document could not be published because it has no publishing flags or values.
+            The document could not be published because it has no publishing flags or values or if its a variant document, no cultures were specified to be published.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Services.PublishResultType.FailedPublishMandatoryCultureMissing">
@@ -29573,11 +29881,6 @@
             Gets a value indicating whether umbraco should force a secure (https) connection to the backoffice.
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettingsExtensions.Reset">
-            <summary>
-            Used in unit testing to reset all config items, this is automatically called by GlobalSettings.Reset()
-            </summary>
-        </member>
         <member name="M:Umbraco.Core.Configuration.GlobalSettingsExtensions.GetUmbracoMvcArea(Umbraco.Core.Configuration.IGlobalSettings)">
              <summary>
              This returns the string of the MVC Area route.
@@ -29590,27 +29893,6 @@
              We also make sure that the virtual directory (SystemDirectories.Root) is stripped off first, otherwise we'd end up with something
              like "MyVirtualDirectory-Umbraco" instead of just "Umbraco".
              </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettingsExtensions.IsReservedPathOrUrl(Umbraco.Core.Configuration.IGlobalSettings,System.String)">
-            <summary>
-            Determines whether the specified URL is reserved or is inside a reserved path.
-            </summary>
-            <param name="globalSettings"></param>
-            <param name="url">The URL to check.</param>
-            <returns>
-                <c>true</c> if the specified URL is reserved; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettingsExtensions.IsReservedPathOrUrl(Umbraco.Core.Configuration.IGlobalSettings,System.String,System.Web.HttpContextBase,System.Web.Routing.RouteCollection)">
-            <summary>
-            Determines whether the current request is reserved based on the route table and
-            whether the specified URL is reserved or is inside a reserved path.
-            </summary>
-            <param name="globalSettings"></param>
-            <param name="url"></param>
-            <param name="httpContext"></param>
-            <param name="routes">The route collection to lookup the request in</param>
-            <returns></returns>
         </member>
         <member name="T:Umbraco.Core.Configuration.IGlobalSettings">
             <summary>
@@ -30723,14 +31005,14 @@
             ListView.
             </summary>
         </member>
-        <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.MacroContainer">
-            <summary>
-            Macro Container.
-            </summary>
-        </member>
         <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.MediaPicker">
             <summary>
             Media Picker.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.MultipleMediaPicker">
+            <summary>
+            Multiple Media Picker.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.MemberPicker">
@@ -30838,6 +31120,11 @@
             The value type of property data (i.e., string, integer, etc)
             </summary>
             <remarks>Must be a valid <see cref="T:Umbraco.Core.PropertyEditors.ValueTypes"/> value.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Constants.PropertyEditors.Groups">
+            <summary>
+            Defines Umbraco's built-in property editor groups.
+            </summary>
         </member>
         <member name="T:Umbraco.Core.Constants.PropertyTypeGroups">
             <summary>
@@ -34137,76 +34424,6 @@
             <param name="items"></param>
             <returns></returns>
         </member>
-        <member name="T:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException">
-            <summary>
-            The exception that is thrown when a null reference, or an empty argument,
-            is passed to a method that does not accept it as a valid argument.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException"/> class
-            with the name of the parameter that caused this exception.
-            </summary>
-            <param name="paramName">The named of the parameter that caused the exception.</param>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.ArgumentNullOrEmptyException"/> class
-            with a specified error message and the name of the parameter that caused this exception.
-            </summary>
-            <param name="paramName">The named of the parameter that caused the exception.</param>
-            <param name="message">A message that describes the error.</param>
-        </member>
-        <member name="T:Umbraco.Core.Exceptions.BootFailedException">
-            <summary>
-            An exception that is thrown if the Umbraco application cannot boot.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Exceptions.BootFailedException.DefaultMessage">
-            <summary>
-            Defines the default boot failed exception message.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.BootFailedException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Exception"/> class with a specified error message.
-            </summary>
-            <param name="message">The message that describes the error. </param>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.BootFailedException.#ctor(System.String,System.Exception)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Exception"/> class with a specified error message
-            and a reference to the inner exception which is the cause of this exception.
-            </summary>
-            <param name="message">The message that describes the error. </param>
-            <param name="inner">The inner exception, or null.</param>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.BootFailedException.Rethrow(Umbraco.Core.Exceptions.BootFailedException)">
-            <summary>
-            Rethrows a captured <see cref="T:Umbraco.Core.Exceptions.BootFailedException"/>.
-            </summary>
-            <remarks>The exception can be null, in which case a default message is used.</remarks>
-        </member>
-        <member name="T:Umbraco.Core.Exceptions.WontImplementException">
-            <summary>
-            The exception that is thrown when a requested method or operation is not, and will not be, implemented.
-            </summary>
-            <remarks>The <see cref="T:System.NotImplementedException"/> is to be used when some code is not implemented,
-            but should eventually be implemented (i.e. work in progress) and is reported by tools such as ReSharper.
-            This exception is to be used when some code is not implemented, and is not meant to be, for whatever
-            reason.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.WontImplementException.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.WontImplementException"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Exceptions.WontImplementException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.WontImplementException"/> class with a specified reason message.
-            </summary>
-        </member>
         <member name="T:Umbraco.Core.ExpressionHelper">
             <summary>
             A set of helper methods for dealing with expressions
@@ -36659,29 +36876,32 @@
             <summary>
             Generates a hash of a string based on the FIPS compliance setting.
             </summary>
-            <param name="str">Refers to itself</param>
-            <returns>The hashed string</returns>
+            <param name="str">The <see cref="T:System.String" /> to hash.</param>
+            <returns>
+            The hashed string.
+            </returns>
         </member>
-        <member name="M:Umbraco.Core.StringExtensions.ToMd5(System.String)">
+        <member name="M:Umbraco.Core.StringExtensions.GenerateHash``1(System.String)">
             <summary>
-            Converts the string to MD5
+            Generate a hash of a string based on the specified hash algorithm.
             </summary>
-            <param name="stringToConvert">Refers to itself</param>
-            <returns>The MD5 hashed string</returns>
-        </member>
-        <member name="M:Umbraco.Core.StringExtensions.ToSHA1(System.String)">
-            <summary>
-            Converts the string to SHA1
-            </summary>
-            <param name="stringToConvert">refers to itself</param>
-            <returns>The SHA1 hashed string</returns>
+            <typeparam name="T">The hash algorithm implementation to use.</typeparam>
+            <param name="str">The <see cref="T:System.String" /> to hash.</param>
+            <returns>
+            The hashed string.
+            </returns>
         </member>
         <member name="M:Umbraco.Core.StringExtensions.GenerateHash(System.String,System.String)">
-            <summary>Generate a hash of a string based on the hashType passed in
+            <summary>
+            Generate a hash of a string based on the specified <paramref name="hashType" />.
             </summary>
-            <param name="str">Refers to itself</param>
-            <param name="hashType">String with the hash type.  See remarks section of the CryptoConfig Class in MSDN docs for a list of possible values.</param>
-            <returns>The hashed string</returns>
+            <param name="str">The <see cref="T:System.String" /> to hash.</param>
+            <param name="hashType">The hash algorithm implementation to use.</param>
+            <returns>
+            The hashed string.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">No hashing type found by name <paramref name="hashType" />.</exception>
+            <seealso cref="!:https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.hashalgorithm.create#System_Security_Cryptography_HashAlgorithm_Create_System_String_" />
         </member>
         <member name="M:Umbraco.Core.StringExtensions.UrlTokenDecode(System.String)">
             <summary>

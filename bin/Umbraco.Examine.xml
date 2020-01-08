@@ -59,6 +59,14 @@
             myFieldName_en-us will match the "en-us"
             </remarks>
         </member>
+        <member name="M:Umbraco.Examine.ExamineExtensions.ConfigureIndexes(Examine.IExamineManager,Umbraco.Core.IMainDom,Umbraco.Core.Logging.ILogger)">
+            <summary>
+            Called on startup to configure each index.
+            </summary>
+            <remarks>
+            Configures and unlocks all Lucene based indexes registered with the <see cref="T:Examine.IExamineManager"/>.
+            </remarks>
+        </member>
         <member name="M:Umbraco.Examine.ExamineExtensions.GetCultureFields(Umbraco.Examine.IUmbracoIndex,System.String)">
             <summary>
             Returns all index fields that are culture specific (suffixed)
@@ -67,7 +75,15 @@
             <param name="culture"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Examine.ExamineExtensions.UnlockLuceneIndexes(Examine.IExamineManager,Umbraco.Core.Logging.ILogger)">
+        <member name="M:Umbraco.Examine.ExamineExtensions.GetCultureAndInvariantFields(Umbraco.Examine.IUmbracoIndex,System.String)">
+            <summary>
+            Returns all index fields that are culture specific (suffixed) or invariant
+            </summary>
+            <param name="index"></param>
+            <param name="culture"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Examine.ExamineExtensions.ConfigureLuceneIndexes(Examine.IExamineManager,Umbraco.Core.Logging.ILogger,System.Boolean)">
             <summary>
             Forcibly unlocks all lucene based indexes
             </summary>
@@ -171,6 +187,12 @@
             Populate indexers
             </summary>
             <param name="indexes"></param>
+        </member>
+        <member name="M:Umbraco.Examine.UmbracoIndexConfig.GetMemberValueSetValidator">
+            <summary>
+            Returns the <see cref="T:Examine.IValueSetValidator"/> for the member indexer
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Examine.IndexPopulator`1">
             <summary>
