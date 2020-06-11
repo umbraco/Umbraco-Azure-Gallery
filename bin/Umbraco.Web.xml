@@ -533,7 +533,7 @@
             All property data validation goes into the model state with a prefix of "Properties"
             </remarks>
         </member>
-        <member name="M:Umbraco.Web.Editors.Filters.ContentModelValidator`3.ValidatePropertyValue(`1,`2,Umbraco.Core.PropertyEditors.IDataEditor,Umbraco.Web.Models.ContentEditing.ContentPropertyDto,System.Object,System.Web.Http.ModelBinding.ModelStateDictionary)">
+        <member name="M:Umbraco.Web.Editors.Filters.ContentModelValidator`3.ValidatePropertyValue(`1,`2,Umbraco.Core.PropertyEditors.IDataEditor,Umbraco.Web.Models.ContentEditing.ContentPropertyDto,System.Object,System.Web.Http.ModelBinding.ModelStateDictionary,System.String[],System.String[])">
             <summary>
             Validates a property's value and adds the error to model state if found
             </summary>
@@ -543,6 +543,8 @@
             <param name="property"></param>
             <param name="postedValue"></param>
             <param name="modelState"></param>
+            <param name="requiredDefaultMessages"></param>
+            <param name="formatDefaultMessages"></param>
         </member>
         <member name="T:Umbraco.Web.Editors.PackageController">
             <summary>
@@ -572,6 +574,11 @@
         <member name="T:Umbraco.Web.Editors.MacrosController">
             <summary>
             The API controller used for editing dictionary items
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Editors.MacrosController.MacrosControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
             </summary>
         </member>
         <member name="M:Umbraco.Web.Editors.MacrosController.Create(System.String)">
@@ -655,7 +662,6 @@
             Finds partial view files in app plugin folders.
             </summary>
             <returns>
-            The <see cref="!:IEnumerable"/>.
             </returns>
         </member>
         <member name="M:Umbraco.Web.Editors.MacrosController.FindPartialViewFilesInFolder(System.String,System.String,System.String)">
@@ -674,6 +680,13 @@
             <returns>
             The <see cref="!:IEnumerable"/>.
             </returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MacrosController.MapToDisplay(Umbraco.Core.Models.IMacro)">
+            <summary>
+            Used to map an <see cref="T:Umbraco.Core.Models.IMacro"/> instance to a <see cref="T:Umbraco.Web.Models.ContentEditing.MacroDisplay"/>
+            </summary>
+            <param name="macro"></param>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Web.Editors.RelationTypeController">
             <summary>
@@ -1131,6 +1144,13 @@
             <param name="display"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Web.Editors.TourController.GetToursForDoctype(System.String)">
+            <summary>
+            Gets a tours for a specific doctype
+            </summary>
+            <param name="doctypeAlias">The documenttype alias</param>
+            <returns>A <see cref="T:Umbraco.Web.Models.BackOfficeTour"/></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.UserEditorAuthorizationHelper.IsAuthorized(Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Models.Membership.IUser,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Checks if the current user has access to save the user data
@@ -1457,21 +1477,21 @@
         </member>
         <member name="M:Umbraco.Web.Editors.ContentController.GetById(System.Guid)">
             <summary>
-            Gets the content json for the content id
+            Gets the content json for the content guid
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.ContentController.GetById(Umbraco.Core.Udi)">
             <summary>
-            Gets the content json for the content id
+            Gets the content json for the content udi
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.ContentController.GetEmpty(System.String,System.Int32)">
             <summary>
-            Gets an empty content item for the
+            Gets an empty content item for the document type.
             </summary>
             <param name="contentTypeAlias"></param>
             <param name="parentId"></param>
@@ -1837,6 +1857,11 @@
             Content Types, Member Types or Media Types ... and of course to Data Types
             </remarks>
         </member>
+        <member name="T:Umbraco.Web.Editors.DataTypeController.DataTypeControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.Editors.DataTypeController.GetByName(System.String)">
             <summary>
             Gets data type by name
@@ -1847,6 +1872,20 @@
         <member name="M:Umbraco.Web.Editors.DataTypeController.GetById(System.Int32)">
             <summary>
             Gets the datatype json for the datatype id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.DataTypeController.GetById(System.Guid)">
+            <summary>
+            Gets the datatype json for the datatype guid
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.DataTypeController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets the datatype json for the datatype udi
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -2209,6 +2248,14 @@
             <param name="id"></param>
             <param name="type"></param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.EntityController.GetUrl(Umbraco.Core.Udi,System.String)">
+            <summary>
+            Gets the url of an entity
+            </summary>
+            <param name="udi">UDI of the entity to fetch URL for</param>
+            <param name="culture">The culture to fetch the URL for</param>
+            <returns>The URL or path to the item</returns>
         </member>
         <member name="M:Umbraco.Web.Editors.EntityController.GetUrl(System.Int32,Umbraco.Web.Models.ContentEditing.UmbracoEntityTypes,System.String)">
             <summary>
@@ -3040,8 +3087,76 @@
         </member>
         <member name="T:Umbraco.Web.Install.InstallException">
             <summary>
-            Used for steps to be able to return a json structure back to the UI
+            Used for steps to be able to return a JSON structure back to the UI.
             </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="P:Umbraco.Web.Install.InstallException.View">
+            <summary>
+            Gets the view.
+            </summary>
+            <value>
+            The view.
+            </value>
+        </member>
+        <member name="P:Umbraco.Web.Install.InstallException.ViewModel">
+            <summary>
+            Gets the view model.
+            </summary>
+            <value>
+            The view model.
+            </value>
+            <remarks>
+            This object is not included when serializing.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Install.InstallException" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Install.InstallException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.#ctor(System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Install.InstallException" /> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="viewModel">The view model.</param>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.#ctor(System.String,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Install.InstallException" /> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="view">The view.</param>
+            <param name="viewModel">The view model.</param>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Install.InstallException" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Install.InstallException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="M:Umbraco.Web.Install.InstallException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            When overridden in a derived class, sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with information about the exception.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">info</exception>
         </member>
         <member name="T:Umbraco.Web.Install.InstallStatusTracker">
             <summary>
@@ -3208,8 +3323,8 @@
             <summary>
             This will test the directories for write access
             </summary>
-            <param name="directories"></param>
-            <param name="errorReport"></param>
+            <param name="dirs"></param>
+            <param name="errors"></param>
             <param name="writeCausesRestart">
             If this is false, the easiest way to test for write access is to write a temp file, however some folder will cause
             an App Domain restart if a file is written to the folder, so in that case we need to use the ACL APIs which aren't as
@@ -3873,15 +3988,34 @@
         </member>
         <member name="T:Umbraco.Web.Media.Exif.NotValidExifFileException">
             <summary>
-            The exception that is thrown when the format of the JPEG/Exif file
-            could not be understood.
+            The exception that is thrown when the format of the JPEG/EXIF file could not be understood.
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidExifFileException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidExifFileException" /> class.
             </summary>
         </member>
-        <member name="T:Umbraco.Web.Media.Exif.UnknownEnumTypeException">
+        <member name="M:Umbraco.Web.Media.Exif.NotValidExifFileException.#ctor(System.String)">
             <summary>
-            The exception that is thrown when an invalid enum type is given to an
-            ExifEnumProperty.
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidExifFileException" /> class.
             </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidExifFileException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidExifFileException" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidExifFileException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidExifFileException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Umbraco.Web.Media.Exif.ExifEnumProperty`1">
             <summary>
@@ -4741,34 +4875,129 @@
             Gets the image format.
             </summary>
         </member>
-        <member name="T:Umbraco.Web.Media.Exif.NotValidImageFileException">
-            <summary>
-            The exception that is thrown when the format of the image file
-            could not be understood.
-            </summary>
-        </member>
         <member name="T:Umbraco.Web.Media.Exif.NotValidJPEGFileException">
             <summary>
-            The exception that is thrown when the format of the JPEG file
-            could not be understood.
+            The exception that is thrown when the format of the JPEG file could not be understood.
             </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidJPEGFileException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidJPEGFileException" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidJPEGFileException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidJPEGFileException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidJPEGFileException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidJPEGFileException" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidJPEGFileException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidJPEGFileException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Umbraco.Web.Media.Exif.NotValidTIFFileException">
             <summary>
-            The exception that is thrown when the format of the TIFF file
-            could not be understood.
+            The exception that is thrown when the format of the TIFF file could not be understood.
             </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFileException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFileException" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFileException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFileException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFileException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFileException" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFileException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFileException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Umbraco.Web.Media.Exif.NotValidTIFFHeader">
             <summary>
-            The exception that is thrown when the format of the TIFF header
-            could not be understood.
+            The exception that is thrown when the format of the TIFF header could not be understood.
             </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFHeader.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFHeader" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFHeader.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFHeader" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFHeader.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFHeader" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.NotValidTIFFHeader.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.NotValidTIFFHeader" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Umbraco.Web.Media.Exif.SectionExceeds64KBException">
             <summary>
             The exception that is thrown when the length of a section exceeds 64 kB.
             </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.SectionExceeds64KBException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.SectionExceeds64KBException" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.SectionExceeds64KBException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.SectionExceeds64KBException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.SectionExceeds64KBException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.SectionExceeds64KBException" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Media.Exif.SectionExceeds64KBException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Media.Exif.SectionExceeds64KBException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Umbraco.Web.Media.Exif.JPEGFile">
             <summary>
@@ -5641,11 +5870,6 @@
             Gets or sets the Child's object type name.
             </summary>
         </member>
-        <member name="P:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay.Relations">
-            <summary>
-            Gets or sets the relations associated with this relation type.
-            </summary>
-        </member>
         <member name="P:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay.Notifications">
             <summary>
             This is used to add custom localized messages/strings to the response for the app to use for localized UI purposes.
@@ -5771,6 +5995,11 @@
         <member name="P:Umbraco.Web.Models.ContentEditing.ContentVariantSave.Culture">
             <summary>
             The culture of this variant, if this is invariant than this is null or empty
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.Models.ContentEditing.ContentVariantSave.Segment">
+            <summary>
+            The segment of this variant, if this is invariant than this is null or empty
             </summary>
         </member>
         <member name="P:Umbraco.Web.Models.ContentEditing.ContentVariantSave.Save">
@@ -7122,6 +7351,15 @@
             is an invariant property then this will be a null value.
             </remarks>
         </member>
+        <member name="P:Umbraco.Web.Models.ContentEditing.ContentPropertyBasic.Segment">
+            <summary>
+            The segment of the property
+            </summary>
+            <remarks>
+            The segment value of a property can always be null but can only have a non-null value
+            when the property can be varied by segment.
+            </remarks>
+        </member>
         <member name="P:Umbraco.Web.Models.ContentEditing.ContentPropertyBasic.PropertyEditor">
             <summary>
             Used internally during model mapping
@@ -7172,9 +7410,19 @@
             Gets the context culture.
             </summary>
         </member>
+        <member name="M:Umbraco.Web.Models.Mapping.MapperContextExtensions.GetSegment(Umbraco.Core.Mapping.MapperContext)">
+            <summary>
+            Gets the context segment.
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.Models.Mapping.MapperContextExtensions.SetCulture(Umbraco.Core.Mapping.MapperContext,System.String)">
             <summary>
             Sets a context culture.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Models.Mapping.MapperContextExtensions.SetSegment(Umbraco.Core.Mapping.MapperContext,System.String)">
+            <summary>
+            Sets a context segment.
             </summary>
         </member>
         <member name="M:Umbraco.Web.Models.Mapping.MapperContextExtensions.GetIncludedProperties(Umbraco.Core.Mapping.MapperContext)">
@@ -7243,6 +7491,15 @@
             allow that.
             </remarks>
         </member>
+        <member name="M:Umbraco.Web.Models.Mapping.ContentVariantMapper.GetSegments(Umbraco.Core.Models.IContent)">
+            <summary>
+            Returns all segments assigned to the content
+            </summary>
+            <param name="content"></param>
+            <returns>
+            Returns all segments assigned to the content including 'null' values
+            </returns>
+        </member>
         <member name="M:Umbraco.Web.Models.Mapping.PropertyTypeGroupMapper`1.GetContentTypeForPropertyGroup(Umbraco.Core.Models.IContentTypeComposition,System.Int32)">
             <summary>
             Gets the content type that defines a property group, within a composition.
@@ -7305,6 +7562,23 @@
             <summary>
             Declares how model mappings for content
             </summary>
+        </member>
+        <member name="M:Umbraco.Web.Models.Mapping.ContentMapDefinition.DetermineIsChildOfListView(Umbraco.Core.Models.IContent,Umbraco.Core.Mapping.MapperContext)">
+            <summary>
+            Checks if the content item is a descendant of a list view
+            </summary>
+            <param name="source"></param>
+            <param name="context"></param>
+            <returns>
+            Returns true if the content item is a descendant of a list view and where the content is
+            not a current user's start node.
+            </returns>
+            <remarks>
+            We must check if it's the current user's start node because in that case we will actually be
+            rendering the tree node underneath the list view to visually show context. In this case we return
+            false because the item is technically not being rendered as part of a list view but instead as a
+            real tree node. If we didn't perform this check then tree syncing wouldn't work correctly.
+            </remarks>
         </member>
         <member name="M:Umbraco.Web.Models.Mapping.TabsAndPropertiesMapper.GetCustomGenericProperties(Umbraco.Core.Models.IContentBase)">
             <summary>
@@ -8225,7 +8499,18 @@
             </summary>
             <seealso cref="T:System.Web.HttpException" />
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" -->
+        <member name="M:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that holds the contextual information about the source or destination.</param>
+        </member>
         <member name="M:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.HttpUmbracoFormRouteStringException" /> class.
@@ -8351,6 +8636,37 @@
             <summary>
             A marker interface to designate that a controller will be used for Umbraco front-end requests and/or route hijacking
             </summary>
+        </member>
+        <member name="T:Umbraco.Web.Mvc.ModelBindingException">
+            <summary>
+            The exception that is thrown when an error occurs while binding a source to a model.
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Umbraco.Web.Mvc.ModelBindingException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.ModelBindingException" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.ModelBindingException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.ModelBindingException" /> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.ModelBindingException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.ModelBindingException" /> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.ModelBindingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Mvc.ModelBindingException" /> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         </member>
         <member name="T:Umbraco.Web.Mvc.RenderIndexActionSelectorAttribute">
             <summary>
@@ -9746,6 +10062,15 @@
             Initializes a new instance of the <see cref="T:Umbraco.Web.PropertyEditors.ParameterEditors.ContentTypeParameterEditor"/> class.
             </summary>
         </member>
+        <member name="M:Umbraco.Web.PropertyEditors.RichTextEditorPastedImages.FindAndPersistPastedTempImages(System.String,System.Guid,System.Int32)">
+            <summary>
+            Used by the RTE (and grid RTE) for drag/drop/persisting images
+            </summary>
+            <param name="html"></param>
+            <param name="mediaParentFolder"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Web.PropertyEditors.ValueConverters.NestedContentManyValueConverter">
             <inheritdoc />
             <summary>
@@ -9981,6 +10306,26 @@
         <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentPropertyValueEditor.Configuration">
             <inheritdoc />
         </member>
+        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.PropKey">
+            <summary>
+            The current property key being iterated for the row value
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.PropType">
+            <summary>
+            The <see cref="T:Umbraco.Core.Models.PropertyType"/> of the value (if any), this may be null
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.JsonRowValue">
+            <summary>
+            The json values for the current row
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.RowIndex">
+            <summary>
+            The Nested Content row index
+            </summary>
+        </member>
         <member name="T:Umbraco.Web.PropertyEditors.RichTextConfiguration">
             <summary>
             Represents the configuration for the rich text value editor.
@@ -10102,6 +10447,13 @@
             <param name="segment"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Web.PropertyEditors.GridPropertyEditor.GridPropertyValueEditor.GetReferences(System.Object)">
+            <summary>
+            Resolve references from <see cref="T:Umbraco.Core.PropertyEditors.IDataValueEditor"/> values
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Web.PropertyEditors.TagsDataController">
             <summary>
             A controller used for type-ahead values for tags
@@ -10151,7 +10503,7 @@
             <summary>
             Gets a value indicating whether a property is an image cropper field.
             </summary>
-            <param name="property">The property.</param>        
+            <param name="property">The property.</param>
             <returns>A value indicating whether a property is an image cropper field, and (optionally) has a non-empty value.</returns>
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.ImageCropperPropertyEditor.GetJObject(System.String,System.Boolean)">
@@ -10176,12 +10528,13 @@
             <param name="prop"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.PropertyEditors.ImageCropperPropertyEditor.GetFileSrcFromPropertyValue(System.Object,Newtonsoft.Json.Linq.JObject@)">
+        <member name="M:Umbraco.Web.PropertyEditors.ImageCropperPropertyEditor.GetFileSrcFromPropertyValue(System.Object,Newtonsoft.Json.Linq.JObject@,System.Boolean)">
             <summary>
             Returns the "src" property from the json structure if the value is formatted correctly
             </summary>
             <param name="propVal"></param>
             <param name="deserializedValue">The deserialized <see cref="T:Newtonsoft.Json.Linq.JObject"/> value</param>
+            <param name="relative">Should the path returned be the application relative path</param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.ImageCropperPropertyEditor.ContentServiceCopied(Umbraco.Core.Services.IContentService,Umbraco.Core.Events.CopyEventArgs{Umbraco.Core.Models.IContent})">
@@ -10582,7 +10935,7 @@
             Represents a rich text property editor.
             </summary>
         </member>
-        <member name="M:Umbraco.Web.PropertyEditors.RichTextPropertyEditor.#ctor(Umbraco.Core.Logging.ILogger,Umbraco.Core.Services.IMediaService,Umbraco.Core.Services.IContentTypeBaseServiceProvider,Umbraco.Web.IUmbracoContextAccessor)">
+        <member name="M:Umbraco.Web.PropertyEditors.RichTextPropertyEditor.#ctor(Umbraco.Core.Logging.ILogger,Umbraco.Web.IUmbracoContextAccessor,Umbraco.Web.Templates.HtmlImageSourceParser,Umbraco.Web.Templates.HtmlLocalLinkParser,Umbraco.Web.PropertyEditors.RichTextEditorPastedImages)">
             <summary>
             The constructor will setup the property editor based on the attribute if one is found
             </summary>
@@ -10616,6 +10969,13 @@
             </summary>
             <param name="editorValue"></param>
             <param name="currentValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.RichTextPropertyEditor.RichTextPropertyValueEditor.GetReferences(System.Object)">
+            <summary>
+            Resolve references from <see cref="T:Umbraco.Core.PropertyEditors.IDataValueEditor"/> values
+            </summary>
+            <param name="value"></param>
             <returns></returns>
         </member>
         <member name="T:Umbraco.Web.PropertyEditors.TextAreaPropertyEditor">
@@ -10765,6 +11125,88 @@
             The collection of language Id to name for the content item
             </summary>
         </member>
+        <member name="T:Umbraco.Web.PublishedCache.NuCache.ContentStore">
+            <summary>
+            Stores content in memory and persists it back to disk
+            </summary>
+            <remarks>
+            <para>
+            Methods in this class suffixed with the term "Locked" means that those methods can only be called within a WriteLock. A WriteLock
+            is acquired by the GetScopedWriteLock method. Locks are not allowed to be recursive.
+            </para>
+            <para>
+            This class's logic is based on the <see cref="T:Umbraco.Web.PublishedCache.NuCache.SnapDictionary`2"/> class but has been slightly modified to suit these purposes.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.NewContentTypesLocked(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PublishedContent.IPublishedContentType})">
+            <summary>
+            Sets data for new content types
+            </summary>
+            <param name="types"></param>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.UpdateContentTypesLocked(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PublishedContent.IPublishedContentType})">
+            <summary>
+            Sets data for updated content types
+            </summary>
+            <param name="types"></param>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.SetAllContentTypesLocked(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PublishedContent.IPublishedContentType})">
+            <summary>
+            Updates/sets data for all content types
+            </summary>
+            <param name="types"></param>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.UpdateContentTypesLocked(System.Collections.Generic.IReadOnlyCollection{System.Int32},System.Collections.Generic.IReadOnlyCollection{Umbraco.Core.Models.PublishedContent.IPublishedContentType},System.Collections.Generic.IReadOnlyCollection{Umbraco.Web.PublishedCache.NuCache.ContentNodeKit})">
+            <summary>
+            Updates/sets/removes data for content types
+            </summary>
+            <param name="removedIds"></param>
+            <param name="refreshedTypes"></param>
+            <param name="kits"></param>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.UpdateDataTypesLocked(System.Collections.Generic.IEnumerable{System.Int32},System.Func{System.Int32,Umbraco.Core.Models.PublishedContent.IPublishedContentType})">
+            <summary>
+            Updates data types
+            </summary>
+            <param name="dataTypeIds"></param>
+            <param name="getContentType"></param>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
         <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.GetHead``2(System.Collections.Concurrent.ConcurrentDictionary{``0,Umbraco.Web.PublishedCache.NuCache.Snap.LinkedNode{``1}},``0)">
             <summary>
             Get the most recent version of the LinkedNode stored in the dictionary for the supplied key
@@ -10775,7 +11217,21 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.SetAllFastSorted(System.Collections.Generic.IEnumerable{Umbraco.Web.PublishedCache.NuCache.ContentNodeKit},System.Boolean)">
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.SetLocked(Umbraco.Web.PublishedCache.NuCache.ContentNodeKit)">
+            <summary>
+            Sets the data for a <see cref="T:Umbraco.Web.PublishedCache.NuCache.ContentNodeKit"/>
+            </summary>
+            <param name="kit"></param>
+            <returns></returns>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.SetAllFastSortedLocked(System.Collections.Generic.IEnumerable{Umbraco.Web.PublishedCache.NuCache.ContentNodeKit},System.Boolean)">
             <summary>
             Builds all kits on startup using a fast forward only cursor
             </summary>
@@ -10785,10 +11241,67 @@
             <param name="fromDb">True if the data is coming from the database (not the local cache db)</param>
             <returns></returns>
             <remarks>
+            <para>
             This requires that the collection is sorted by Level + ParentId + Sort Order. 
             This should be used only on a site startup as the first generations.
             This CANNOT be used after startup since it bypasses all checks for Generations.
+            </para>
+            <para>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </para>        
             </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.SetAllLocked(System.Collections.Generic.IEnumerable{Umbraco.Web.PublishedCache.NuCache.ContentNodeKit})">
+            <summary>
+            Set all data for a collection of <see cref="T:Umbraco.Web.PublishedCache.NuCache.ContentNodeKit"/>
+            </summary>
+            <param name="kits"></param>
+            <returns></returns>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.SetBranchLocked(System.Int32,System.Collections.Generic.IEnumerable{Umbraco.Web.PublishedCache.NuCache.ContentNodeKit})">
+            <summary>
+            Sets data for a branch of <see cref="T:Umbraco.Web.PublishedCache.NuCache.ContentNodeKit"/>
+            </summary>
+            <param name="rootContentId"></param>
+            <param name="kits"></param>
+            <returns></returns>
+            <remarks>
+            <para>
+            IMPORTANT kits must be sorted out by LEVEL and by SORT ORDER
+            </para>
+            <para>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </para>        
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.ClearLocked(System.Int32)">
+            <summary>
+            Clears data for a given node id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+            <remarks>
+            This methods MUST be called from within a write lock, normally wrapped within GetScopedWriteLock
+            otherwise an exception will occur.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown if this method is not called within a write lock
+            </exception>
         </member>
         <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.GetRequiredLinkedNode(System.Int32,System.String,System.Nullable{System.Int64})">
             <summary>
@@ -10820,6 +11333,15 @@
             <param name="link"></param>
             <param name="gen">The generation requested, use null to avoid the lookup</param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.RemoveTreeNodeLocked(Umbraco.Web.PublishedCache.NuCache.ContentNode)">
+            <summary>
+            This removes this current node from the tree hiearchy by removing it from it's parent's linked list
+            </summary>
+            <param name="content"></param>
+            <remarks>
+            This is called within a lock which means a new Gen is being created therefore this will not modify any existing content in a Gen.
+            </remarks>
         </member>
         <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.AddTreeNodeLocked(Umbraco.Web.PublishedCache.NuCache.ContentNode,Umbraco.Web.PublishedCache.NuCache.Snap.LinkedNode{Umbraco.Web.PublishedCache.NuCache.ContentNode})">
             <summary>
@@ -10864,7 +11386,7 @@
             to not run if MainDom wasn't acquired.
             If MainDom was not acquired, then _localContentDb and _localMediaDb will remain null which means this appdomain
             will load in published content via the DB and in that case this appdomain will probably not exist long enough to
-            serve more than a page of content. 
+            serve more than a page of content.
             </remarks>
         </member>
         <member name="M:Umbraco.Web.PublishedCache.NuCache.PublishedSnapshotService.MainDomRelease">
@@ -12298,6 +12820,17 @@
             urls for the node in other contexts (different domain for current request, umbracoUrlAlias...).</para>
             </remarks>
         </member>
+        <member name="M:Umbraco.Web.Routing.UrlProvider.GetMediaUrl(System.Guid,Umbraco.Core.Models.PublishedContent.UrlMode,System.String,System.String,System.Uri)">
+            <summary>
+            Gets the url of a media item.
+            </summary>
+            <param name="id"></param>
+            <param name="mode"></param>
+            <param name="culture"></param>
+            <param name="propertyAlias"></param>
+            <param name="current"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Routing.UrlProvider.GetMediaUrl(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.UrlMode,System.String,System.String,System.Uri)">
             <summary>
             Gets the url of a media item.
@@ -12912,8 +13445,9 @@
             <returns>An awaitable object.</returns>
             <remarks>
             <para>Used to wait until the runner has terminated.</para>
-            <para>This is for unit tests and should not be used otherwise. In most cases when the runner
-            has terminated, the application domain is going down and it is not the right time to do things.</para>
+            <para>
+            The only time the runner will be terminated is by the Hosting Environment when the application is being shutdown. 
+            </para>
             </remarks>
         </member>
         <member name="M:Umbraco.Web.Scheduling.BackgroundTaskRunner`1.Add(`0)">
@@ -12959,6 +13493,15 @@
             <remarks>If <paramref name="force"/> is false, no more tasks can be queued but all queued tasks
             will run. If it is true, then only the current one (if any) will end and no other task will run.</remarks>
         </member>
+        <member name="M:Umbraco.Web.Scheduling.BackgroundTaskRunner`1.StopInternal(System.Boolean)">
+            <summary>
+            Used by IRegisteredObject.Stop and shutdown on threadpool threads to not block shutdown times.
+            </summary>
+            <param name="immediate"></param>
+            <returns>
+            An awaitable Task that is used to handle the shutdown.
+            </returns>
+        </member>
         <member name="M:Umbraco.Web.Scheduling.BackgroundTaskRunner`1.Stop(System.Boolean)">
             <summary>
             Requests a registered object to un-register.
@@ -12969,6 +13512,22 @@
             <para>"When the application manager needs to stop a registered object, it will call the Stop method."</para>
             <para>The application manager will call the Stop method to ask a registered object to un-register. During
             processing of the Stop method, the registered object must call the HostingEnvironment.UnregisterObject method.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.Scheduling.BackgroundTaskRunner`1.StopInitial">
+            <summary>
+            Called when immediate == false for IRegisteredObject.Stop(bool immediate)
+            </summary>
+            <remarks>
+            Called on a threadpool thread
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.Scheduling.BackgroundTaskRunner`1.StopImmediate">
+            <summary>
+            Called when immediate == true for IRegisteredObject.Stop(bool immediate)
+            </summary>
+            <remarks>
+            Called on a threadpool thread
             </remarks>
         </member>
         <member name="T:Umbraco.Web.Scheduling.BackgroundTaskRunnerOptions">
@@ -13186,6 +13745,31 @@
             Abstract method which executes to initialize this component if ExamineComponent.ExamineEnabled == true
             </summary>
         </member>
+        <member name="T:Umbraco.Web.Search.IUmbracoTreeSearcherFields">
+            <summary>
+            Used to propagate hardcoded internal Field lists
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Search.IUmbracoTreeSearcherFields.GetBackOfficeFields">
+            <summary>
+            Propagate list of searchable fields for all node types
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Search.IUmbracoTreeSearcherFields.GetBackOfficeMembersFields">
+            <summary>
+            Propagate list of searchable fields for Members
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Search.IUmbracoTreeSearcherFields.GetBackOfficeMediaFields">
+            <summary>
+            Propagate list of searchable fields for Media
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Search.IUmbracoTreeSearcherFields.GetBackOfficeDocumentFields">
+            <summary>
+            Propagate list of searchable fields for Documents
+            </summary>
+        </member>
         <member name="T:Umbraco.Web.Search.ExamineComposer">
             <summary>
             Configures and installs Examine.
@@ -13219,26 +13803,30 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Web.Search.SearchableTreeAttribute.#ctor(System.String)">
+            <summary>
+            This constructor will assume that the method name equals `format(searchResult, appAlias, treeAlias)`.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+        </member>
         <member name="M:Umbraco.Web.Search.SearchableTreeAttribute.#ctor(System.String,System.String)">
             <summary>
-            This constructor defines both the angular service and method name to use
+            This constructor defines both the Angular service and method name to use.
             </summary>
-            <param name="serviceName"></param>
-            <param name="methodName"></param>
+            <param name="serviceName">Name of the service.</param>
+            <param name="methodName">Name of the method.</param>
         </member>
         <member name="M:Umbraco.Web.Search.SearchableTreeAttribute.#ctor(System.String,System.String,System.Int32)">
             <summary>
-            This constructor defines both the angular service and method name to use and explicitly defines a sort order for the results
+            This constructor defines both the Angular service and method name to use and explicitly defines a sort order for the results
             </summary>
-            <param name="serviceName"></param>
-            <param name="methodName"></param>
-            <param name="sortOrder"></param>
-        </member>
-        <member name="M:Umbraco.Web.Search.SearchableTreeAttribute.#ctor(System.String)">
-            <summary>
-            This constructor will assume that the method name equals `format(searchResult, appAlias, treeAlias)`
-            </summary>
-            <param name="serviceName"></param>
+            <param name="serviceName">Name of the service.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="sortOrder">The sort order.</param>
+            <exception cref="T:System.ArgumentNullException">serviceName
+            or
+            methodName</exception>
+            <exception cref="T:System.ArgumentException">Value can't be empty or consist only of white-space characters. - serviceName</exception>
         </member>
         <member name="T:Umbraco.Web.Search.UmbracoTreeSearcher">
             <summary>
@@ -13422,6 +14010,98 @@
         </member>
         <member name="M:Umbraco.Web.Services.TreeService.GetBySectionGrouped(System.String,Umbraco.Web.Trees.TreeUse)">
             <inheritdoc />
+        </member>
+        <member name="T:Umbraco.Web.Templates.HtmlLocalLinkParser">
+            <summary>
+            Utility class used to parse internal links
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Templates.HtmlLocalLinkParser.EnsureInternalLinks(System.String,System.Boolean)">
+            <summary>
+            Parses the string looking for the {localLink} syntax and updates them to their correct links.
+            </summary>
+            <param name="text"></param>
+            <param name="preview"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Templates.HtmlLocalLinkParser.EnsureInternalLinks(System.String)">
+            <summary>
+            Parses the string looking for the {localLink} syntax and updates them to their correct links.
+            </summary>
+            <param name="text"></param>
+            <param name="urlProvider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Templates.HtmlImageSourceParser.FindUdisFromDataAttributes(System.String)">
+            <summary>
+            Parses out media UDIs from an html string based on 'data-udi' html attributes
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Templates.HtmlImageSourceParser.EnsureImageSources(System.String)">
+            <summary>
+            Parses the string looking for Umbraco image tags and updates them to their up-to-date image sources.
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+            <remarks>Umbraco image tags are identified by their data-udi attributes</remarks>
+        </member>
+        <member name="M:Umbraco.Web.Templates.HtmlImageSourceParser.RemoveImageSources(System.String)">
+            <summary>
+            Removes media urls from &lt;img&gt; tags where a data-udi attribute is present
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Templates.HtmlUrlParser.EnsureUrls(System.String)">
+            <summary>
+            The RegEx matches any HTML attribute values that start with a tilde (~), those that match are passed to ResolveUrl to replace the tilde with the application path.
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+            <remarks>
+            When used with a Virtual-Directory set-up, this would resolve all URLs correctly.
+            The recommendation is that the "ResolveUrlsFromTextString" option (in umbracoSettings.config) is set to false for non-Virtual-Directory installs.
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Web.Templates.ITemplateRenderer">
+            <summary>
+            This is used purely for the RenderTemplate functionality in Umbraco
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Templates.TemplateRenderer">
+            <summary>
+            This is used purely for the RenderTemplate functionality in Umbraco
+            </summary>
+            <remarks>
+            This allows you to render an MVC template based purely off of a node id and an optional alttemplate id as string output.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.Templates.TemplateRenderer.RenderUmbracoRequestToString(System.Web.Routing.RequestContext)">
+            <summary>
+            This will execute the UmbracoMvcHandler for the request specified and get the string output.
+            </summary>
+            <param name="requestContext">
+            Assumes the RequestContext is setup specifically to render an Umbraco view.
+            </param>
+            <returns></returns>
+            <remarks>
+            To achieve this we temporarily change the output text writer of the current HttpResponse, then
+              execute the controller via the handler which inevitably writes the result to the text writer
+              that has been assigned to the response. Then we change the response textwriter back to the original
+              before continuing .
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.Templates.TemplateRenderer.SaveExistingItems(Umbraco.Web.Routing.PublishedRequest@,System.Object@)">
+            <summary>
+            Save all items that we know are used for rendering execution to variables so we can restore after rendering
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Templates.TemplateRenderer.RestoreItems(Umbraco.Web.Routing.PublishedRequest,System.Object)">
+            <summary>
+            Restores all items back to their context's to continue normal page rendering execution
+            </summary>
         </member>
         <member name="T:Umbraco.Web.UmbracoContextFactory">
             <summary>
@@ -14157,83 +14837,6 @@
             <summary>
             Gets the user manager.
             </summary>
-        </member>
-        <member name="T:Umbraco.Web.Templates.ITemplateRenderer">
-            <summary>
-            This is used purely for the RenderTemplate functionality in Umbraco
-            </summary>
-        </member>
-        <member name="T:Umbraco.Web.Templates.TemplateRenderer">
-            <summary>
-            This is used purely for the RenderTemplate functionality in Umbraco
-            </summary>
-            <remarks>
-            This allows you to render an MVC template based purely off of a node id and an optional alttemplate id as string output.
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateRenderer.RenderUmbracoRequestToString(System.Web.Routing.RequestContext)">
-            <summary>
-            This will execute the UmbracoMvcHandler for the request specified and get the string output.
-            </summary>
-            <param name="requestContext">
-            Assumes the RequestContext is setup specifically to render an Umbraco view.
-            </param>
-            <returns></returns>
-            <remarks>
-            To achieve this we temporarily change the output text writer of the current HttpResponse, then
-              execute the controller via the handler which inevitably writes the result to the text writer
-              that has been assigned to the response. Then we change the response textwriter back to the original
-              before continuing .
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateRenderer.SaveExistingItems(Umbraco.Web.Routing.PublishedRequest@,System.Object@)">
-            <summary>
-            Save all items that we know are used for rendering execution to variables so we can restore after rendering
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateRenderer.RestoreItems(Umbraco.Web.Routing.PublishedRequest,System.Object)">
-            <summary>
-            Restores all items back to their context's to continue normal page rendering execution
-            </summary>
-        </member>
-        <member name="T:Umbraco.Web.Templates.TemplateUtilities">
-            <summary>
-            Utility class used for templates
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateUtilities.ParseInternalLinks(System.String,Umbraco.Web.Routing.UrlProvider)">
-            <summary>
-            Parses the string looking for the {localLink} syntax and updates them to their correct links.
-            </summary>
-            <param name="text"></param>
-            <param name="urlProvider"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateUtilities.ResolveUrlsFromTextString(System.String)">
-            <summary>
-            The RegEx matches any HTML attribute values that start with a tilde (~), those that match are passed to ResolveUrl to replace the tilde with the application path.
-            </summary>
-            <param name="text"></param>
-            <returns></returns>
-            <remarks>
-            When used with a Virtual-Directory set-up, this would resolve all URLs correctly.
-            The recommendation is that the "ResolveUrlsFromTextString" option (in umbracoSettings.config) is set to false for non-Virtual-Directory installs.
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateUtilities.ResolveMediaFromTextString(System.String)">
-            <summary>
-            Parses the string looking for Umbraco image tags and updates them to their up-to-date image sources.
-            </summary>
-            <param name="text"></param>
-            <returns></returns>
-            <remarks>Umbraco image tags are identified by their data-udi attributes</remarks>
-        </member>
-        <member name="M:Umbraco.Web.Templates.TemplateUtilities.RemoveMediaUrlsFromTextString(System.String)">
-            <summary>
-            Removes media urls from &lt;img&gt; tags where a data-udi attribute is present
-            </summary>
-            <param name="text"></param>
-            <returns></returns>
         </member>
         <member name="T:Umbraco.Web.Sections.FormsSection">
             <summary>
@@ -15116,7 +15719,7 @@
             </summary>
             <remarks>On top of CoreRuntime, handles all of the web-related runtime aspects of Umbraco.</remarks>
         </member>
-        <member name="M:Umbraco.Web.Runtime.WebRuntime.#ctor(Umbraco.Web.UmbracoApplicationBase)">
+        <member name="M:Umbraco.Web.Runtime.WebRuntime.#ctor(Umbraco.Web.UmbracoApplicationBase,Umbraco.Core.Logging.ILogger,Umbraco.Core.IMainDom)">
             <summary>
             Initializes a new instance of the <see cref="T:Umbraco.Web.Runtime.WebRuntime"/> class.
             </summary>
@@ -17360,12 +17963,15 @@
             <summary>
             Searches content.
             </summary>
-            <param name="term">Term to search.</param>
-            <param name="culture">Optional culture.</param>
-            <param name="indexName">Optional index name.</param>
+            <param name="term">The term to search.</param>
+            <param name="culture">The culture (defaults to a culture insensitive search).</param>
+            <param name="indexName">The name of the index to search (defaults to <see cref="F:Umbraco.Core.Constants.UmbracoIndexes.ExternalIndexName" />).</param>
+            <returns>
+            The search results.
+            </returns>
             <remarks>
             <para>
-            When the <paramref name="culture"/> is not specified or is *, all cultures are searched.
+            When the <paramref name="culture" /> is not specified or is *, all cultures are searched.
             To search for only invariant documents and fields use null.
             When searching on a specific culture, all culture specific fields are searched for the provided culture and all invariant fields for all documents.
             </para>
@@ -17376,15 +17982,18 @@
             <summary>
             Searches content.
             </summary>
-            <param name="term">Term to search.</param>
-            <param name="skip">Numbers of items to skip.</param>
-            <param name="take">Numbers of items to return.</param>
-            <param name="totalRecords">Total number of matching items.</param>
-            <param name="culture">Optional culture.</param>
-            <param name="indexName">Optional index name.</param>
+            <param name="term">The term to search.</param>
+            <param name="skip">The amount of results to skip.</param>
+            <param name="take">The amount of results to take/return.</param>
+            <param name="totalRecords">The total amount of records.</param>
+            <param name="culture">The culture (defaults to a culture insensitive search).</param>
+            <param name="indexName">The name of the index to search (defaults to <see cref="F:Umbraco.Core.Constants.UmbracoIndexes.ExternalIndexName" />).</param>
+            <returns>
+            The search results.
+            </returns>
             <remarks>
             <para>
-            When the <paramref name="culture"/> is not specified or is *, all cultures are searched.
+            When the <paramref name="culture" /> is not specified or is *, all cultures are searched.
             To search for only invariant documents and fields use null.
             When searching on a specific culture, all culture specific fields are searched for the provided culture and all invariant fields for all documents.
             </para>
@@ -17393,19 +18002,24 @@
         </member>
         <member name="M:Umbraco.Web.IPublishedContentQuery.Search(Examine.Search.IQueryExecutor)">
             <summary>
-            Executes the query and converts the results to PublishedSearchResult.
+            Executes the query and converts the results to <see cref="T:Umbraco.Core.Models.PublishedContent.PublishedSearchResult" />.
             </summary>
-            <remarks>
-            <para>While enumerating results, the ambient culture is changed to be the searched culture.</para>
-            </remarks>
+            <param name="query">The query.</param>
+            <returns>
+            The search results.
+            </returns>
         </member>
         <member name="M:Umbraco.Web.IPublishedContentQuery.Search(Examine.Search.IQueryExecutor,System.Int32,System.Int32,System.Int64@)">
             <summary>
-            Executes the query and converts the results to PublishedSearchResult.
+            Executes the query and converts the results to <see cref="T:Umbraco.Core.Models.PublishedContent.PublishedSearchResult" />.
             </summary>
-            <remarks>
-            <para>While enumerating results, the ambient culture is changed to be the searched culture.</para>
-            </remarks>
+            <param name="query">The query.</param>
+            <param name="skip">The amount of results to skip.</param>
+            <param name="take">The amount of results to take/return.</param>
+            <param name="totalRecords">The total amount of records.</param>
+            <returns>
+            The search results.
+            </returns>
         </member>
         <member name="T:Umbraco.Web.HtmlHelperBackOfficeExtensions">
             <summary>
@@ -18285,7 +18899,7 @@
             <param name="parameters">The parameters.</param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.UmbracoComponentRenderer.RenderMacro(System.String,System.Collections.Generic.IDictionary{System.String,System.Object},Umbraco.Core.Models.PublishedContent.IPublishedContent)">
+        <member name="M:Umbraco.Web.UmbracoComponentRenderer.RenderMacro(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
             Renders the macro with the specified alias, passing in the specified parameters.
             </summary>
@@ -19343,8 +19957,36 @@
         </member>
         <member name="T:Umbraco.Web.ExamineExtensions">
             <summary>
-            Extension methods for Examine
+            Extension methods for Examine.
             </summary>
+        </member>
+        <member name="M:Umbraco.Web.ExamineExtensions.ToPublishedSearchResults(System.Collections.Generic.IEnumerable{Examine.ISearchResult},Umbraco.Web.PublishedCache.IPublishedCache)">
+            <summary>
+            Creates an <see cref="T:System.Collections.Generic.IEnumerable`1" /> containing all content from the <paramref name="cache" />.
+            </summary>
+            <param name="results">The search results.</param>
+            <param name="cache">The cache to fetch the content from.</param>
+            <returns>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1" /> containing all content.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">cache</exception>
+            <remarks>
+            Search results are skipped if it can't be fetched from the <paramref name="cache" /> by its integer id.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.ExamineExtensions.ToPublishedSearchResults(System.Collections.Generic.IEnumerable{Examine.ISearchResult},Umbraco.Web.PublishedCache.IPublishedSnapshot)">
+            <summary>
+            Creates an <see cref="T:System.Collections.Generic.IEnumerable`1" /> containing all content, media or members from the <paramref name="snapshot" />.
+            </summary>
+            <param name="results">The search results.</param>
+            <param name="snapshot">The snapshot.</param>
+            <returns>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1" /> containing all content, media or members.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">snapshot</exception>
+            <remarks>
+            Search results are skipped if it can't be fetched from the respective cache by its integer id.
+            </remarks>
         </member>
         <member name="T:Umbraco.Web.FormlessPage">
             <summary>
@@ -20327,6 +20969,11 @@
         <member name="T:Umbraco.Web.UmbracoApplication">
             <summary>
             Represents the Umbraco global.asax class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.UmbracoApplication.GetMainDom(Umbraco.Core.Logging.ILogger)">
+            <summary>
+            Returns a new MainDom
             </summary>
         </member>
         <member name="M:Umbraco.Web.UmbracoApplication.Restart">
