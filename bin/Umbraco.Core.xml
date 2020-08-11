@@ -1907,18 +1907,18 @@
             <param name="millisecondsTimeout"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Runtime.SqlMainDomLock.InsertLockRecord(System.String)">
+        <member name="M:Umbraco.Core.Runtime.SqlMainDomLock.InsertLockRecord(System.String,Umbraco.Core.Persistence.IUmbracoDatabase)">
             <summary>
             Inserts or updates the key/value row 
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Runtime.SqlMainDomLock.IsMainDomValue(System.String)">
+        <member name="M:Umbraco.Core.Runtime.SqlMainDomLock.IsMainDomValue(System.String,Umbraco.Core.Persistence.IUmbracoDatabase)">
             <summary>
             Checks if the DB row value is equals the value
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Runtime.SqlMainDomLock.IsLockTimeoutException(System.Exception)">
+        <member name="M:Umbraco.Core.Runtime.SqlMainDomLock.IsLockTimeoutException(System.Data.SqlClient.SqlException)">
             <summary>
             Checks if the exception is an SQL timeout
             </summary>
@@ -17741,6 +17741,9 @@
         <member name="M:Umbraco.Core.Persistence.Repositories.Implement.DocumentRepository.ClearSchedule(System.DateTime)">
             <inheritdoc />
         </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.Implement.DocumentRepository.ClearSchedule(System.DateTime,Umbraco.Core.Models.ContentScheduleAction)">
+            <inheritdoc />
+        </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.Implement.DocumentRepository.GetContentForRelease(System.DateTime)">
             <inheritdoc />
         </member>
@@ -20952,7 +20955,7 @@
             Determines whether the specified exception represents a transient failure that can be compensated by a retry.
             </summary>
             <param name="ex">The exception object to be verified.</param>
-            <returns>True if the specified exception is considered as transient, otherwise false.</returns>
+            <returns>true if the specified exception is considered as transient; otherwise, false.</returns>
         </member>
         <member name="T:Umbraco.Core.Persistence.FaultHandling.ThrottlingMode">
             <summary>
