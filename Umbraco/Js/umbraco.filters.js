@@ -2,12 +2,50 @@
     'use strict';
     angular.module('umbraco.filters', []);
     'use strict';
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+    }
+    function _nonIterableSpread() {
+        throw new TypeError('Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.');
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+        if (!o)
+            return;
+        if (typeof o === 'string')
+            return _arrayLikeToArray(o, minLen);
+        var n = Object.prototype.toString.call(o).slice(8, -1);
+        if (n === 'Object' && o.constructor)
+            n = o.constructor.name;
+        if (n === 'Map' || n === 'Set')
+            return Array.from(o);
+        if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+            return _arrayLikeToArray(o, minLen);
+    }
+    function _iterableToArray(iter) {
+        if (typeof Symbol !== 'undefined' && Symbol.iterator in Object(iter))
+            return Array.from(iter);
+    }
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr))
+            return _arrayLikeToArray(arr);
+    }
+    function _arrayLikeToArray(arr, len) {
+        if (len == null || len > arr.length)
+            len = arr.length;
+        for (var i = 0, arr2 = new Array(len); i < len; i++) {
+            arr2[i] = arr[i];
+        }
+        return arr2;
+    }
     angular.module('umbraco.filters').filter('compareArrays', function () {
         return function inArray(array, compareArray, compareProperty) {
+            if (!compareArray || !compareArray.length) {
+                return _toConsumableArray(array);
+            }
             var result = [];
-            angular.forEach(array, function (arrayItem) {
+            array.forEach(function (arrayItem) {
                 var exists = false;
-                angular.forEach(compareArray, function (compareItem) {
+                compareArray.forEach(function (compareItem) {
                     if (arrayItem[compareProperty] === compareItem[compareProperty]) {
                         exists = true;
                     }
@@ -169,7 +207,7 @@
     'use strict';
     /**
  * @ngdoc filter
- * @name umbraco.filters.filter:CMS_joinArray
+ * @name umbraco.filters.filter:umbCmsJoinArray
  * @namespace umbCmsJoinArray
  * 
  * param {array} array of string or objects, if an object use the third argument to specify which prop to list.
@@ -190,6 +228,25 @@
     'use strict';
     /**
  * @ngdoc filter
+ * @name umbraco.filters.filter:umbCmsTitleCase
+ * @namespace umbCmsTitleCase
+ * 
+ * param {string} the text turned into title case.
+ * 
+ * @description
+ * Transforms text to title case. Capitalizes the first letter of each word, and transforms the rest of the word to lower case.
+ * 
+ */
+    angular.module('umbraco.filters').filter('umbCmsTitleCase', function () {
+        return function (str) {
+            return str.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        };
+    });
+    'use strict';
+    /**
+ * @ngdoc filter
  * @name umbraco.filters.filter:umbWordLimit
  * @namespace umbWordLimitFilter
  *
@@ -200,7 +257,7 @@
         'use strict';
         function umbWordLimitFilter() {
             return function (collection, property) {
-                if (!angular.isString(collection)) {
+                if (!Utilities.isString(collection)) {
                     return collection;
                 }
                 if (angular.isUndefined(property)) {

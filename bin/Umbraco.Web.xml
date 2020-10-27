@@ -257,9 +257,29 @@
             A language has been updated - it's culture has changed
             </summary>
         </member>
+        <member name="T:Umbraco.Web.Compose.BlockEditorComponent">
+            <summary>
+            A component for Block editors used to bind to events
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Compose.BlockEditorComposer">
+            <summary>
+            A composer for Block editors to run a component
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Compose.NestedContentPropertyComponent">
+            <summary>
+            A component for NestedContent used to bind to events
+            </summary>
+        </member>
         <member name="T:Umbraco.Web.Compose.PublicAccessComposer">
             <summary>
             Used to ensure that the public access data file is kept up to date properly
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Compose.NestedContentPropertyComposer">
+            <summary>
+            A composer for nested content to run a component
             </summary>
         </member>
         <member name="T:Umbraco.Web.Compose.NotificationsComponent.Notifier">
@@ -349,6 +369,14 @@
         </member>
         <member name="M:Umbraco.Web.Composing.ModuleInjector`1.Dispose">
             <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.Dashboards.DashboardCollectionBuilder.SetWeight``1(System.Int32)">
+            <summary>
+            Changes the default weight of a dashboard
+            </summary>
+            <typeparam name="T">The type of dashboard</typeparam>
+            <param name="weight">The new dashboard weight</param>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Web.Editors.Filters.ContentSaveModelValidator">
             <summary>
@@ -533,7 +561,7 @@
             All property data validation goes into the model state with a prefix of "Properties"
             </remarks>
         </member>
-        <member name="M:Umbraco.Web.Editors.Filters.ContentModelValidator`3.ValidatePropertyValue(`1,`2,Umbraco.Core.PropertyEditors.IDataEditor,Umbraco.Web.Models.ContentEditing.ContentPropertyDto,System.Object,System.Web.Http.ModelBinding.ModelStateDictionary,System.String[],System.String[])">
+        <member name="M:Umbraco.Web.Editors.Filters.ContentModelValidator`3.ValidatePropertyValue(`1,`2,Umbraco.Core.PropertyEditors.IDataEditor,Umbraco.Web.Models.ContentEditing.ContentPropertyDto,System.Object,System.Web.Http.ModelBinding.ModelStateDictionary)">
             <summary>
             Validates a property's value and adds the error to model state if found
             </summary>
@@ -545,6 +573,32 @@
             <param name="modelState"></param>
             <param name="requiredDefaultMessages"></param>
             <param name="formatDefaultMessages"></param>
+        </member>
+        <member name="M:Umbraco.Web.Editors.IconController.GetIcon(System.String)">
+            <summary>
+            Gets an IconModel containing the icon name and SvgString according to an icon name found at the global icons path
+            </summary>
+            <param name="iconName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.IconController.GetAllIcons">
+            <summary>
+            Gets a list of all svg icons found at at the global icons path.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.Editors.ImageUrlGeneratorController">
+            <summary>
+            The API controller used for getting URLs for images with parameters
+            </summary>
+            <remarks>
+            <para>
+            This controller allows for retrieving URLs for processed images, such as resized, cropped,
+            or otherwise altered.  These can be different based on the IImageUrlGenerator
+            implementation in use, and so the BackOffice could should not rely on hard-coded string
+            building to generate correct URLs
+            </para>
+            </remarks>
         </member>
         <member name="T:Umbraco.Web.Editors.PackageController">
             <summary>
@@ -693,9 +747,28 @@
             The API controller for editing relation types.
             </summary>
         </member>
+        <member name="T:Umbraco.Web.Editors.RelationTypeController.RelationTypeControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.Editors.RelationTypeController.GetById(System.Int32)">
             <summary>
-            Gets a relation type by ID.
+            Gets a relation type by id
+            </summary>
+            <param name="id">The relation type ID.</param>
+            <returns>Returns the <see cref="T:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay"/>.</returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.RelationTypeController.GetById(System.Guid)">
+            <summary>
+            Gets a relation type by guid
+            </summary>
+            <param name="id">The relation type ID.</param>
+            <returns>Returns the <see cref="T:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay"/>.</returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.RelationTypeController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets a relation type by udi
             </summary>
             <param name="id">The relation type ID.</param>
             <returns>Returns the <see cref="T:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay"/>.</returns>
@@ -932,6 +1005,11 @@
             Dictionary
             </remarks>
         </member>
+        <member name="T:Umbraco.Web.Editors.DictionaryController.DictionaryControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.Editors.DictionaryController.DeleteById(System.Int32)">
             <summary>
             Deletes a data type with a given ID
@@ -967,6 +1045,34 @@
              Returns a not found response when dictionary item does not exist
             </exception>
         </member>
+        <member name="M:Umbraco.Web.Editors.DictionaryController.GetById(System.Guid)">
+            <summary>
+            Gets a dictionary item by guid
+            </summary>
+            <param name="id">
+            The id.
+            </param>
+            <returns>
+            The <see cref="T:Umbraco.Web.Models.ContentEditing.DictionaryDisplay"/>.
+            </returns>
+            <exception cref="T:System.Web.Http.HttpResponseException">
+             Returns a not found response when dictionary item does not exist
+            </exception>
+        </member>
+        <member name="M:Umbraco.Web.Editors.DictionaryController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets a dictionary item by udi
+            </summary>
+            <param name="id">
+            The id.
+            </param>
+            <returns>
+            The <see cref="T:Umbraco.Web.Models.ContentEditing.DictionaryDisplay"/>.
+            </returns>
+            <exception cref="T:System.Web.Http.HttpResponseException">
+             Returns a not found response when dictionary item does not exist
+            </exception>
+        </member>
         <member name="M:Umbraco.Web.Editors.DictionaryController.PostSave(Umbraco.Web.Models.ContentEditing.DictionarySave)">
             <summary>
             Saves a dictionary item
@@ -985,20 +1091,6 @@
             <returns>
             The <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.DictionaryController.GetChildItemsForList(Umbraco.Core.Models.IDictionaryItem,System.Int32,System.Collections.Generic.ICollection{Umbraco.Web.Models.ContentEditing.DictionaryOverviewDisplay})">
-            <summary>
-            Get child items for list.
-            </summary>
-            <param name="dictionaryItem">
-            The dictionary item.
-            </param>
-            <param name="level">
-            The level.
-            </param>
-            <param name="list">
-            The list.
-            </param>
         </member>
         <member name="T:Umbraco.Web.Editors.EditorValidator`1">
             <summary>
@@ -1110,6 +1202,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Umbraco.Web.Editors.TemplateController.TemplateControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.Editors.TemplateController.GetByAlias(System.String)">
             <summary>
             Gets data type by alias
@@ -1125,7 +1222,21 @@
         </member>
         <member name="M:Umbraco.Web.Editors.TemplateController.GetById(System.Int32)">
             <summary>
-            Gets the content json for the content id
+            Gets the template json for the template id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.TemplateController.GetById(System.Guid)">
+            <summary>
+            Gets the template json for the template guid
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.TemplateController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets the template json for the template udi
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -1193,6 +1304,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Umbraco.Web.Editors.UsersController.GetByIds(System.Int32[])">
+            <summary>
+            Get users by integer ids
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.UsersController.GetPagedUsers(System.Int32,System.Int32,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String[],Umbraco.Core.Models.Membership.UserState[],System.String)">
             <summary>
             Returns a paged users collection
@@ -1228,6 +1346,13 @@
             Saves a user
             </summary>
             <param name="userSave"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.UsersController.PostChangePassword(Umbraco.Web.Models.ChangingPasswordModel)">
+            <summary>
+            
+            </summary>
+            <param name="changingPasswordModel"></param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.UsersController.PostDisableUsers(System.Int32[])">
@@ -1274,6 +1399,32 @@
             <summary>
             An API controller used for dealing with member groups
             </summary>
+        </member>
+        <member name="T:Umbraco.Web.Editors.MemberGroupController.MemberGroupControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberGroupController.GetById(System.Int32)">
+            <summary>
+            Gets the member group json for the member group id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberGroupController.GetById(System.Guid)">
+            <summary>
+            Gets the member group json for the member group guid
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberGroupController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets the member group json for the member group udi
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Web.Editors.EditorValidator">
             <summary>
@@ -1496,6 +1647,13 @@
             <param name="contentTypeAlias"></param>
             <param name="parentId"></param>
         </member>
+        <member name="M:Umbraco.Web.Editors.ContentController.GetEmptyByKey(System.Guid,System.Int32)">
+            <summary>
+            Gets an empty content item for the document type.
+            </summary>
+            <param name="contentTypeKey"></param>
+            <param name="parentId"></param>
+        </member>
         <member name="M:Umbraco.Web.Editors.ContentController.GetNiceUrl(System.Int32)">
             <summary>
             Gets the Url for a given node ID
@@ -1550,22 +1708,22 @@
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.ContentController.ValidateCriticalData(Umbraco.Web.Models.ContentEditing.ContentItemSave,System.Int32@)">
-            <summary>
-            Validates critical data for persistence and updates the ModelState and result accordingly
-            </summary>
-            <param name="contentItem"></param>
-            <param name="variantCount">Returns the total number of variants (will be one if it's an invariant content item)</param>
-            <returns></returns>
-            <remarks>
-            For invariant, the variants collection count will be 1 and this will check if that invariant item has the critical values for persistence (i.e. Name)
+             <summary>
+             Validates critical data for persistence and updates the ModelState and result accordingly
+             </summary>
+             <param name="contentItem"></param>
+             <param name="variantCount">Returns the total number of variants (will be one if it's an invariant content item)</param>
+             <returns></returns>
+             <remarks>
+             For invariant, the variants collection count will be 1 and this will check if that invariant item has the critical values for persistence (i.e. Name)
             
-            For variant, each variant will be checked for critical data for persistence and if it's not there then it's flags will be reset and it will not
-            be persisted. However, we also need to deal with the case where all variants don't pass this check and then there is nothing to save. This also deals
-            with removing the Name validation keys based on data annotations validation for items that haven't been marked to be saved.
-            </remarks>
-            <returns>
-            returns false if persistence cannot take place, returns true if persistence can take place even if there are validation errors
-            </returns>
+             For variant, each variant will be checked for critical data for persistence and if it's not there then it's flags will be reset and it will not
+             be persisted. However, we also need to deal with the case where all variants don't pass this check and then there is nothing to save. This also deals
+             with removing the Name validation keys based on data annotations validation for items that haven't been marked to be saved.
+             </remarks>
+             <returns>
+             returns false if persistence cannot take place, returns true if persistence can take place even if there are validation errors
+             </returns>
         </member>
         <member name="M:Umbraco.Web.Editors.ContentController.SaveAndNotify(Umbraco.Web.Models.ContentEditing.ContentItemSave,System.Func{Umbraco.Core.Models.IContent,Umbraco.Core.Services.OperationResult},System.Int32,System.Collections.Generic.Dictionary{System.String,Umbraco.Web.Models.ContentEditing.SimpleNotificationModel},Umbraco.Web.Models.ContentEditing.SimpleNotificationModel,System.String,System.String,System.String,System.Boolean@)">
             <summary>
@@ -1590,7 +1748,7 @@
             <param name="contentItem"></param>
             <param name="globalNotifications"></param>
         </member>
-        <member name="M:Umbraco.Web.Editors.ContentController.AddSuccessNotification(System.Collections.Generic.IDictionary{System.String,Umbraco.Web.Models.ContentEditing.SimpleNotificationModel},System.String,System.String,System.String)">
+        <member name="M:Umbraco.Web.Editors.ContentController.AddSuccessNotification(System.Collections.Generic.IDictionary{System.String,Umbraco.Web.Models.ContentEditing.SimpleNotificationModel},System.String,System.String,System.String,System.String)">
             <summary>
             Used to add success notifications globally and for the culture
             </summary>
@@ -1623,13 +1781,13 @@
             If this is a culture variant than we need to do some validation, if it's not we'll publish as normal
             </remarks>
         </member>
-        <member name="M:Umbraco.Web.Editors.ContentController.ValidatePublishingMandatoryLanguages(System.Collections.Generic.IReadOnlyCollection{System.String},Umbraco.Web.Models.ContentEditing.ContentItemSave,System.Collections.Generic.IReadOnlyCollection{Umbraco.Web.Models.ContentEditing.ContentVariantSave},System.Collections.Generic.IReadOnlyList{System.String},System.Func{Umbraco.Web.Models.ContentEditing.ContentVariantSave,System.Boolean})">
+        <member name="M:Umbraco.Web.Editors.ContentController.ValidatePublishingMandatoryLanguages(System.Collections.Generic.IReadOnlyCollection{System.ValueTuple{System.String,System.String}},Umbraco.Web.Models.ContentEditing.ContentItemSave,System.Collections.Generic.IReadOnlyCollection{Umbraco.Web.Models.ContentEditing.ContentVariantSave},System.Collections.Generic.IReadOnlyList{System.String},System.Func{Umbraco.Web.Models.ContentEditing.ContentVariantSave,System.Boolean})">
             <summary>
             Validate if publishing is possible based on the mandatory language requirements
             </summary>
-            <param name="culturesWithValidationErrors"></param>
+            <param name="variantsWithValidationErrors"></param>
             <param name="contentItem"></param>
-            <param name="cultureVariants"></param>
+            <param name="variants"></param>
             <param name="mandatoryCultures"></param>
             <param name="publishingCheck"></param>
             <returns></returns>
@@ -1645,15 +1803,24 @@
             This would generally never fail unless someone is tampering with the request
             </remarks>
         </member>
-        <member name="M:Umbraco.Web.Editors.ContentController.AddCultureValidationError(System.String,System.String,System.String)">
+        <member name="M:Umbraco.Web.Editors.ContentController.AddVariantValidationError(System.String,System.String,System.String,System.String)">
             <summary>
             Adds a generic culture error for use in displaying the culture validation error in the save/publish/etc... dialogs
             </summary>
             <param name="culture">Culture to assign the error to</param>
+            <param name="segment">Segment to assign the error to</param>
             <param name="localizationKey"></param>
             <param name="cultureToken">
-            The culture used in the localization message, null by default which means <see cref="!:culture"/> will be used. 
+            The culture used in the localization message, null by default which means <see cref="!:culture"/> will be used.
             </param>
+        </member>
+        <member name="M:Umbraco.Web.Editors.ContentController.GetVariantName(System.String,System.String)">
+            <summary>
+            Creates the human readable variant name based on culture and segment
+            </summary>
+            <param name="culture">Culture</param>
+            <param name="segment">Segment</param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.ContentController.PostPublishById(System.Int32)">
              <summary>
@@ -2131,9 +2298,35 @@
             An API controller used for dealing with member types
             </summary>
         </member>
+        <member name="T:Umbraco.Web.Editors.MemberTypeController.MemberTypeControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberTypeController.GetById(System.Int32)">
+            <summary>
+            Gets the member type a given id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberTypeController.GetById(System.Guid)">
+            <summary>
+            Gets the member type a given guid
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberTypeController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets the member type a given udi
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.MemberTypeController.DeleteById(System.Int32)">
             <summary>
-            Deletes a document type with a given ID
+            Deletes a document type with a given id
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -2582,6 +2775,32 @@
             An API controller used for dealing with content types
             </summary>
         </member>
+        <member name="T:Umbraco.Web.Editors.ContentTypeController.ContentTypeControllerConfigurationAttribute">
+            <summary>
+            Configures this controller with a custom action selector
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.Editors.ContentTypeController.GetById(System.Int32)">
+            <summary>
+            Gets the document type a given id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.ContentTypeController.GetById(System.Guid)">
+            <summary>
+            Gets the document type a given guid
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.ContentTypeController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets the document type a given udi
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.ContentTypeController.DeleteById(System.Int32)">
             <summary>
             Deletes a document type with a given ID
@@ -2666,9 +2885,30 @@
             Configures this controller with a custom action selector
             </summary>
         </member>
+        <member name="M:Umbraco.Web.Editors.MediaTypeController.GetById(System.Int32)">
+            <summary>
+            Gets the media type a given id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MediaTypeController.GetById(System.Guid)">
+            <summary>
+            Gets the media type a given guid
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MediaTypeController.GetById(Umbraco.Core.Udi)">
+            <summary>
+            Gets the media type a given udi
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.MediaTypeController.DeleteById(System.Int32)">
             <summary>
-            Deletes a media type with a given ID
+            Deletes a media type with a given id
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -2991,6 +3231,497 @@
             <param name="nodeId">The content to lookup, if the contentItem is not specified</param>
             <param name="media">Specifies the already resolved content item to check against, setting this ignores the nodeId</param>
             <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Data.DatabaseIntegrityCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.BaseHttpHeaderCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.BaseHttpHeaderCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
+            <summary>
+            Executes the action and returns it's status
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.ExcessiveHeadersCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.ExcessiveHeadersCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
+            <summary>
+            Executes the action and returns it's status
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.HttpsCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.HttpsCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
+            <summary>
+            Executes the action and returns it's status
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.FilePath">
+            <summary>
+            Gets the config file path.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.XPath">
+            <summary>
+            Gets XPath statement to the config element to check.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.Values">
+            <summary>
+            Gets the values to compare against.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CurrentValue">
+            <summary>
+            Gets the current value
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.ProvidedValue">
+            <summary>
+            Gets the provided value
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.ValueComparisonType">
+            <summary>
+            Gets the comparison type for checking the value.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.ValidIfConfigMissing">
+            <summary>
+            Gets the flag indicating if the check is considered successful if the config value is missing (defaults to false - an error - if missing)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.FileName">
+            <summary>
+            Gets the name of the file.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.AbsoluteFilePath">
+            <summary>
+            Gets the absolute file path.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CheckSuccessMessage">
+            <summary>
+            Gets the message for when the check has succeeded.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CheckErrorMessage">
+            <summary>
+            Gets the message for when the check has failed.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.RectifySuccessMessage">
+            <summary>
+            Gets the rectify success message.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CanRectify">
+            <summary>
+            Gets a value indicating whether this check can be rectified automatically.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CanRectifyWithValue">
+            <summary>
+            Gets a value indicating whether this check can be rectified automatically if a value is provided.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.Rectify">
+            <summary>
+            Rectifies this check.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.Rectify(System.String)">
+            <summary>
+            Rectifies this check with a provided value.
+            </summary>
+            <param name="value">Value provided</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.ConfigurationService.#ctor(System.String,System.String,Umbraco.Core.Services.ILocalizedTextService)">
+            <param name="configFilePath">The absolute file location of the configuration file</param>
+            <param name="xPath">The XPath to select the value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.ConfigurationService.GetConfigurationValue">
+            <summary>
+            Gets a value from a given configuration file with the given XPath
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.ConfigurationService.UpdateConfigFile(System.String)">
+            <summary>
+            Updates a value in a given configuration file with the given XPath
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Services.SmtpCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Services.SmtpCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
+            <summary>
+            Executes the action and returns it's status
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Permissions.FolderAndFilePermissionsCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.Checks.Permissions.FolderAndFilePermissionsCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
+            <summary>
+            Executes the action and returns it's status
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.HealthCheck.HealthCheckNotificationMethodAttribute">
+            <summary>
+            Metadata attribute for health check notification methods
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.HealthCheckAction.#ctor">
+            <summary>
+            Empty ctor used for serialization
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.HealthCheckAction.#ctor(System.String,System.Guid)">
+            <summary>
+            Default ctor
+            </summary>
+            <param name="alias"></param>
+            <param name="healthCheckId"></param>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.Alias">
+            <summary>
+            The alias of the action - this is used by the Health Check instance to execute the action
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.HealthCheckId">
+            <summary>
+            The Id of the Health Check instance
+            </summary>
+            <remarks>
+            This is used to find the Health Check instance to execute this action
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.ActionParameters">
+            <summary>
+            This could be used if the status has a custom view that specifies some parameters to be sent to the server
+            when an action needs to be executed
+            </summary>
+        </member>
+        <member name="F:Umbraco.Web.HealthCheck.HealthCheckAction._name">
+            <summary>
+            The name of the action - this is used to name the fix button
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.Description">
+            <summary>
+            The description of the action - this is used to give a description before executing the action
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.ValueRequired">
+            <summary>
+            Indicates if a value is required to rectify the issue
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.ProvidedValue">
+            <summary>
+            Provides a value to rectify the issue
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.HealthCheck.HealthCheckAttribute">
+            <summary>
+            Metadata attribute for Health checks
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.HealthCheck.HealthCheckController">
+            <summary>
+            The API controller used to display the health check info and execute any actions
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.HealthCheckController.GetAllHealthChecks">
+            <summary>
+            Gets a grouped list of health checks, but doesn't actively check the status of each health check.
+            </summary>
+            <returns>Returns a collection of anonymous objects representing each group.</returns>
+        </member>
+        <member name="T:Umbraco.Web.HealthCheck.HealthCheck">
+            <summary>
+            Provides a base class for health checks.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.HealthCheck.GetStatus">
+            <summary>
+            Get the status for this health check
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.HealthCheck.HealthCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
+            <summary>
+            Executes the action and returns it's status
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.HealthCheck.HealthCheckStatus">
+            <summary>
+            The status returned for a health check when it performs it check
+            TODO: This model will be used in the WebApi result so needs attributes for JSON usage
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.Message">
+            <summary>
+            The status message
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.Description">
+            <summary>
+            The status description if one is necessary
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.View">
+            <summary>
+            This is optional but would allow a developer to specify a path to an angular HTML view
+            in order to either show more advanced information and/or to provide input for the admin
+            to configure how an action is executed
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.ResultType">
+            <summary>
+            The status type
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.Actions">
+            <summary>
+            The potential actions to take (in any)
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.ImageCropperTemplateCoreExtensions.GetCropUrl(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,Umbraco.Core.Models.IImageUrlGenerator)">
+            <summary>
+            Gets the ImageProcessor Url by the crop alias (from the "umbracoFile" property alias) on the IPublishedContent item
+            </summary>
+            <param name="mediaItem">
+            The IPublishedContent item.
+            </param>
+            <param name="cropAlias">
+            The crop alias e.g. thumbnail
+            </param>
+            <returns>
+            The ImageProcessor.Web Url.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.ImageCropperTemplateCoreExtensions.GetCropUrl(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String,Umbraco.Core.Models.IImageUrlGenerator)">
+            <summary>
+            Gets the ImageProcessor Url by the crop alias using the specified property containing the image cropper Json data on the IPublishedContent item.
+            </summary>
+            <param name="mediaItem">
+            The IPublishedContent item.
+            </param>
+            <param name="propertyAlias">
+            The property alias of the property containing the Json data e.g. umbracoFile
+            </param>
+            <param name="cropAlias">
+            The crop alias e.g. thumbnail
+            </param>
+            <returns>
+            The ImageProcessor.Web Url.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.ImageCropperTemplateCoreExtensions.GetCropUrl(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.IImageUrlGenerator,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.Nullable{System.Int32},System.Nullable{Umbraco.Web.Models.ImageCropMode},System.Nullable{Umbraco.Web.Models.ImageCropAnchor},System.Boolean,System.Boolean,System.Boolean,System.String,System.Nullable{Umbraco.Web.Models.ImageCropRatioMode},System.Boolean)">
+            <summary>
+            Gets the ImageProcessor Url from the IPublishedContent item.
+            </summary>
+            <param name="mediaItem">
+            The IPublishedContent item.
+            </param>
+            <param name="width">
+            The width of the output image.
+            </param>
+            <param name="height">
+            The height of the output image.
+            </param>
+            <param name="propertyAlias">
+            Property alias of the property containing the Json data.
+            </param>
+            <param name="cropAlias">
+            The crop alias.
+            </param>
+            <param name="quality">
+            Quality percentage of the output image.
+            </param>
+            <param name="imageCropMode">
+            The image crop mode.
+            </param>
+            <param name="imageCropAnchor">
+            The image crop anchor.
+            </param>
+            <param name="preferFocalPoint">
+            Use focal point, to generate an output image using the focal point instead of the predefined crop
+            </param>
+            <param name="useCropDimensions">
+            Use crop dimensions to have the output image sized according to the predefined crop sizes, this will override the width and height parameters.
+            </param>
+            <param name="cacheBuster">
+            Add a serialized date of the last edit of the item to ensure client cache refresh when updated
+            </param>
+            <param name="furtherOptions">
+            These are any query string parameters (formatted as query strings) that ImageProcessor supports. For example:
+            <example>
+            <![CDATA[
+            furtherOptions: "&bgcolor=fff"
+            ]]>
+            </example>
+            </param>
+            <param name="ratioMode">
+            Use a dimension as a ratio
+            </param>
+            <param name="upScale">
+            If the image should be upscaled to requested dimensions
+            </param>
+            <returns>
+            The <see cref="T:System.String"/>.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.ImageCropperTemplateCoreExtensions.GetCropUrl(System.String,Umbraco.Core.Models.IImageUrlGenerator,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.Nullable{System.Int32},System.Nullable{Umbraco.Web.Models.ImageCropMode},System.Nullable{Umbraco.Web.Models.ImageCropAnchor},System.Boolean,System.Boolean,System.String,System.String,System.Nullable{Umbraco.Web.Models.ImageCropRatioMode},System.Boolean)">
+            <summary>
+            Gets the ImageProcessor Url from the image path.
+            </summary>
+            <param name="imageUrl">
+            The image url.
+            </param>
+            <param name="width">
+            The width of the output image.
+            </param>
+            <param name="height">
+            The height of the output image.
+            </param>
+            <param name="imageCropperValue">
+            The Json data from the Umbraco Core Image Cropper property editor
+            </param>
+            <param name="cropAlias">
+            The crop alias.
+            </param>
+            <param name="quality">
+            Quality percentage of the output image.
+            </param>
+            <param name="imageCropMode">
+            The image crop mode.
+            </param>
+            <param name="imageCropAnchor">
+            The image crop anchor.
+            </param>
+            <param name="preferFocalPoint">
+            Use focal point to generate an output image using the focal point instead of the predefined crop if there is one
+            </param>
+            <param name="useCropDimensions">
+            Use crop dimensions to have the output image sized according to the predefined crop sizes, this will override the width and height parameters
+            </param>
+            <param name="cacheBusterValue">
+            Add a serialized date of the last edit of the item to ensure client cache refresh when updated
+            </param>
+            <param name="furtherOptions">
+            These are any query string parameters (formatted as query strings) that ImageProcessor supports. For example:
+            <example>
+            <![CDATA[
+            furtherOptions: "&bgcolor=fff"
+            ]]>
+            </example>
+            </param>
+            <param name="ratioMode">
+            Use a dimension as a ratio
+            </param>
+            <param name="upScale">
+            If the image should be upscaled to requested dimensions
+            </param>
+            <returns>
+            The <see cref="T:System.String"/>.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.ImageCropperTemplateCoreExtensions.GetCropUrl(System.String,Umbraco.Core.Models.IImageUrlGenerator,Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.Nullable{Umbraco.Web.Models.ImageCropMode},System.Nullable{Umbraco.Web.Models.ImageCropAnchor},System.Boolean,System.Boolean,System.String,System.String,System.Nullable{Umbraco.Web.Models.ImageCropRatioMode},System.Boolean,System.String)">
+            <summary>
+            Gets the ImageProcessor Url from the image path.
+            </summary>
+            <param name="imageUrl">
+            The image url.
+            </param>
+            <param name="imageUrlGenerator">
+            The generator that will process all the options and the image URL to return a full image urls with all processing options appended
+            </param>
+            <param name="cropDataSet"></param>
+            <param name="width">
+            The width of the output image.
+            </param>
+            <param name="height">
+            The height of the output image.
+            </param>
+            <param name="cropAlias">
+            The crop alias.
+            </param>
+            <param name="quality">
+            Quality percentage of the output image.
+            </param>
+            <param name="imageCropMode">
+            The image crop mode.
+            </param>
+            <param name="imageCropAnchor">
+            The image crop anchor.
+            </param>
+            <param name="preferFocalPoint">
+            Use focal point to generate an output image using the focal point instead of the predefined crop if there is one
+            </param>
+            <param name="useCropDimensions">
+            Use crop dimensions to have the output image sized according to the predefined crop sizes, this will override the width and height parameters
+            </param>
+            <param name="cacheBusterValue">
+            Add a serialized date of the last edit of the item to ensure client cache refresh when updated
+            </param>
+            <param name="furtherOptions">
+            These are any query string parameters (formatted as query strings) that ImageProcessor supports. For example:
+            <example>
+            <![CDATA[
+            furtherOptions: "&bgcolor=fff"
+            ]]>
+            </example>
+            </param>
+            <param name="ratioMode">
+            Use a dimension as a ratio
+            </param>
+            <param name="upScale">
+            If the image should be upscaled to requested dimensions
+            </param>
+            <returns>
+            The <see cref="T:System.String"/>.
+            </returns>
         </member>
         <member name="T:Umbraco.Web.IUmbracoContextFactory">
             <summary>
@@ -7051,7 +7782,7 @@
         </member>
         <member name="T:Umbraco.Web.Models.ContentEditing.MediaItemDisplay">
             <summary>
-            A model representing a content item to be displayed in the back office
+            A model representing a media item to be displayed in the back office
             </summary>
         </member>
         <member name="T:Umbraco.Web.Models.ContentEditing.Section">
@@ -7497,7 +8228,7 @@
             </summary>
             <param name="content"></param>
             <returns>
-            Returns all segments assigned to the content including 'null' values
+            Returns all segments assigned to the content including the default `null` segment.
             </returns>
         </member>
         <member name="M:Umbraco.Web.Models.Mapping.PropertyTypeGroupMapper`1.GetContentTypeForPropertyGroup(Umbraco.Core.Models.IContentTypeComposition,System.Int32)">
@@ -8261,6 +8992,11 @@
         <member name="P:Umbraco.Web.Models.ChangingPasswordModel.GeneratedPassword">
             <summary>
             This is filled in on the server side if the password has been reset/generated
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.Models.ChangingPasswordModel.Id">
+            <summary>
+            The id of the user - required to allow changing password without the entire UserSave model
             </summary>
         </member>
         <member name="T:Umbraco.Web.Models.PasswordChangedModel">
@@ -9344,6 +10080,26 @@
             <param name="pageId"></param>
             <param name="queryString"></param>
         </member>
+        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid)">
+            <summary>
+            Creates a new RedirectToUmbracoResult
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Creates a new RedirectToUmbracoResult
+            </summary>
+            <param name="key"></param>
+            <param name="queryStringValues"></param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.String)">
+            <summary>
+            Creates a new RedirectToUmbracoResult
+            </summary>
+            <param name="key"></param>
+            <param name="queryString"></param>
+        </member>
         <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(Umbraco.Core.Models.PublishedContent.IPublishedContent)">
             <summary>
             Creates a new RedirectToUmbracoResult
@@ -9384,6 +10140,29 @@
             Creates a new RedirectToUmbracoResult
             </summary>
             <param name="pageId"></param>
+            <param name="queryString"></param>
+            <param name="umbracoContextAccessor"></param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,Umbraco.Web.IUmbracoContextAccessor)">
+            <summary>
+            Creates a new RedirectToUmbracoResult
+            </summary>
+            <param name="key"></param>
+            <param name="umbracoContextAccessor"></param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.Collections.Specialized.NameValueCollection,Umbraco.Web.IUmbracoContextAccessor)">
+            <summary>
+            Creates a new RedirectToUmbracoResult
+            </summary>
+            <param name="key"></param>
+            <param name="queryStringValues"></param>
+            <param name="umbracoContextAccessor"></param>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.String,Umbraco.Web.IUmbracoContextAccessor)">
+            <summary>
+            Creates a new RedirectToUmbracoResult
+            </summary>
+            <param name="key"></param>
             <param name="queryString"></param>
             <param name="umbracoContextAccessor"></param>
         </member>
@@ -9458,6 +10237,29 @@
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Int32,System.String)">
+            <summary>
+            Redirects to the Umbraco page with the given id and passes provided querystring
+            </summary>
+            <param name="pageId"></param>
+            <param name="queryString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Guid)">
+            <summary>
+            Redirects to the Umbraco page with the given id
+            </summary>
+            <param name="pageId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Guid,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Redirects to the Umbraco page with the given id and passes provided querystring
+            </summary>
+            <param name="pageId"></param>
+            <param name="queryStringValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Guid,System.String)">
             <summary>
             Redirects to the Umbraco page with the given id and passes provided querystring
             </summary>
@@ -10032,6 +10834,70 @@
             The API controller used to display the state of the web profiler
             </summary>
         </member>
+        <member name="T:Umbraco.Web.PropertyEditors.BlockEditorPropertyEditor">
+            <summary>
+            Abstract class for block editor based editors
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.BlockEditorPropertyEditor.BlockEditorPropertyValueEditor.ToEditor(Umbraco.Core.Models.Property,Umbraco.Core.Services.IDataTypeService,System.String,System.String)">
+            <summary>
+            Ensure that sub-editor values are translated through their ToEditor methods
+            </summary>
+            <param name="property"></param>
+            <param name="dataTypeService"></param>
+            <param name="culture"></param>
+            <param name="segment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.BlockEditorPropertyEditor.BlockEditorPropertyValueEditor.FromEditor(Umbraco.Core.Models.Editors.ContentPropertyData,System.Object)">
+            <summary>
+            Ensure that sub-editor values are translated through their FromEditor methods
+            </summary>
+            <param name="editorValue"></param>
+            <param name="currentValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.BlockEditorPropertyEditor.MinMaxValidator">
+            <summary>
+            Validates the min/max of the block editor
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.BlockEditorPropertyEditor.BlockEditorValues">
+            <summary>
+            Used to deserialize json values and clean up any values based on the existence of element types and layout structure
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.BlockListConfiguration">
+            <summary>
+            The configuration object for the Block List editor
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.BlockListPropertyEditor">
+            <summary>
+            Represents a block list property editor.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.ComplexEditorValidator">
+            <summary>
+            Used to validate complex editors that contain nested editors
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ComplexEditorValidator.Validate(System.Object,System.String,System.Object)">
+            <summary>
+            Return a single <see cref="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorValidationResult"/> for all sub nested validation results in the complex editor
+            </summary>
+            <param name="value"></param>
+            <param name="valueType"></param>
+            <param name="dataTypeConfiguration"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ComplexEditorValidator.GetNestedValidationResults(System.Collections.Generic.IEnumerable{Umbraco.Web.PropertyEditors.ComplexEditorValidator.ElementTypeValidationModel})">
+            <summary>
+            Return a nested validation result per row (Element Type)
+            </summary>
+            <param name="rawValue"></param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Web.PropertyEditors.ParameterEditors.MultipleMediaPickerParameterEditor">
             <summary>
             Represents a multiple media picker macro parameter editor.
@@ -10062,7 +10928,7 @@
             Initializes a new instance of the <see cref="T:Umbraco.Web.PropertyEditors.ParameterEditors.ContentTypeParameterEditor"/> class.
             </summary>
         </member>
-        <member name="M:Umbraco.Web.PropertyEditors.RichTextEditorPastedImages.FindAndPersistPastedTempImages(System.String,System.Guid,System.Int32)">
+        <member name="M:Umbraco.Web.PropertyEditors.RichTextEditorPastedImages.FindAndPersistPastedTempImages(System.String,System.Guid,System.Int32,Umbraco.Core.Models.IImageUrlGenerator)">
             <summary>
             Used by the RTE (and grid RTE) for drag/drop/persisting images
             </summary>
@@ -10070,6 +10936,116 @@
             <param name="mediaParentFolder"></param>
             <param name="userId"></param>
             <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorElementTypeValidationResult">
+            <summary>
+            A collection of <see cref="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorPropertyTypeValidationResult"/> for an element type within complex editor represented by an Element Type
+            </summary>
+            <remarks>
+            For a more indepth explanation of how server side validation works with the angular app, see this GitHub PR: 
+            https://github.com/umbraco/Umbraco-CMS/pull/8339
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.Validation.ComplexEditorElementTypeValidationResult.ElementTypeAlias">
+            <summary>
+            The element type alias of the validation result
+            </summary>
+            <remarks>
+            This is useful for debugging purposes but it's not actively used in the angular app
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.Validation.ComplexEditorElementTypeValidationResult.BlockId">
+            <summary>
+            The Block ID of the validation result
+            </summary>
+            <remarks>
+            This is the GUID id of the content item based on the element type
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorPropertyTypeValidationResult">
+            <summary>
+            A collection of <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult"/> for a property type within a complex editor represented by an Element Type
+            </summary>
+            <remarks>
+            For a more indepth explanation of how server side validation works with the angular app, see this GitHub PR: 
+            https://github.com/umbraco/Umbraco-CMS/pull/8339
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorValidationResult">
+             <summary>
+             A collection of <see cref="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorElementTypeValidationResult"/> for a complex editor represented by an Element Type
+             </summary>
+             <remarks>
+             For example, each <see cref="T:Umbraco.Web.PropertyEditors.Validation.ComplexEditorValidationResult"/> represents validation results for a row in Nested Content.
+            
+             For a more indepth explanation of how server side validation works with the angular app, see this GitHub PR: 
+             https://github.com/umbraco/Umbraco-CMS/pull/8339
+             </remarks>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.Validation.ContentPropertyValidationResult">
+             <summary>
+             Custom <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult"/> for content properties
+             </summary>
+             <remarks>
+             This clones the original result and then ensures the nested result if it's the correct type.
+            
+             For a more indepth explanation of how server side validation works with the angular app, see this GitHub PR: 
+             https://github.com/umbraco/Umbraco-CMS/pull/8339
+             </remarks>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.Validation.ContentPropertyValidationResult.ComplexEditorResults">
+            <summary>
+            Nested validation results for the content property
+            </summary>
+            <remarks>
+            There can be nested results for complex editors that contain other editors
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.Validation.ContentPropertyValidationResult.ToString">
+            <summary>
+            Return the <see cref="P:System.ComponentModel.DataAnnotations.ValidationResult.ErrorMessage"/> if <see cref="P:Umbraco.Web.PropertyEditors.Validation.ContentPropertyValidationResult.ComplexEditorResults"/> is null, else the serialized
+            complex validation results
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.Validation.ValidationResultConverter">
+             <summary>
+             Custom json converter for <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult"/> and <see cref="T:Umbraco.Web.PropertyEditors.Validation.ContentPropertyValidationResult"/>
+             </summary>
+             <remarks>
+             This converter is specifically used to convert validation results for content in order to be able to have nested
+             validation results for complex editors.
+            
+             For a more indepth explanation of how server side validation works with the angular app, see this GitHub PR: 
+             https://github.com/umbraco/Umbraco-CMS/pull/8339
+             </remarks>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.Validation.ValidationResultConverter.#ctor(System.String,System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="culture">The culture of the containing property which will be transfered to all child model state</param>
+            <param name="segment">The segment of the containing property which will be transfered to all child model state</param>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.ValueConverters.BlockEditorConverter">
+            <summary>
+            Converts json block objects into <see cref="T:Umbraco.Core.Models.PublishedContent.IPublishedElement"/>
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.IsConverter(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.GetPropertyValueType(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.GetPropertyCacheLevel(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.ConvertSourceToIntermediate(Umbraco.Core.Models.PublishedContent.IPublishedElement,Umbraco.Core.Models.PublishedContent.IPublishedPropertyType,System.Object,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.ConvertIntermediateToObject(Umbraco.Core.Models.PublishedContent.IPublishedElement,Umbraco.Core.Models.PublishedContent.IPublishedPropertyType,Umbraco.Core.PropertyEditors.PropertyCacheLevel,System.Object,System.Boolean)">
+            <inheritdoc />
         </member>
         <member name="T:Umbraco.Web.PropertyEditors.ValueConverters.NestedContentManyValueConverter">
             <inheritdoc />
@@ -10306,24 +11282,65 @@
         <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentPropertyValueEditor.Configuration">
             <inheritdoc />
         </member>
-        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.PropKey">
+        <member name="M:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentPropertyValueEditor.ToEditor(Umbraco.Core.Models.Property,Umbraco.Core.Services.IDataTypeService,System.String,System.String)">
             <summary>
-            The current property key being iterated for the row value
+            Ensure that sub-editor values are translated through their ToEditor methods
+            </summary>
+            <param name="property"></param>
+            <param name="dataTypeService"></param>
+            <param name="culture"></param>
+            <param name="segment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentPropertyValueEditor.FromEditor(Umbraco.Core.Models.Editors.ContentPropertyData,System.Object)">
+            <summary>
+            Ensure that sub-editor values are translated through their FromEditor methods
+            </summary>
+            <param name="editorValue"></param>
+            <param name="currentValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValidator">
+            <summary>
+            Validator for nested content to ensure that all nesting of editors is validated
             </summary>
         </member>
-        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.PropType">
+        <member name="T:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues">
             <summary>
-            The <see cref="T:Umbraco.Core.Models.PropertyType"/> of the value (if any), this may be null
+            Used to deserialize the nested content serialized value
             </summary>
         </member>
-        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.JsonRowValue">
+        <member name="M:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.GetPropertyValues(System.Object)">
             <summary>
-            The json values for the current row
+            Deserialize the raw json property value
+            </summary>
+            <param name="propertyValue"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.NestedContentPropertyValue">
+            <summary>
+            Used during deserialization to populate the property value/property type of a nested content row property
             </summary>
         </member>
-        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.RowValue.RowIndex">
+        <member name="T:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.NestedContentRowValue">
             <summary>
-            The Nested Content row index
+            Used to deserialize a nested content row
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.NestedContentRowValue.RawPropertyValues">
+            <summary>
+            The remaining properties will be serialized to a dictionary
+            </summary>
+            <remarks>
+            The JsonExtensionDataAttribute is used to put the non-typed properties into a bucket
+            http://www.newtonsoft.com/json/help/html/DeserializeExtensionData.htm
+            NestedContent serializes to string, int, whatever eg
+              "stringValue":"Some String","numericValue":125,"otherNumeric":null
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Web.PropertyEditors.NestedContentPropertyEditor.NestedContentValues.NestedContentRowValue.PropertyValues">
+            <summary>
+            Used during deserialization to convert the raw property data into data with a property type context
             </summary>
         </member>
         <member name="T:Umbraco.Web.PropertyEditors.RichTextConfiguration">
@@ -10940,6 +11957,11 @@
             The constructor will setup the property editor based on the attribute if one is found
             </summary>
         </member>
+        <member name="M:Umbraco.Web.PropertyEditors.RichTextPropertyEditor.#ctor(Umbraco.Core.Logging.ILogger,Umbraco.Web.IUmbracoContextAccessor,Umbraco.Web.Templates.HtmlImageSourceParser,Umbraco.Web.Templates.HtmlLocalLinkParser,Umbraco.Web.PropertyEditors.RichTextEditorPastedImages,Umbraco.Core.Models.IImageUrlGenerator)">
+            <summary>
+            The constructor will setup the property editor based on the attribute if one is found
+            </summary>
+        </member>
         <member name="M:Umbraco.Web.PropertyEditors.RichTextPropertyEditor.CreateValueEditor">
             <summary>
             Create a custom value editor
@@ -11206,6 +12228,16 @@
             <exception cref="T:System.InvalidOperationException">
             Thrown if this method is not called within a write lock
             </exception>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.BuildKit(Umbraco.Web.PublishedCache.NuCache.ContentNodeKit,Umbraco.Web.PublishedCache.NuCache.Snap.LinkedNode{Umbraco.Web.PublishedCache.NuCache.ContentNode}@)">
+            <summary>
+            Validate the <see cref="T:Umbraco.Web.PublishedCache.NuCache.ContentNodeKit"/> and try to create a parent <see cref="T:Umbraco.Web.PublishedCache.NuCache.Snap.LinkedNode`1"/>
+            </summary>
+            <param name="kit"></param>
+            <param name="parent"></param>
+            <returns>
+            Returns false if the parent was not found or if the kit validation failed
+            </returns>
         </member>
         <member name="M:Umbraco.Web.PublishedCache.NuCache.ContentStore.GetHead``2(System.Collections.Concurrent.ConcurrentDictionary{``0,Umbraco.Web.PublishedCache.NuCache.Snap.LinkedNode{``1}},``0)">
             <summary>
@@ -11723,6 +12755,14 @@
             </summary>
             <param name="id">A data type identifier.</param>
         </member>
+        <member name="M:Umbraco.Web.PublishedCache.PublishedContentTypeCache.Get(Umbraco.Core.Models.PublishedContent.PublishedItemType,System.Guid)">
+            <summary>
+            Gets a published content type.
+            </summary>
+            <param name="itemType">An item type.</param>
+            <param name="key">An key.</param>
+            <returns>The published content type corresponding to the item key.</returns>
+        </member>
         <member name="M:Umbraco.Web.PublishedCache.PublishedContentTypeCache.Get(Umbraco.Core.Models.PublishedContent.PublishedItemType,System.String)">
             <summary>
             Gets a published content type.
@@ -11756,6 +12796,13 @@
             <summary>
             Exposes a member object as IPublishedContent
             </summary>
+        </member>
+        <member name="M:Umbraco.Web.PublishedCache.IPublishedCache2.GetContentType(System.Guid)">
+            <summary>
+            Gets a content type identified by its alias.
+            </summary>
+            <param name="key">The content type key.</param>
+            <returns>The content type, or null.</returns>
         </member>
         <member name="T:Umbraco.Web.PublishedCache.IPublishedCache">
             <summary>
@@ -13275,6 +14322,11 @@
             <returns>A value indicating whether an Umbraco document was found and assigned.</returns>
             <remarks>Optionally, can also assign the template or anything else on the document request, although that is not required.</remarks>
         </member>
+        <member name="T:Umbraco.Web.Scheduling.SimpleTask">
+            <summary>
+            A simple task that executes a delegate synchronously
+            </summary>
+        </member>
         <member name="T:Umbraco.Web.Scheduling.TempFileCleanup">
             <summary>
             Used to cleanup temporary file locations
@@ -13874,7 +14926,7 @@
             <param name="results"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.Search.UmbracoTreeSearcher.ContentFromSearchResults(System.Collections.Generic.IEnumerable{Examine.ISearchResult})">
+        <member name="M:Umbraco.Web.Search.UmbracoTreeSearcher.ContentFromSearchResults(System.Collections.Generic.IEnumerable{Examine.ISearchResult},System.String)">
             <summary>
             Returns a collection of entities for content based on search results
             </summary>
@@ -13905,6 +14957,26 @@
             If false it will delete this from all indexes regardless.
             </param>
         </member>
+        <member name="T:Umbraco.Web.Search.ExamineComponent.DeferedAction">
+            <summary>
+            An action that will execute at the end of the Scope being completed
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Search.ExamineComponent.DeferedReIndexForContent">
+            <summary>
+            Re-indexes an <see cref="T:Umbraco.Core.Models.IContent"/> item on a background thread
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Search.ExamineComponent.DeferedReIndexForMedia">
+            <summary>
+            Re-indexes an <see cref="T:Umbraco.Core.Models.IMedia"/> item on a background thread
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Search.ExamineComponent.DeferedReIndexForMember">
+            <summary>
+            Re-indexes an <see cref="T:Umbraco.Core.Models.IMember"/> item on a background thread
+            </summary>
+        </member>
         <member name="T:Umbraco.Web.Services.DashboardService">
             <summary>
             A utility class for determine dashboard security
@@ -13915,6 +14987,27 @@
         </member>
         <member name="M:Umbraco.Web.Services.DashboardService.GetDashboards(Umbraco.Core.Models.Membership.IUser)">
             <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.Services.IconService.GetAllIcons">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.Services.IconService.GetIcon(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.Services.IconService.GetIcon(System.IO.FileInfo)">
+            <summary>
+            Gets an IconModel using values from a FileInfo model
+            </summary>
+            <param name="fileInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Services.IconService.CreateIconModel(System.String,System.String)">
+            <summary>
+            Gets an IconModel containing the icon name and SvgString
+            </summary>
+            <param name="iconName"></param>
+            <param name="iconPath"></param>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Services.IDashboardService.GetDashboards(System.String,Umbraco.Core.Models.Membership.IUser)">
             <summary>
@@ -16638,6 +17731,13 @@
             <param name="path">The full path of the document object to check</param>
             <returns>True if the current user has access or if the current document isn't protected</returns>
         </member>
+        <member name="M:Umbraco.Web.Security.MembershipHelper.MemberHasAccess(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Checks if the current user has access to the paths
+            </summary>
+            <param name="paths"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Security.MembershipHelper.HasAccess(System.String,System.Web.Security.RoleProvider)">
             <summary>
             This will check if the member has access to this path
@@ -17574,294 +18674,6 @@
             Gets the application register.
             </summary>
         </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.BaseHttpHeaderCheck.GetStatus">
-            <summary>
-            Get the status for this health check
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.BaseHttpHeaderCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
-            <summary>
-            Executes the action and returns it's status
-            </summary>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.ExcessiveHeadersCheck.GetStatus">
-            <summary>
-            Get the status for this health check
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.ExcessiveHeadersCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
-            <summary>
-            Executes the action and returns it's status
-            </summary>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.HttpsCheck.GetStatus">
-            <summary>
-            Get the status for this health check
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Security.HttpsCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
-            <summary>
-            Executes the action and returns it's status
-            </summary>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.FilePath">
-            <summary>
-            Gets the config file path.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.XPath">
-            <summary>
-            Gets XPath statement to the config element to check.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.Values">
-            <summary>
-            Gets the values to compare against.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CurrentValue">
-            <summary>
-            Gets the current value
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.ProvidedValue">
-            <summary>
-            Gets the provided value
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.ValueComparisonType">
-            <summary>
-            Gets the comparison type for checking the value.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.ValidIfConfigMissing">
-            <summary>
-            Gets the flag indicating if the check is considered successful if the config value is missing (defaults to false - an error - if missing)
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.FileName">
-            <summary>
-            Gets the name of the file.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.AbsoluteFilePath">
-            <summary>
-            Gets the absolute file path.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CheckSuccessMessage">
-            <summary>
-            Gets the message for when the check has succeeded.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CheckErrorMessage">
-            <summary>
-            Gets the message for when the check has failed.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.RectifySuccessMessage">
-            <summary>
-            Gets the rectify success message.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CanRectify">
-            <summary>
-            Gets a value indicating whether this check can be rectified automatically.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.CanRectifyWithValue">
-            <summary>
-            Gets a value indicating whether this check can be rectified automatically if a value is provided.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.Rectify">
-            <summary>
-            Rectifies this check.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.AbstractConfigCheck.Rectify(System.String)">
-            <summary>
-            Rectifies this check with a provided value.
-            </summary>
-            <param name="value">Value provided</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.ConfigurationService.#ctor(System.String,System.String,Umbraco.Core.Services.ILocalizedTextService)">
-            <param name="configFilePath">The absolute file location of the configuration file</param>
-            <param name="xPath">The XPath to select the value</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.ConfigurationService.GetConfigurationValue">
-            <summary>
-            Gets a value from a given configuration file with the given XPath
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Config.ConfigurationService.UpdateConfigFile(System.String)">
-            <summary>
-            Updates a value in a given configuration file with the given XPath
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Services.SmtpCheck.GetStatus">
-            <summary>
-            Get the status for this health check
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Services.SmtpCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
-            <summary>
-            Executes the action and returns it's status
-            </summary>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Permissions.FolderAndFilePermissionsCheck.GetStatus">
-            <summary>
-            Get the status for this health check
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.Checks.Permissions.FolderAndFilePermissionsCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
-            <summary>
-            Executes the action and returns it's status
-            </summary>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Umbraco.Web.HealthCheck.HealthCheckNotificationMethodAttribute">
-            <summary>
-            Metadata attribute for health check notification methods
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.HealthCheckAction.#ctor">
-            <summary>
-            Empty ctor used for serialization
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.HealthCheckAction.#ctor(System.String,System.Guid)">
-            <summary>
-            Default ctor
-            </summary>
-            <param name="alias"></param>
-            <param name="healthCheckId"></param>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.Alias">
-            <summary>
-            The alias of the action - this is used by the Health Check instance to execute the action
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.HealthCheckId">
-            <summary>
-            The Id of the Health Check instance
-            </summary>
-            <remarks>
-            This is used to find the Health Check instance to execute this action
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.ActionParameters">
-            <summary>
-            This could be used if the status has a custom view that specifies some parameters to be sent to the server
-            when an action needs to be executed
-            </summary>
-        </member>
-        <member name="F:Umbraco.Web.HealthCheck.HealthCheckAction._name">
-            <summary>
-            The name of the action - this is used to name the fix button
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.Description">
-            <summary>
-            The description of the action - this is used to give a description before executing the action
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.ValueRequired">
-            <summary>
-            Indicates if a value is required to rectify the issue
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckAction.ProvidedValue">
-            <summary>
-            Provides a value to rectify the issue
-            </summary>
-        </member>
-        <member name="T:Umbraco.Web.HealthCheck.HealthCheckAttribute">
-            <summary>
-            Metadata attribute for Health checks
-            </summary>
-        </member>
-        <member name="T:Umbraco.Web.HealthCheck.HealthCheckController">
-            <summary>
-            The API controller used to display the health check info and execute any actions
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.HealthCheckController.GetAllHealthChecks">
-            <summary>
-            Gets a grouped list of health checks, but doesn't actively check the status of each health check.
-            </summary>
-            <returns>Returns a collection of anonymous objects representing each group.</returns>
-        </member>
-        <member name="T:Umbraco.Web.HealthCheck.HealthCheck">
-            <summary>
-            Provides a base class for health checks.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.HealthCheck.GetStatus">
-            <summary>
-            Get the status for this health check
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.HealthCheck.HealthCheck.ExecuteAction(Umbraco.Web.HealthCheck.HealthCheckAction)">
-            <summary>
-            Executes the action and returns it's status
-            </summary>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Umbraco.Web.HealthCheck.HealthCheckStatus">
-            <summary>
-            The status returned for a health check when it performs it check
-            TODO: This model will be used in the WebApi result so needs attributes for JSON usage
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.Message">
-            <summary>
-            The status message
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.Description">
-            <summary>
-            The status description if one is necessary
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.View">
-            <summary>
-            This is optional but would allow a developer to specify a path to an angular HTML view
-            in order to either show more advanced information and/or to provide input for the admin
-            to configure how an action is executed
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.ResultType">
-            <summary>
-            The status type
-            </summary>
-        </member>
-        <member name="P:Umbraco.Web.HealthCheck.HealthCheckStatus.Actions">
-            <summary>
-            The potential actions to take (in any)
-            </summary>
-        </member>
         <member name="T:Umbraco.Web.Features.DisabledFeatures">
             <summary>
             Represents disabled features.
@@ -18447,13 +19259,23 @@
             Provides utility methods for UmbracoHelper for working with strings and HTML in views.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Umbraco.Web.HtmlStringUtilities.ReplaceLineBreaksForHtml(System.String)" -->
+        <member name="M:Umbraco.Web.HtmlStringUtilities.ReplaceLineBreaksForHtml(System.String)">
+            <summary>
+            Replaces text line breaks with HTML line breaks.
+            </summary>
+            <param name="text">The text.</param>
+            <returns>
+            The text with text line breaks replaced with HTML line breaks (<c>&lt;br /&gt;</c>).
+            </returns>
+        </member>
         <member name="M:Umbraco.Web.HtmlStringUtilities.ReplaceLineBreaks(System.String)">
             <summary>
             HTML encodes the text and replaces text line breaks with HTML line breaks.
             </summary>
             <param name="text">The text.</param>
-            <returns>The HTML encoded text with text line breaks replaced with HTML line breaks (<c>&lt;br /&gt;</c>).</returns>
+            <returns>
+            The HTML encoded text with text line breaks replaced with HTML line breaks (<c>&lt;br /&gt;</c>).
+            </returns>
         </member>
         <member name="M:Umbraco.Web.HtmlStringUtilities.WordsToLength(System.String,System.Int32)">
             <summary>
@@ -19600,6 +20422,156 @@
             <param name="recursive">When true, recurses up the content type tree to check inheritance; when false just calls IsDocumentType(this IPublishedContent content, string docTypeAlias).</param>
             <returns>True if the content is of the specified content type or a derived content type; otherwise false.</returns>
         </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsEqual(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is equal to <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsEqual(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is equal to <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsNotEqual(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent)">
+            <summary>
+            If the specified <paramref name="content" /> is not equal to <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsNotEqual(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is not equal to <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsNotEqual(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is not equal to <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsDescendant(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is a decendant of <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsDescendant(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is a decendant of <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsDescendantOrSelf(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is a decendant of <paramref name="other" /> or are the same, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsDescendantOrSelf(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is a decendant of <paramref name="other" /> or are the same, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsAncestor(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is an ancestor of <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsAncestor(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is an ancestor of <paramref name="other" />, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsAncestorOrSelf(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is an ancestor of <paramref name="other" /> or are the same, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.IsAncestorOrSelf(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.Models.PublishedContent.IPublishedContent,System.String,System.String)">
+            <summary>
+            If the specified <paramref name="content" /> is an ancestor of <paramref name="other" /> or are the same, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="other">The other content.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
         <member name="M:Umbraco.Web.PublishedContentExtensions.Ancestors(Umbraco.Core.Models.PublishedContent.IPublishedContent)">
             <summary>
             Gets the ancestors of the content.
@@ -19801,7 +20773,7 @@
             <param name="culture">The specific culture to filter for. If null is used the current culture is used. (Default is null)</param>
             <returns></returns>
             <remarks>
-            This can be useful in order to return all nodes in an entire site by a type when combined with TypedContentAtRoot
+            This can be useful in order to return all nodes in an entire site by a type when combined with <see cref="M:Umbraco.Web.UmbracoHelper.ContentAtRoot"/> or similar.
             </remarks>
         </member>
         <member name="M:Umbraco.Web.PublishedContentExtensions.DescendantsOrSelf``1(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PublishedContent.IPublishedContent},System.String)">
@@ -19812,7 +20784,7 @@
             <param name="culture">The specific culture to filter for. If null is used the current culture is used. (Default is null)</param>
             <returns></returns>
             <remarks>
-            This can be useful in order to return all nodes in an entire site by a type when combined with TypedContentAtRoot
+            This can be useful in order to return all nodes in an entire site by a type when combined with <see cref="M:Umbraco.Web.UmbracoHelper.ContentAtRoot"/> or similar.
             </remarks>
         </member>
         <member name="M:Umbraco.Web.PublishedContentExtensions.Parent``1(Umbraco.Core.Models.PublishedContent.IPublishedContent)">
@@ -20096,12 +21068,12 @@
         </member>
         <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.BeginUmbracoForm(System.Web.Mvc.HtmlHelper,System.String,System.String,System.Web.Mvc.FormMethod)">
             <summary>
-            Helper method to create a new form to execute in the Umbraco request pipeline against a locally declared controller
+            Helper method to create a new form to execute in the Umbraco request pipeline against a locally declared controller.
             </summary>
-            <param name="html"></param>
-            <param name="action"></param>
-            <param name="controllerName"></param>
-            <param name="method"></param>
+            <param name="html">The HTML helper.</param>
+            <param name="action">Name of the action.</param>
+            <param name="controllerName">Name of the controller.</param>
+            <param name="method">The method.</param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.BeginUmbracoForm(System.Web.Mvc.HtmlHelper,System.String,System.String)">
@@ -20415,23 +21387,48 @@
             This code is pretty much the same as the underlying MVC code that writes out the form
             </remarks>
         </member>
-        <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.If(System.Web.Mvc.HtmlHelper,System.Boolean,System.String,System.String)">
-            <summary>
-            If the test is true, the string valueIfTrue will be returned, otherwise the valueIfFalse will be returned.
-            </summary>
-        </member>
         <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.If(System.Web.Mvc.HtmlHelper,System.Boolean,System.String)">
             <summary>
-            If the test is true, the string valueIfTrue will be returned, otherwise the valueIfFalse will be returned.
+            If <paramref name="test" /> is <c>true</c>, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <see cref="F:System.String.Empty" />.
             </summary>
+            <param name="html">The HTML helper.</param>
+            <param name="test">If set to <c>true</c> returns <paramref name="valueIfTrue" />; otherwise, <see cref="F:System.String.Empty" />.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.If(System.Web.Mvc.HtmlHelper,System.Boolean,System.String,System.String)">
+            <summary>
+            If <paramref name="test" /> is <c>true</c>, the HTML encoded <paramref name="valueIfTrue" /> will be returned; otherwise, <paramref name="valueIfFalse" />.
+            </summary>
+            <param name="html">The HTML helper.</param>
+            <param name="test">If set to <c>true</c> returns <paramref name="valueIfTrue" />; otherwise, <paramref name="valueIfFalse" />.</param>
+            <param name="valueIfTrue">The value if <c>true</c>.</param>
+            <param name="valueIfFalse">The value if <c>false</c>.</param>
+            <returns>
+            The HTML encoded value.
+            </returns>
         </member>
         <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.ReplaceLineBreaksForHtml(System.Web.Mvc.HtmlHelper,System.String)">
             <summary>
-            Replaces text line breaks with HTML line breaks
+            Replaces text line breaks with HTML line breaks.
             </summary>
-            <param name="helper"></param>
+            <param name="helper">The HTML helper.</param>
             <param name="text">The text.</param>
-            <returns>The text with text line breaks replaced with HTML line breaks (<br/>)</returns>
+            <returns>
+            The text with text line breaks replaced with HTML line breaks (<c>&lt;br /&gt;</c>).
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.ReplaceLineBreaks(System.Web.Mvc.HtmlHelper,System.String)">
+            <summary>
+            HTML encodes the text and replaces text line breaks with HTML line breaks.
+            </summary>
+            <param name="helper">The HTML helper.</param>
+            <param name="text">The text.</param>
+            <returns>
+            The HTML encoded text with text line breaks replaced with HTML line breaks (<c>&lt;br /&gt;</c>).
+            </returns>
         </member>
         <member name="M:Umbraco.Web.HtmlHelperRenderExtensions.CreateHash(System.Web.Mvc.HtmlHelper,System.String)">
             <summary>
@@ -20533,24 +21530,35 @@
             <param name="prefix"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.ModelStateExtensions.AddPropertyError(System.Web.Http.ModelBinding.ModelStateDictionary,System.ComponentModel.DataAnnotations.ValidationResult,System.String,System.String)">
+        <member name="M:Umbraco.Web.ModelStateExtensions.AddPropertyError(System.Web.Http.ModelBinding.ModelStateDictionary,System.ComponentModel.DataAnnotations.ValidationResult,System.String,System.String,System.String)">
             <summary>
-            Adds the error to model state correctly for a property so we can use it on the client side.
+            Adds an <see cref="T:Umbraco.Web.PropertyEditors.Validation.ContentPropertyValidationResult"/> error to model state for a property so we can use it on the client side.
             </summary>
             <param name="modelState"></param>
             <param name="result"></param>
             <param name="propertyAlias"></param>
             <param name="culture">The culture for the property, if the property is invariant than this is empty</param>
         </member>
-        <member name="M:Umbraco.Web.ModelStateExtensions.AddCultureValidationError(System.Web.Http.ModelBinding.ModelStateDictionary,System.String,System.String)">
+        <member name="M:Umbraco.Web.ModelStateExtensions.AddPropertyValidationError(System.Web.Http.ModelBinding.ModelStateDictionary,System.ComponentModel.DataAnnotations.ValidationResult,System.String,System.String,System.String)">
+            <summary>
+            Adds the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult"/> to the model state with the appropriate keys for property errors
+            </summary>
+            <param name="modelState"></param>
+            <param name="result"></param>
+            <param name="propertyAlias"></param>
+            <param name="culture"></param>
+            <param name="segment"></param>
+        </member>
+        <member name="M:Umbraco.Web.ModelStateExtensions.AddVariantValidationError(System.Web.Http.ModelBinding.ModelStateDictionary,System.String,System.String,System.String)">
             <summary>
             Adds a generic culture error for use in displaying the culture validation error in the save/publish/etc... dialogs
             </summary>
             <param name="modelState"></param>
             <param name="culture"></param>
+            <param name="segment"></param>
             <param name="errMsg"></param>
         </member>
-        <member name="M:Umbraco.Web.ModelStateExtensions.GetCulturesWithPropertyErrors(System.Web.Http.ModelBinding.ModelStateDictionary,Umbraco.Core.Services.ILocalizationService,System.String)">
+        <member name="M:Umbraco.Web.ModelStateExtensions.GetVariantsWithPropertyErrors(System.Web.Http.ModelBinding.ModelStateDictionary,System.String)">
             <summary>
             Returns a list of cultures that have property validation errors
             </summary>
@@ -20561,7 +21569,7 @@
             A list of cultures that have property validation errors. The default culture will be returned for any invariant property errors.
             </returns>
         </member>
-        <member name="M:Umbraco.Web.ModelStateExtensions.GetCulturesWithErrors(System.Web.Http.ModelBinding.ModelStateDictionary,Umbraco.Core.Services.ILocalizationService,System.String)">
+        <member name="M:Umbraco.Web.ModelStateExtensions.GetVariantsWithErrors(System.Web.Http.ModelBinding.ModelStateDictionary,System.String)">
             <summary>
             Returns a list of cultures that have any validation errors
             </summary>
@@ -21222,87 +22230,6 @@
             <remarks>
             Based on http://stackoverflow.com/questions/3681052/get-absolute-url-from-relative-path-refactored-method
             </remarks>
-        </member>
-        <member name="T:Umbraco.Web.org.umbraco.update.CheckForUpgrade">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.#ctor">
-            <remarks/>
-        </member>
-        <member name="E:Umbraco.Web.org.umbraco.update.CheckForUpgrade.InstallCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Umbraco.Web.org.umbraco.update.CheckForUpgrade.CheckUpgradeCompleted">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.Install(System.Guid,System.Boolean,System.Boolean,System.DateTime,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.InstallAsync(System.Guid,System.Boolean,System.Boolean,System.DateTime,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.InstallAsync(System.Guid,System.Boolean,System.Boolean,System.DateTime,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.CheckUpgrade(System.Int32,System.Int32,System.Int32,System.String)">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.CheckUpgradeAsync(System.Int32,System.Int32,System.Int32,System.String)">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.CheckUpgradeAsync(System.Int32,System.Int32,System.Int32,System.String,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Umbraco.Web.org.umbraco.update.CheckForUpgrade.CancelAsync(System.Object)">
-            <remarks/>
-        </member>
-        <member name="T:Umbraco.Web.org.umbraco.update.UpgradeResult">
-            <remarks/>
-        </member>
-        <member name="P:Umbraco.Web.org.umbraco.update.UpgradeResult.Comment">
-            <remarks/>
-        </member>
-        <member name="P:Umbraco.Web.org.umbraco.update.UpgradeResult.UpgradeType">
-            <remarks/>
-        </member>
-        <member name="P:Umbraco.Web.org.umbraco.update.UpgradeResult.UpgradeUrl">
-            <remarks/>
-        </member>
-        <member name="T:Umbraco.Web.org.umbraco.update.UpgradeType">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.None">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.Patch">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.Minor">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.Major">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.Critical">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.Error">
-            <remarks/>
-        </member>
-        <member name="F:Umbraco.Web.org.umbraco.update.UpgradeType.OutOfSync">
-            <remarks/>
-        </member>
-        <member name="T:Umbraco.Web.org.umbraco.update.InstallCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Umbraco.Web.org.umbraco.update.CheckUpgradeCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Umbraco.Web.org.umbraco.update.CheckUpgradeCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Umbraco.Web.org.umbraco.update.CheckUpgradeCompletedEventArgs.Result">
-            <remarks/>
         </member>
         <member name="M:Umbraco.Web.UmbracoAuthorizedHttpHandler.ValidateUserContextId(System.String)">
             <summary>
