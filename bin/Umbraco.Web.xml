@@ -370,14 +370,6 @@
         <member name="M:Umbraco.Web.Composing.ModuleInjector`1.Dispose">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco.Web.Dashboards.DashboardCollectionBuilder.SetWeight``1(System.Int32)">
-            <summary>
-            Changes the default weight of a dashboard
-            </summary>
-            <typeparam name="T">The type of dashboard</typeparam>
-            <param name="weight">The new dashboard weight</param>
-            <returns></returns>
-        </member>
         <member name="T:Umbraco.Web.Editors.Filters.ContentSaveModelValidator">
             <summary>
             Validator for <see cref="T:Umbraco.Web.Models.ContentEditing.ContentItemSave"/>
@@ -574,19 +566,6 @@
             <param name="requiredDefaultMessages"></param>
             <param name="formatDefaultMessages"></param>
         </member>
-        <member name="M:Umbraco.Web.Editors.IconController.GetIcon(System.String)">
-            <summary>
-            Gets an IconModel containing the icon name and SvgString according to an icon name found at the global icons path
-            </summary>
-            <param name="iconName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.IconController.GetAllIcons">
-            <summary>
-            Gets a list of all svg icons found at at the global icons path.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:Umbraco.Web.Editors.ImageUrlGeneratorController">
             <summary>
             The API controller used for getting URLs for images with parameters
@@ -747,28 +726,9 @@
             The API controller for editing relation types.
             </summary>
         </member>
-        <member name="T:Umbraco.Web.Editors.RelationTypeController.RelationTypeControllerConfigurationAttribute">
-            <summary>
-            Configures this controller with a custom action selector
-            </summary>
-        </member>
         <member name="M:Umbraco.Web.Editors.RelationTypeController.GetById(System.Int32)">
             <summary>
-            Gets a relation type by id
-            </summary>
-            <param name="id">The relation type ID.</param>
-            <returns>Returns the <see cref="T:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay"/>.</returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.RelationTypeController.GetById(System.Guid)">
-            <summary>
-            Gets a relation type by guid
-            </summary>
-            <param name="id">The relation type ID.</param>
-            <returns>Returns the <see cref="T:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay"/>.</returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.RelationTypeController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets a relation type by udi
+            Gets a relation type by ID.
             </summary>
             <param name="id">The relation type ID.</param>
             <returns>Returns the <see cref="T:Umbraco.Web.Models.ContentEditing.RelationTypeDisplay"/>.</returns>
@@ -1005,11 +965,6 @@
             Dictionary
             </remarks>
         </member>
-        <member name="T:Umbraco.Web.Editors.DictionaryController.DictionaryControllerConfigurationAttribute">
-            <summary>
-            Configures this controller with a custom action selector
-            </summary>
-        </member>
         <member name="M:Umbraco.Web.Editors.DictionaryController.DeleteById(System.Int32)">
             <summary>
             Deletes a data type with a given ID
@@ -1045,34 +1000,6 @@
              Returns a not found response when dictionary item does not exist
             </exception>
         </member>
-        <member name="M:Umbraco.Web.Editors.DictionaryController.GetById(System.Guid)">
-            <summary>
-            Gets a dictionary item by guid
-            </summary>
-            <param name="id">
-            The id.
-            </param>
-            <returns>
-            The <see cref="T:Umbraco.Web.Models.ContentEditing.DictionaryDisplay"/>.
-            </returns>
-            <exception cref="T:System.Web.Http.HttpResponseException">
-             Returns a not found response when dictionary item does not exist
-            </exception>
-        </member>
-        <member name="M:Umbraco.Web.Editors.DictionaryController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets a dictionary item by udi
-            </summary>
-            <param name="id">
-            The id.
-            </param>
-            <returns>
-            The <see cref="T:Umbraco.Web.Models.ContentEditing.DictionaryDisplay"/>.
-            </returns>
-            <exception cref="T:System.Web.Http.HttpResponseException">
-             Returns a not found response when dictionary item does not exist
-            </exception>
-        </member>
         <member name="M:Umbraco.Web.Editors.DictionaryController.PostSave(Umbraco.Web.Models.ContentEditing.DictionarySave)">
             <summary>
             Saves a dictionary item
@@ -1091,6 +1018,20 @@
             <returns>
             The <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.DictionaryController.GetChildItemsForList(Umbraco.Core.Models.IDictionaryItem,System.Int32,System.Collections.Generic.ICollection{Umbraco.Web.Models.ContentEditing.DictionaryOverviewDisplay})">
+            <summary>
+            Get child items for list.
+            </summary>
+            <param name="dictionaryItem">
+            The dictionary item.
+            </param>
+            <param name="level">
+            The level.
+            </param>
+            <param name="list">
+            The list.
+            </param>
         </member>
         <member name="T:Umbraco.Web.Editors.EditorValidator`1">
             <summary>
@@ -1202,11 +1143,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:Umbraco.Web.Editors.TemplateController.TemplateControllerConfigurationAttribute">
-            <summary>
-            Configures this controller with a custom action selector
-            </summary>
-        </member>
         <member name="M:Umbraco.Web.Editors.TemplateController.GetByAlias(System.String)">
             <summary>
             Gets data type by alias
@@ -1222,21 +1158,7 @@
         </member>
         <member name="M:Umbraco.Web.Editors.TemplateController.GetById(System.Int32)">
             <summary>
-            Gets the template json for the template id
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.TemplateController.GetById(System.Guid)">
-            <summary>
-            Gets the template json for the template guid
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.TemplateController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets the template json for the template udi
+            Gets the content json for the content id
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -1302,13 +1224,6 @@
             Gets a user by Id
             </summary>
             <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.UsersController.GetByIds(System.Int32[])">
-            <summary>
-            Get users by integer ids
-            </summary>
-            <param name="ids"></param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.UsersController.GetPagedUsers(System.Int32,System.Int32,System.String,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String[],Umbraco.Core.Models.Membership.UserState[],System.String)">
@@ -1399,32 +1314,6 @@
             <summary>
             An API controller used for dealing with member groups
             </summary>
-        </member>
-        <member name="T:Umbraco.Web.Editors.MemberGroupController.MemberGroupControllerConfigurationAttribute">
-            <summary>
-            Configures this controller with a custom action selector
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MemberGroupController.GetById(System.Int32)">
-            <summary>
-            Gets the member group json for the member group id
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MemberGroupController.GetById(System.Guid)">
-            <summary>
-            Gets the member group json for the member group guid
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MemberGroupController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets the member group json for the member group udi
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
         </member>
         <member name="T:Umbraco.Web.Editors.EditorValidator">
             <summary>
@@ -2298,35 +2187,9 @@
             An API controller used for dealing with member types
             </summary>
         </member>
-        <member name="T:Umbraco.Web.Editors.MemberTypeController.MemberTypeControllerConfigurationAttribute">
-            <summary>
-            Configures this controller with a custom action selector
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MemberTypeController.GetById(System.Int32)">
-            <summary>
-            Gets the member type a given id
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MemberTypeController.GetById(System.Guid)">
-            <summary>
-            Gets the member type a given guid
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MemberTypeController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets the member type a given udi
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
         <member name="M:Umbraco.Web.Editors.MemberTypeController.DeleteById(System.Int32)">
             <summary>
-            Deletes a document type with a given id
+            Deletes a document type with a given ID
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -2775,32 +2638,6 @@
             An API controller used for dealing with content types
             </summary>
         </member>
-        <member name="T:Umbraco.Web.Editors.ContentTypeController.ContentTypeControllerConfigurationAttribute">
-            <summary>
-            Configures this controller with a custom action selector
-            </summary>
-        </member>
-        <member name="M:Umbraco.Web.Editors.ContentTypeController.GetById(System.Int32)">
-            <summary>
-            Gets the document type a given id
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.ContentTypeController.GetById(System.Guid)">
-            <summary>
-            Gets the document type a given guid
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.ContentTypeController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets the document type a given udi
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
         <member name="M:Umbraco.Web.Editors.ContentTypeController.DeleteById(System.Int32)">
             <summary>
             Deletes a document type with a given ID
@@ -2885,30 +2722,9 @@
             Configures this controller with a custom action selector
             </summary>
         </member>
-        <member name="M:Umbraco.Web.Editors.MediaTypeController.GetById(System.Int32)">
-            <summary>
-            Gets the media type a given id
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MediaTypeController.GetById(System.Guid)">
-            <summary>
-            Gets the media type a given guid
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Editors.MediaTypeController.GetById(Umbraco.Core.Udi)">
-            <summary>
-            Gets the media type a given udi
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
         <member name="M:Umbraco.Web.Editors.MediaTypeController.DeleteById(System.Int32)">
             <summary>
-            Deletes a media type with a given id
+            Deletes a media type with a given ID
             </summary>
             <param name="id"></param>
             <returns></returns>
@@ -7782,7 +7598,7 @@
         </member>
         <member name="T:Umbraco.Web.Models.ContentEditing.MediaItemDisplay">
             <summary>
-            A model representing a media item to be displayed in the back office
+            A model representing a content item to be displayed in the back office
             </summary>
         </member>
         <member name="T:Umbraco.Web.Models.ContentEditing.Section">
@@ -10080,26 +9896,6 @@
             <param name="pageId"></param>
             <param name="queryString"></param>
         </member>
-        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid)">
-            <summary>
-            Creates a new RedirectToUmbracoResult
-            </summary>
-            <param name="key"></param>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.Collections.Specialized.NameValueCollection)">
-            <summary>
-            Creates a new RedirectToUmbracoResult
-            </summary>
-            <param name="key"></param>
-            <param name="queryStringValues"></param>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.String)">
-            <summary>
-            Creates a new RedirectToUmbracoResult
-            </summary>
-            <param name="key"></param>
-            <param name="queryString"></param>
-        </member>
         <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(Umbraco.Core.Models.PublishedContent.IPublishedContent)">
             <summary>
             Creates a new RedirectToUmbracoResult
@@ -10140,29 +9936,6 @@
             Creates a new RedirectToUmbracoResult
             </summary>
             <param name="pageId"></param>
-            <param name="queryString"></param>
-            <param name="umbracoContextAccessor"></param>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,Umbraco.Web.IUmbracoContextAccessor)">
-            <summary>
-            Creates a new RedirectToUmbracoResult
-            </summary>
-            <param name="key"></param>
-            <param name="umbracoContextAccessor"></param>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.Collections.Specialized.NameValueCollection,Umbraco.Web.IUmbracoContextAccessor)">
-            <summary>
-            Creates a new RedirectToUmbracoResult
-            </summary>
-            <param name="key"></param>
-            <param name="queryStringValues"></param>
-            <param name="umbracoContextAccessor"></param>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.RedirectToUmbracoPageResult.#ctor(System.Guid,System.String,Umbraco.Web.IUmbracoContextAccessor)">
-            <summary>
-            Creates a new RedirectToUmbracoResult
-            </summary>
-            <param name="key"></param>
             <param name="queryString"></param>
             <param name="umbracoContextAccessor"></param>
         </member>
@@ -10237,29 +10010,6 @@
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Int32,System.String)">
-            <summary>
-            Redirects to the Umbraco page with the given id and passes provided querystring
-            </summary>
-            <param name="pageId"></param>
-            <param name="queryString"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Guid)">
-            <summary>
-            Redirects to the Umbraco page with the given id
-            </summary>
-            <param name="pageId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Guid,System.Collections.Specialized.NameValueCollection)">
-            <summary>
-            Redirects to the Umbraco page with the given id and passes provided querystring
-            </summary>
-            <param name="pageId"></param>
-            <param name="queryStringValues"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Mvc.SurfaceController.RedirectToUmbracoPage(System.Guid,System.String)">
             <summary>
             Redirects to the Umbraco page with the given id and passes provided querystring
             </summary>
@@ -14988,27 +14738,6 @@
         <member name="M:Umbraco.Web.Services.DashboardService.GetDashboards(Umbraco.Core.Models.Membership.IUser)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco.Web.Services.IconService.GetAllIcons">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco.Web.Services.IconService.GetIcon(System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco.Web.Services.IconService.GetIcon(System.IO.FileInfo)">
-            <summary>
-            Gets an IconModel using values from a FileInfo model
-            </summary>
-            <param name="fileInfo"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Web.Services.IconService.CreateIconModel(System.String,System.String)">
-            <summary>
-            Gets an IconModel containing the icon name and SvgString
-            </summary>
-            <param name="iconName"></param>
-            <param name="iconPath"></param>
-            <returns></returns>
-        </member>
         <member name="M:Umbraco.Web.Services.IDashboardService.GetDashboards(System.String,Umbraco.Core.Models.Membership.IUser)">
             <summary>
             Gets dashboard for a specific section/application
@@ -17730,13 +17459,6 @@
             </summary>
             <param name="path">The full path of the document object to check</param>
             <returns>True if the current user has access or if the current document isn't protected</returns>
-        </member>
-        <member name="M:Umbraco.Web.Security.MembershipHelper.MemberHasAccess(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Checks if the current user has access to the paths
-            </summary>
-            <param name="paths"></param>
-            <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Security.MembershipHelper.HasAccess(System.String,System.Web.Security.RoleProvider)">
             <summary>
