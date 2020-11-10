@@ -162,7 +162,7 @@
             closeOthers();
             $scope.$digest();
         }
-        var win = $($window);
+        var win = angular.element($window);
         win.on('blur', windowBlurHandler);
         $scope.$on('$destroy', function () {
             win.off('blur', handleBlwindowBlurHandlerur);

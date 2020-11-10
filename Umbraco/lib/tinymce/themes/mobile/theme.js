@@ -2512,6 +2512,7 @@ var mobile = (function (domGlobals) {
     };
 
     var SwapApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         toAlpha: toAlpha,
         toOmega: toOmega,
         isAlpha: isAlpha,
@@ -2704,6 +2705,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveReceiving = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         events: events
     });
 
@@ -2920,6 +2922,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ToggleApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         onLoad: onLoad,
         toggle: toggle$2,
         isOn: isOn,
@@ -2940,6 +2943,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveToggle = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         exhibit: exhibit,
         events: events$1
     });
@@ -3058,6 +3062,7 @@ var mobile = (function (domGlobals) {
     };
 
     var FocusApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         focus: focus$2,
         blur: blur$1,
         isFocused: isFocused
@@ -3078,6 +3083,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveFocus = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         exhibit: exhibit$1,
         events: events$3
     });
@@ -3433,6 +3439,7 @@ var mobile = (function (domGlobals) {
     };
 
     var HighlightApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         dehighlightAll: dehighlightAll,
         dehighlight: dehighlight,
         highlight: highlight,
@@ -3686,6 +3693,7 @@ var mobile = (function (domGlobals) {
     };
 
     var KeyingState = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         flatgrid: flatgrid,
         init: init
     });
@@ -4161,6 +4169,7 @@ var mobile = (function (domGlobals) {
     var special = SpecialType.schema();
 
     var KeyboardBranches = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         acyclic: acyclic,
         cyclic: cyclic,
         flow: flow,
@@ -4665,6 +4674,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveUnselecting = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         events: events$4,
         exhibit: exhibit$2
     });
@@ -4968,6 +4978,7 @@ var mobile = (function (domGlobals) {
     };
 
     var RepresentApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         onLoad: onLoad$1,
         onUnload: onUnload,
         setValue: setValue,
@@ -4987,6 +4998,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveRepresenting = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         events: events$5
     });
 
@@ -5036,6 +5048,7 @@ var mobile = (function (domGlobals) {
     };
 
     var RepresentState = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         memory: memory,
         dataset: dataset,
         manual: manual,
@@ -5959,6 +5972,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ComposeApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         getCurrent: getCurrent
     });
 
@@ -6124,6 +6138,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveTabstopping = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         exhibit: exhibit$3
     });
 
@@ -6246,6 +6261,7 @@ var mobile = (function (domGlobals) {
     };
 
     var DisableApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         enable: enable,
         disable: disable,
         isDisabled: isDisabled,
@@ -6265,6 +6281,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveDisable = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         exhibit: exhibit$4,
         events: events$7
     });
@@ -6790,6 +6807,7 @@ var mobile = (function (domGlobals) {
       })]);
 
     var DefaultEvents = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         events: events$8
     });
 
@@ -7717,6 +7735,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ReplaceApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         append: append$2,
         prepend: prepend$1,
         remove: remove$7,
@@ -8153,6 +8172,7 @@ var mobile = (function (domGlobals) {
     };
 
     var TransitionApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         findRoute: findRoute,
         disableTransition: disableTransition,
         getCurrentRoute: getCurrentRoute,
@@ -8183,6 +8203,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveTransitioning = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         events: events$9
     });
 
@@ -10166,6 +10187,7 @@ var mobile = (function (domGlobals) {
     };
 
     var SlidingApis = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         grow: grow,
         shrink: shrink,
         immediateShrink: immediateShrink,
@@ -10203,6 +10225,7 @@ var mobile = (function (domGlobals) {
     };
 
     var ActiveSliding = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         exhibit: exhibit$5,
         events: events$a
     });
@@ -10253,6 +10276,7 @@ var mobile = (function (domGlobals) {
     };
 
     var SlidingState = /*#__PURE__*/Object.freeze({
+        __proto__: null,
         init: init$4
     });
 
