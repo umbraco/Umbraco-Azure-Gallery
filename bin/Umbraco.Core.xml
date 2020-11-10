@@ -40,6 +40,21 @@
             Constants all the identifiers within the Umbraco core.
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Constants.SvgSanitizer">
+            <summary>
+            Defines the alias identifiers for Umbraco's core application sections.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.SvgSanitizer.Attributes">
+            <summary>
+            Allowlist for SVG attributes.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.SvgSanitizer.Tags">
+            <summary>
+            Allowlist for SVG tabs.
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Constants.Applications">
             <summary>
             Defines the alias identifiers for Umbraco's core application sections.
@@ -1144,6 +1159,11 @@
         <member name="F:Umbraco.Core.Constants.AppSettings.Path">
             <summary>
             Gets the path to umbraco's root directory (/umbraco by default).
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.AppSettings.IconsPath">
+            <summary>
+            Gets the path to umbraco's icons directory (/umbraco/assets/icons by default).
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.AppSettings.CssPath">
@@ -12750,6 +12770,13 @@
             <para>This can be optimized and bypass all deep cloning.</para>
             </remarks>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IMemberGroupRepository.Get(System.Guid)">
+            <summary>
+            Gets a member group by it's uniqueId
+            </summary>
+            <param name="uniqueId"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.IMemberGroupRepository.GetByName(System.String)">
             <summary>
             Gets a member group by it's name
@@ -18599,8 +18626,15 @@
         </member>
         <member name="T:Umbraco.Core.PropertyEditors.PropertyValueConverterBase">
             <summary>
-            Provides a default overridable implementation for <see cref="T:Umbraco.Core.PropertyEditors.IPropertyValueConverter"/> that does nothing.
+            Provides a default implementation for <see cref="T:Umbraco.Core.PropertyEditors.IPropertyValueConverter" />.
             </summary>
+            <seealso cref="T:Umbraco.Core.PropertyEditors.IPropertyValueConverter" />
+        </member>
+        <member name="M:Umbraco.Core.PropertyEditors.PropertyValueConverterBase.IsConverter(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.PropertyEditors.PropertyValueConverterBase.IsValue(System.Object,Umbraco.Core.PropertyEditors.PropertyValueLevel)">
+            <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.PropertyEditors.PropertyValueConverterBase.GetPropertyValueType(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
             <inheritdoc />
@@ -18787,6 +18821,19 @@
             <summary>
             Gets the type of the dynamic configuration provider.
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IIconService.GetIcon(System.String)">
+            <summary>
+            Gets an IconModel containing the icon name and SvgString according to an icon name found at the global icons path
+            </summary>
+            <param name="iconName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IIconService.GetAllIcons">
+            <summary>
+            Gets a list of all svg icons found at at the global icons path.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Services.Implement.AuditService.GetPagedItemsByEntity(System.Int32,System.Int64,System.Int32,System.Int64@,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,Umbraco.Core.Models.AuditType[],Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.IAuditItem})">
             <summary>
@@ -32713,6 +32760,12 @@
             </summary>
             <value>The path.</value>
         </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.IconsPath">
+            <summary>
+            Gets the path to folder containing the icons used in the umbraco backoffice (/umbraco/assets/icons by default).
+            </summary>
+            <value>The icons path.</value>
+        </member>
         <member name="P:Umbraco.Core.Configuration.GlobalSettings.ConfigurationStatus">
             <summary>
             Gets or sets the configuration status. This will return the version number of the currently installed umbraco instance.
@@ -32790,7 +32843,7 @@
         </member>
         <member name="T:Umbraco.Core.Configuration.IGlobalSettings">
             <summary>
-            Contains general settings information for the entire Umbraco instance based on information from  web.config appsettings 
+            Contains general settings information for the entire Umbraco instance based on information from  web.config appsettings
             </summary>
         </member>
         <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ReservedUrls">
@@ -32808,6 +32861,11 @@
         <member name="P:Umbraco.Core.Configuration.IGlobalSettings.Path">
             <summary>
             Gets the path to umbraco's root directory (/umbraco by default).
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.IconsPath">
+            <summary>
+            Gets the path to umbraco's icons directory (/umbraco/assets/icons by default).
             </summary>
         </member>
         <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ConfigurationStatus">
