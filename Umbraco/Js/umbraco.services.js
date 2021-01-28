@@ -24,6 +24,10 @@
             '$pending'
         ];
         function collectAllFormErrorsRecursively(formCtrl, allErrors) {
+            // skip if the control is already added to the array
+            if (allErrors.indexOf(formCtrl) !== -1) {
+                return;
+            }
             // loop over the error dictionary (see https://docs.angularjs.org/api/ng/type/form.FormController#$error)
             var keys = Object.keys(formCtrl.$error);
             if (keys.length === 0) {
@@ -94,9 +98,9 @@
             },
             /**
      * Method used to re-run the $parsers for a given ngModel
-     * @param {} scope 
-     * @param {} ngModel 
-     * @returns {} 
+     * @param {} scope
+     * @param {} ngModel
+     * @returns {}
      */
             revalidateNgModel: function revalidateNgModel(scope, ngModel) {
                 this.safeApply(scope, function () {
@@ -107,8 +111,8 @@
             },
             /**
      * Execute a list of promises sequentially. Unlike $q.all which executes all promises at once, this will execute them in sequence.
-     * @param {} promises 
-     * @returns {} 
+     * @param {} promises
+     * @returns {}
      */
             executeSequentialPromises: function executeSequentialPromises(promises) {
                 //this is sequential promise chaining, it's not pretty but we need to do it this way.
@@ -170,7 +174,7 @@
                 //NOTE: There isn't a way in angular to get a reference to the current form object since the form object
                 // is just defined as a property of the scope when it is named but you'll always need to know the name which
                 // isn't very convenient. If we want to watch for validation changes we need to get a form reference.
-                // The way that we detect the form object is a bit hackerific in that we detect all of the required properties 
+                // The way that we detect the form object is a bit hackerific in that we detect all of the required properties
                 // that exist on a form object.
                 //
                 //The other way to do it in a directive is to require "^form", but in a controller the only other way to do it
@@ -2449,7 +2453,16 @@
                         self.handleSaveError({
                             showNotifications: args.showNotifications,
                             softRedirect: args.softRedirect,
-                            err: err
+                            err: err,
+                            rebindCallback: function rebindCallback() {
+                                // if the error contains data, we want to map that back as we want to continue editing this save. Especially important when the content is new as the returned data will contain ID etc.
+                                if (err.data) {
+                                    _rebindCallback.apply(self, [
+                                        args.content,
+                                        err.data
+                                    ]);
+                                }
+                            }
                         });
                         //update editor state to what is current
                         editorState.set(args.content);
@@ -2608,7 +2621,7 @@
                         }
                     }
                     // if publishing is allowed also allow schedule publish
-                    // we add this manually becuase it doesn't have a permission so it wont 
+                    // we add this manually becuase it doesn't have a permission so it wont
                     // get picked up by the loop through permissions
                     if (_.contains(args.content.allowedActions, 'U')) {
                         buttons.subButtons.push(createButtonDefinition('SCHEDULE'));
@@ -2900,7 +2913,7 @@
                         }
                         if (!this.redirectToCreatedContent(args.err.data.id, args.softRedirect) || args.softRedirect) {
                             // If we are not redirecting it's because this is not newly created content, else in some cases we are
-                            // soft-redirecting which means the URL will change but the route wont (i.e. creating content). 
+                            // soft-redirecting which means the URL will change but the route wont (i.e. creating content).
                             // In this case we need to detect what properties have changed and re-bind them with the server data.
                             if (args.rebindCallback && angular.isFunction(args.rebindCallback)) {
                                 args.rebindCallback();
@@ -2938,7 +2951,7 @@
                 }
                 if (!this.redirectToCreatedContent(args.redirectId ? args.redirectId : args.savedContent.id, args.softRedirect) || args.softRedirect) {
                     // If we are not redirecting it's because this is not newly created content, else in some cases we are
-                    // soft-redirecting which means the URL will change but the route wont (i.e. creating content). 
+                    // soft-redirecting which means the URL will change but the route wont (i.e. creating content).
                     // In this case we need to detect what properties have changed and re-bind them with the server data.
                     if (args.rebindCallback && angular.isFunction(args.rebindCallback)) {
                         args.rebindCallback();

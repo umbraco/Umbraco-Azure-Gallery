@@ -1942,7 +1942,7 @@
             be looked up via the db, they need to be passed in.
             </param>
             <param name="contentTypeId"></param>
-            <param name="isElement">Wether the composite content types should be applicable for an element type</param>
+            <param name="isElement">Whether the composite content types should be applicable for an element type</param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.ContentTypeControllerBase`1.PerformGetWhereCompositionIsUsedInContentTypes(System.Int32,Umbraco.Core.Models.UmbracoObjectTypes)">
@@ -14665,6 +14665,15 @@
             sealed here as overriding them would break recurrence. And then optionally override
             RunsOnShutdown, in order to indicate whether the latched task should run immediately on
             shutdown, or just be abandoned (default).</remarks>
+        </member>
+        <member name="M:Umbraco.Web.Scheduling.RecurringTaskBase.#ctor(Umbraco.Web.Scheduling.IBackgroundTaskRunner{Umbraco.Web.Scheduling.RecurringTaskBase},System.Int64,System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.Scheduling.RecurringTaskBase"/> class.
+            </summary>
+            <param name="runner">The task runner.</param>
+            <param name="delayMilliseconds">The delay.</param>
+            <param name="periodMilliseconds">The period.</param>
+            <remarks>The task will repeat itself periodically. Use this constructor to create a new task.</remarks>
         </member>
         <member name="M:Umbraco.Web.Scheduling.RecurringTaskBase.#ctor(Umbraco.Web.Scheduling.IBackgroundTaskRunner{Umbraco.Web.Scheduling.RecurringTaskBase},System.Int32,System.Int32)">
             <summary>

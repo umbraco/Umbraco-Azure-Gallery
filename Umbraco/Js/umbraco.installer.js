@@ -354,7 +354,7 @@
                 id: -1
             }
         ];
-        if (angular.isUndefined(installerService.status.current.model.dbType) || installerService.status.current.model.dbType === null) {
+        if (Utilities.isUndefined(installerService.status.current.model.dbType) || installerService.status.current.model.dbType === null) {
             installerService.status.current.model.dbType = 0;
         }
         $scope.validateAndForward = function () {

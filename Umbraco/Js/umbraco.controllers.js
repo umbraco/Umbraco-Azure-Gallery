@@ -1062,7 +1062,7 @@
             var vm = this;
             var oldModel = null;
             vm.showConfirmSubmit = false;
-            vm.loading = false;
+            vm.loadingAlias = null;
             vm.isSelected = isSelected;
             vm.openContentType = openContentType;
             vm.selectCompositeContentType = selectCompositeContentType;
@@ -1099,23 +1099,10 @@
                 $location.path(url);
             }
             function selectCompositeContentType(compositeContentType) {
-                vm.loading = true;
+                vm.loadingAlias = compositeContentType.contentType.alias;
                 var contentType = compositeContentType.contentType;
                 $scope.model.selectCompositeContentType(contentType).then(function (response) {
-                    Utilities.forEach(vm.availableGroups, function (group) {
-                        Utilities.forEach(group.compositeContentTypes, function (obj) {
-                            if (obj.allowed === false) {
-                                obj.selected = false;
-                            }
-                        });
-                    });
-                    $timeout(function () {
-                        vm.loading = false;
-                    }, 500);
-                }, function () {
-                    $timeout(function () {
-                        vm.loading = false;
-                    }, 500);
+                    vm.loadingAlias = null;
                 });
                 // Check if the template is already selected.
                 var index = $scope.model.contentType.compositeContentTypes.indexOf(contentType.alias);
@@ -2246,7 +2233,7 @@
                     $scope.model.target.url = resp.url;
                 });
             }
-            if (!angular.isUndefined($scope.model.target.isMedia)) {
+            if (!Utilities.isUndefined($scope.model.target.isMedia)) {
                 delete $scope.model.target.isMedia;
             }
         }
@@ -2421,8 +2408,6 @@
                 $scope.model.itemDetails = null;
             }
             function pickParameterEditor(selectedParameterEditor) {
-                console.log('pickParameterEditor', selectedParameterEditor);
-                console.log('$scope.model', $scope.model);
                 $scope.model.parameter.editor = selectedParameterEditor.alias;
                 $scope.model.parameter.dataTypeName = selectedParameterEditor.name;
                 $scope.model.parameter.dataTypeIcon = selectedParameterEditor.icon;
@@ -4834,6 +4819,7 @@
     });
     'use strict';
     function ItemPickerOverlay($scope, localizationService) {
+        $scope.filter = { searchTerm: '' };
         function onInit() {
             $scope.model.hideSubmitButton = true;
             if (!$scope.model.title) {
@@ -9117,8 +9103,10 @@
         vm.page.menu.currentNode = null;
         vm.description = '';
         vm.showBackButton = true;
+        vm.maxlength = 1000;
         vm.save = saveDictionary;
         vm.back = back;
+        vm.change = change;
         function loadDictionary() {
             vm.page.loading = true;
             //we are editing so get the content item from the server
@@ -9141,6 +9129,7 @@
             // create data for  umb-property displaying
             for (var i = 0; i < data.translations.length; i++) {
                 data.translations[i].property = createTranslationProperty(data.translations[i]);
+                change(data.translations[i]);
             }
             contentEditingHelper.handleSuccessfulSave({
                 scope: $scope,
@@ -9184,6 +9173,12 @@
         }
         function back() {
             $location.path(vm.page.menu.currentSection + '/dictionary/list');
+        }
+        function change(translation) {
+            if (translation.translation) {
+                var charsCount = translation.translation.length;
+                translation.nearMaxLimit = charsCount > Math.max(vm.maxlength * 0.8, vm.maxlength - 50);
+            }
         }
         $scope.$watch('vm.content.name', function (newVal, oldVal) {
             //when the value changes, we need to set the name dirty
@@ -11241,7 +11236,6 @@
                 editorService.open(overlay);
             }
             function submit() {
-                console.log('model', $scope.model);
                 if ($scope.model && $scope.model.submit && formHelper.submitForm({ scope: $scope })) {
                     $scope.model.submit($scope.model);
                 }
@@ -14015,6 +14009,21 @@
             vm.selectDataType = selectDataType;
             vm.labels = {};
             vm.versionRegex = /^(\d+\.)(\d+\.)(\*|\d+)$/;
+            vm.aceOption = {
+                mode: 'xml',
+                theme: 'chrome',
+                showPrintMargin: false,
+                advanced: {
+                    fontSize: '14px',
+                    enableSnippets: true,
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: false
+                },
+                onLoad: function onLoad(_editor) {
+                    vm.editor = _editor;
+                    vm.editor.setValue(vm.package.actions);
+                }
+            };
             function onInit() {
                 if (create) {
                     // Pre populate package with some values
@@ -16762,10 +16771,15 @@
  */
     (function () {
         'use strict';
-        function BlockConfigurationOverlayController($scope, overlayService, localizationService, editorService, elementTypeResource, eventsService, udiService) {
+        function BlockConfigurationOverlayController($scope, overlayService, localizationService, editorService, elementTypeResource, eventsService, udiService, angularHelper) {
             var unsubscribe = [];
             var vm = this;
             vm.block = $scope.model.block;
+            vm.colorPickerOptions = {
+                type: 'color',
+                allowEmpty: true,
+                showAlpha: true
+            };
             loadElementTypes();
             function loadElementTypes() {
                 return elementTypeResource.getAll().then(function (elementTypes) {
@@ -17007,6 +17021,16 @@
             };
             vm.removeThumbnailForBlock = function (entry) {
                 entry.thumbnail = null;
+            };
+            vm.changeIconColor = function (color) {
+                angularHelper.safeApply($scope, function () {
+                    vm.block.iconColor = color ? color.toString() : null;
+                });
+            };
+            vm.changeBackgroundColor = function (color) {
+                angularHelper.safeApply($scope, function () {
+                    vm.block.backgroundColor = color ? color.toString() : null;
+                });
             };
             vm.submit = function () {
                 if ($scope.model && $scope.model.submit) {
@@ -17506,7 +17530,7 @@
  * @param {any} editorService
  * @param {any} userService
  */
-    function contentPickerController($scope, $q, $routeParams, $location, entityResource, editorState, iconHelper, angularHelper, navigationService, localizationService, editorService, userService) {
+    function contentPickerController($scope, $q, $routeParams, $location, entityResource, editorState, iconHelper, angularHelper, navigationService, localizationService, editorService, userService, overlayService) {
         var vm = {
             labels: {
                 general_recycleBin: '',
@@ -17590,6 +17614,13 @@
                 angularHelper.getCurrentForm($scope).$setDirty();
             }
         };
+        var removeAllEntriesAction = {
+            labelKey: 'clipboard_labelForRemoveAllEntries',
+            labelTokens: [],
+            icon: 'trash',
+            method: removeAllEntries,
+            isDisabled: true
+        };
         if ($scope.model.config) {
             //special case, if the `startNode` is falsy on the server config delete it entirely so the default value is merged in
             if (!$scope.model.config.startNode) {
@@ -17601,6 +17632,10 @@
             // that way the minCount/maxCount validation handles the mandatory as well
             if ($scope.model.validation && $scope.model.validation.mandatory && !$scope.model.config.minNumber) {
                 $scope.model.config.minNumber = 1;
+            }
+            if ($scope.model.config.multiPicker === true && $scope.umbProperty) {
+                var propertyActions = [removeAllEntriesAction];
+                $scope.umbProperty.setPropertyActions(propertyActions);
             }
         }
         //Umbraco persists boolean for prevalues as "0" or "1" so we need to convert that!
@@ -17725,6 +17760,7 @@
                 angularHelper.getCurrentForm($scope).$setDirty();
                 $scope.model.value = currIds.join();
             }
+            removeAllEntriesAction.isDisabled = currIds.length === 0;
         };
         $scope.showNode = function (index) {
             var item = $scope.renderModel[index];
@@ -17749,9 +17785,11 @@
                 currIds.push(itemId);
                 $scope.model.value = currIds.join();
             }
+            removeAllEntriesAction.isDisabled = false;
         };
         $scope.clear = function () {
             $scope.model.value = null;
+            removeAllEntriesAction.isDisabled = true;
         };
         $scope.openEditor = function (item) {
             var editor = {
@@ -17797,6 +17835,7 @@
             var valueIds = $scope.model.value ? $scope.model.value.split(',') : [];
             //sync the sortable model
             $scope.sortableModel = valueIds;
+            removeAllEntriesAction.isDisabled = valueIds.length === 0;
             //load current data if anything selected
             if (valueIds.length > 0) {
                 //need to determine which items we already have loaded
@@ -17912,6 +17951,24 @@
             } else {
                 $scope.sortableOptions.disabled = true;
             }
+        }
+        function removeAllEntries() {
+            localizationService.localizeMany([
+                'content_nestedContentDeleteAllItems',
+                'general_delete'
+            ]).then(function (data) {
+                overlayService.confirmDelete({
+                    title: data[1],
+                    content: data[0],
+                    close: function close() {
+                        overlayService.close();
+                    },
+                    submit: function submit() {
+                        $scope.clear();
+                        overlayService.close();
+                    }
+                });
+            });
         }
         function init() {
             userService.getCurrentUser().then(function (user) {
