@@ -3040,7 +3040,7 @@ Use this directive to render a group of toggle buttons.
                     return $q.when(data);
                 }, function (err) {
                     syncTreeNode($scope.content, $scope.content.path);
-                    if (err.status === 400 && err.data) {
+                    if (err && err.status === 400 && err.data) {
                         // content was saved but is invalid.
                         eventsService.emit('content.saved', {
                             content: $scope.content,
@@ -3612,6 +3612,44 @@ Use this directive to render a group of toggle buttons.
         angular.module('umbraco.directives').directive('contentEditor', createDirective);
     }());
     'use strict';
+    function _slicedToArray(arr, i) {
+        return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+    }
+    function _nonIterableRest() {
+        throw new TypeError('Invalid attempt to destructure non-iterable instance');
+    }
+    function _iterableToArrayLimit(arr, i) {
+        if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === '[object Arguments]')) {
+            return;
+        }
+        var _arr = [];
+        var _n = true;
+        var _d = false;
+        var _e = undefined;
+        try {
+            for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+                _arr.push(_s.value);
+                if (i && _arr.length === i)
+                    break;
+            }
+        } catch (err) {
+            _d = true;
+            _e = err;
+        } finally {
+            try {
+                if (!_n && _i['return'] != null)
+                    _i['return']();
+            } finally {
+                if (_d)
+                    throw _e;
+            }
+        }
+        return _arr;
+    }
+    function _arrayWithHoles(arr) {
+        if (Array.isArray(arr))
+            return arr;
+    }
     (function () {
         'use strict';
         function ContentNodeInfoDirective($timeout, logResource, eventsService, userService, localizationService, dateHelper, editorService, redirectUrlsResource, overlayService, entityResource) {
@@ -3657,16 +3695,16 @@ Use this directive to render a group of toggle buttons.
                         'general_choose'
                     ];
                     localizationService.localizeMany(keys).then(function (data) {
-                        labels.deleted = data[0];
-                        labels.unpublished = data[1];
-                        //aka draft
-                        labels.published = data[2];
-                        labels.publishedPendingChanges = data[3];
-                        labels.notCreated = data[4];
-                        labels.unsavedChanges = data[5];
-                        labels.doctypeChangeWarning = data[6];
-                        labels.notPublished = data[7];
-                        scope.chooseLabel = data[8];
+                        var _data = _slicedToArray(data, 9);
+                        labels.deleted = _data[0];
+                        labels.unpublished = _data[1];
+                        labels.published = _data[2];
+                        labels.publishedPendingChanges = _data[3];
+                        labels.notCreated = _data[4];
+                        labels.unsavedChanges = _data[5];
+                        labels.doctypeChangeWarning = _data[6];
+                        labels.notPublished = _data[7];
+                        scope.chooseLabel = _data[8];
                         setNodePublishStatus();
                         if (scope.currentUrls && scope.currentUrls.length === 0) {
                             if (scope.node.id > 0) {
@@ -3876,20 +3914,15 @@ Use this directive to render a group of toggle buttons.
                 }
                 function updateCurrentUrls() {
                     // never show URLs for element types (if they happen to have been created in the content tree)
-                    if (scope.node.isElement) {
+                    if (scope.node.isElement || scope.node.urls === null) {
                         scope.currentUrls = null;
                         return;
                     }
-                    // find the URLs for the currently selected language
-                    if (scope.node.variants.length > 1) {
-                        // nodes with variants
-                        scope.currentUrls = _.filter(scope.node.urls, function (url) {
-                            return scope.currentVariant.language && scope.currentVariant.language.culture === url.culture;
-                        });
-                    } else {
-                        // invariant nodes
-                        scope.currentUrls = scope.node.urls;
-                    }
+                    // find the urls for the currently selected language
+                    // when there is no selected language (allow vary by culture == false), show all urls of the node.
+                    scope.currentUrls = _.filter(scope.node.urls, function (url) {
+                        return scope.currentVariant.language == null || scope.currentVariant.language.culture === url.culture;
+                    });
                     // figure out if multiple cultures apply across the content URLs
                     scope.currentUrlsHaveMultipleCultures = _.keys(_.groupBy(scope.currentUrls, function (url) {
                         return url.culture;
@@ -3937,7 +3970,7 @@ Use this directive to render a group of toggle buttons.
                 require: '^^umbVariantContent',
                 restrict: 'E',
                 replace: true,
-                template: '<div class="umb-package-details"> <div class="umb-package-details__main-content"> <umb-box ng-if="currentUrls" data-element="node-info-urls"> <umb-box-header title-key="general_links"></umb-box-header> <umb-box-content class="block-form"> <ul class="nav nav-stacked mb0"> <li ng-repeat="url in currentUrls"> <a href="{{url.text}}" target="_blank" rel="noopener" ng-if="url.isUrl" class="umb-outline"> <span ng-if="currentUrlsHaveMultipleCultures && url.culture" style="font-size: 13px; color: #cccccc; width: 55px;display: inline-block">{{url.culture}}</span> <i class="icon icon-out" aria-hidden="true"></i> <span>{{url.text}}</span> </a> <div ng-if="!url.isUrl" style="margin-top: 4px;"> <span ng-if="currentUrlsHaveMultipleCultures && url.culture" style="font-size: 13px; color: #cccccc; width: 55px;display: inline-block">{{url.culture}}</span> <em>{{url.text}}</em> </div> </li> </ul> </umb-box-content> </umb-box> <umb-box data-element="node-info-redirects" ng-cloak ng-show="!urlTrackerDisabled && hasRedirects"> <umb-box-header title-key="redirectUrls_redirectUrlManagement"></umb-box-header> <umb-box-content class="block-form"> <div style="position: relative;"> <div ng-if="loadingRedirectUrls" style="background: rgba(255, 255, 255, 0.8); position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div> <umb-load-indicator ng-if="loadingRedirectUrls"></umb-load-indicator> <div ng-show="hasRedirects"> <p><localize key="redirectUrls_panelInformation" class="ng-isolate-scope ng-scope">The following URLs redirect to this content item:</localize></p> <ul class="nav nav-stacked" style="margin-bottom: 0;"> <li ng-repeat="redirectUrl in redirectUrls"> <a href="{{redirectUrl.originalUrl}}" target="_blank" rel="noopener" class="umb-outline"> <i ng-class="value.icon" class="icon-out" aria-hidden="true"></i> {{redirectUrl.originalUrl}} </a> </li> </ul> </div> </div> </umb-box-content> </umb-box> <umb-box data-element="node-info-history"> <umb-box-header title="{{historyLabel}}"> <umb-button ng-hide="node.trashed" type="button" button-style="outline" action="openRollback()" label-key="actions_rollback" size="xs" add-ellipsis="true"> </umb-button> </umb-box-header> <umb-box-content class="block-form"> <div style="position: relative;"> <div ng-show="loadingAuditTrail" style="background: rgba(255, 255, 255, 0.8); position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div> <umb-load-indicator ng-show="loadingAuditTrail"></umb-load-indicator> <div ng-show="auditTrail.length === 0" style="padding: 10px;"> <umb-empty-state position="center" size="small"> <localize key="content_noChanges"></localize> </umb-empty-state> </div> <div class="history"> <div ng-show="auditTrail.length > 1" class="history-line"></div> <div class="history-item" ng-repeat="item in auditTrail"> <div class="history-item__break"> <div class="history-item__avatar"> <umb-avatar color="secondary" size="xs" name="{{item.userName}}" img-src="{{item.userAvatars[3]}}" img-srcset="{{item.userAvatars[4]}} 2x, {{item.userAvatars[4]}} 3x"> </umb-avatar> </div> <div> <div>{{ item.userName }}</div> <div class="history-item__date">{{item.timestampFormatted}}</div> </div> </div> <div class="history-item__break"> <umb-badge class="history-item__badge" size="xs" color="{{item.logTypeColor}}"> <localize key="auditTrails_small{{ item.logType }}">{{ item.logType }}</localize> </umb-badge> <span class="history-item__description"> <localize key="auditTrails_{{ item.logType | lowercase }}" tokens="[item.parameters]">{{ item.comment }}</localize> </span> </div> </div> </div> </div> <div class="flex justify-center"> <umb-pagination ng-if="auditTrailOptions.totalPages > 1" page-number="auditTrailOptions.pageNumber" total-pages="auditTrailOptions.totalPages" on-change="auditTrailPageChange(pageNumber)"> </umb-pagination> </div> </umb-box-content> </umb-box> </div> <div class="umb-package-details__sidebar"> <umb-box data-element="node-info-general"> <umb-box-header title-key="general_general"></umb-box-header> <umb-box-content class="block-form"> <umb-control-group data-element="node-info-status" label="@general_status"> <umb-badge size="xs" color="{{status.color}}"> <umb-variant-state variant="currentVariant"></umb-variant-state> </umb-badge> </umb-control-group> <umb-control-group ng-show="node.id !== 0" data-element="node-info-create-date" label="@template_createdDate"> {{currentVariant.createDateFormatted}} </umb-control-group> <umb-control-group ng-show="node.id !== 0 && currentVariant.releaseDateFormatted" data-element="node-info-publish-date" label="@content_releaseDate"> {{currentVariant.releaseDateFormatted}} </umb-control-group> <umb-control-group ng-show="node.id !== 0 && currentVariant.expireDateFormatted" data-element="node-info-expire-date" label="@content_expireDate"> {{currentVariant.expireDateFormatted}} </umb-control-group> <umb-control-group data-element="node-info-document-type" label="@content_documentType"> <umb-node-preview style="min-width: 100%; margin-bottom: 0;" icon="node.icon" name="node.contentTypeName" alias="documentType.alias" allow-open="allowChangeDocumentType" on-open="openDocumentType(documentType)"> </umb-node-preview> </umb-control-group> <umb-control-group ng-if="disableTemplates == false" data-element="node-info-template" label="@template_template"> <div class="flex items-center"> <select class="input-block-level" ng-model="node.template" ng-options="key as value for (key, value) in availableTemplates" ng-change="updateTemplate(node.template)"> <option>{{chooseLabel}}...</option> </select> <button type="button" ng-show="allowChangeTemplate && node.template !== null" class="umb-node-preview__action" style="margin-left:15px;" ng-click="openTemplate()"> <localize key="general_open">Open</localize> </button> </div> </umb-control-group> <umb-control-group ng-show="node.id !== 0" data-element="node-info-id" label="Id"> <div>{{ node.id }}</div> <small>{{ node.key }}</small> </umb-control-group> </umb-box-content> </umb-box> </div> </div> ',
+                template: '<div class="umb-package-details"> <div class="umb-package-details__main-content"> <umb-box ng-if="currentUrls" data-element="node-info-urls"> <umb-box-header title-key="general_links"></umb-box-header> <umb-box-content class="block-form"> <ul class="nav nav-stacked mb0"> <li ng-repeat="url in currentUrls"> <a href="{{url.text}}" target="_blank" rel="noopener" ng-if="url.isUrl" class="umb-outline"> <span ng-if="currentUrlsHaveMultipleCultures && url.culture" style="font-size: 13px; color: #cccccc; width: 55px;display: inline-block">{{url.culture}}</span> <i class="icon icon-out" aria-hidden="true"></i> <span>{{url.text}}</span> </a> <div ng-if="!url.isUrl" style="margin-top: 4px;"> <span ng-if="currentUrlsHaveMultipleCultures && url.culture" style="font-size: 13px; color: #cccccc; width: 55px;display: inline-block">{{url.culture}}</span> <em>{{url.text}}</em> </div> </li> </ul> </umb-box-content> </umb-box> <umb-box data-element="node-info-redirects" ng-cloak ng-show="!urlTrackerDisabled && hasRedirects"> <umb-box-header title-key="redirectUrls_redirectUrlManagement"></umb-box-header> <umb-box-content class="block-form"> <div style="position: relative;"> <div ng-if="loadingRedirectUrls" style="background: rgba(255, 255, 255, 0.8); position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div> <umb-load-indicator ng-if="loadingRedirectUrls"></umb-load-indicator> <div ng-show="hasRedirects"> <p><localize key="redirectUrls_panelInformation" class="ng-isolate-scope ng-scope">The following URLs redirect to this content item:</localize></p> <ul class="nav nav-stacked" style="margin-bottom: 0;"> <li ng-repeat="redirectUrl in redirectUrls"> <a href="{{redirectUrl.originalUrl}}" target="_blank" rel="noopener" class="umb-outline"> <i ng-class="value.icon" class="icon-out" aria-hidden="true"></i> {{redirectUrl.originalUrl}} </a> </li> </ul> </div> </div> </umb-box-content> </umb-box> <umb-box data-element="node-info-history"> <umb-box-header title-key="{{historyLabelKey}}" ng-if="historyLabelKey"> <umb-button ng-hide="node.trashed || node.id === 0" type="button" button-style="outline" action="openRollback()" label-key="actions_rollback" size="xs" add-ellipsis="true"> </umb-button> </umb-box-header> <umb-box-content class="block-form"> <div style="position: relative;"> <div ng-show="loadingAuditTrail" style="background: rgba(255, 255, 255, 0.8); position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div> <umb-load-indicator ng-show="loadingAuditTrail"></umb-load-indicator> <div ng-show="auditTrail.length === 0" style="padding: 10px;"> <umb-empty-state position="center" size="small"> <localize key="content_noChanges"></localize> </umb-empty-state> </div> <div class="history"> <div ng-show="auditTrail.length > 1" class="history-line"></div> <div class="history-item" ng-repeat="item in auditTrail"> <div class="history-item__break"> <div class="history-item__avatar"> <umb-avatar color="secondary" size="xs" name="{{item.userName}}" img-src="{{item.userAvatars[3]}}" img-srcset="{{item.userAvatars[4]}} 2x, {{item.userAvatars[4]}} 3x"> </umb-avatar> </div> <div> <div>{{ item.userName }}</div> <div class="history-item__date">{{item.timestampFormatted}}</div> </div> </div> <div class="history-item__break"> <umb-badge class="history-item__badge" size="xs" color="{{item.logTypeColor}}"> <localize key="auditTrails_small{{ item.logType }}">{{ item.logType }}</localize> </umb-badge> <span class="history-item__description"> <localize key="auditTrails_{{ item.logType | lowercase }}" tokens="[item.parameters]">{{ item.comment }}</localize> </span> </div> </div> </div> </div> <div class="flex justify-center"> <umb-pagination ng-if="auditTrailOptions.totalPages > 1" page-number="auditTrailOptions.pageNumber" total-pages="auditTrailOptions.totalPages" on-change="auditTrailPageChange(pageNumber)"> </umb-pagination> </div> </umb-box-content> </umb-box> </div> <div class="umb-package-details__sidebar"> <umb-box data-element="node-info-general"> <umb-box-header title-key="general_general"></umb-box-header> <umb-box-content class="block-form"> <umb-control-group data-element="node-info-status" label="@general_status"> <umb-badge size="xs" color="{{status.color}}"> <umb-variant-state variant="currentVariant"></umb-variant-state> </umb-badge> </umb-control-group> <umb-control-group ng-show="node.id !== 0" data-element="node-info-create-date" label="@template_createdDate"> {{currentVariant.createDateFormatted}} </umb-control-group> <umb-control-group ng-show="node.id !== 0 && currentVariant.releaseDateFormatted" data-element="node-info-publish-date" label="@content_releaseDate"> {{currentVariant.releaseDateFormatted}} </umb-control-group> <umb-control-group ng-show="node.id !== 0 && currentVariant.expireDateFormatted" data-element="node-info-expire-date" label="@content_expireDate"> {{currentVariant.expireDateFormatted}} </umb-control-group> <umb-control-group data-element="node-info-document-type" label="@content_documentType"> <umb-node-preview style="min-width: 100%; margin-bottom: 0;" icon="node.icon" name="node.contentTypeName" alias="documentType.alias" allow-open="allowChangeDocumentType" on-open="openDocumentType(documentType)"> </umb-node-preview> </umb-control-group> <umb-control-group ng-if="disableTemplates == false" data-element="node-info-template" label="@template_template"> <div class="flex items-center"> <select class="input-block-level" ng-model="node.template" ng-options="key as value for (key, value) in availableTemplates" ng-change="updateTemplate(node.template)"> <option>{{chooseLabel}}...</option> </select> <button type="button" ng-show="allowChangeTemplate && node.template !== null" class="umb-node-preview__action" style="margin-left:15px;" ng-click="openTemplate()"> <localize key="general_open">Open</localize> </button> </div> </umb-control-group> <umb-control-group ng-show="node.id !== 0" data-element="node-info-id" label="Id"> <div>{{ node.id }}</div> <small>{{ node.key }}</small> </umb-control-group> </umb-box-content> </umb-box> </div> </div> ',
                 scope: { node: '=' },
                 link: link
             };
@@ -4368,7 +4401,7 @@ Use this directive to render a group of toggle buttons.
                     openSplitView(variant);
                 }
             }
-            eventsService.on('editors.content.splitViewRequest', function (_, args) {
+            var unbindSplitViewRequest = eventsService.on('editors.content.splitViewRequest', function (_, args) {
                 return requestSplitView(args);
             });
             /** Closes the split view */
@@ -4384,6 +4417,7 @@ Use this directive to render a group of toggle buttons.
                     'csegment': vm.editors[0].content.segment
                 });
                 splitViewChanged();
+                unbindSplitViewRequest();
             }
             /**
      * Changes the currently selected variant
@@ -4884,7 +4918,7 @@ Use this directive to construct a main content area inside the main editor windo
     'use strict';
     (function () {
         'use strict';
-        function EditorContentHeader(serverValidationManager, localizationService, editorState) {
+        function EditorContentHeader(serverValidationManager, localizationService, editorState, contentEditingHelper) {
             function link(scope) {
                 var unsubscribe = [];
                 if (!scope.serverValidationNameField) {
@@ -4987,13 +5021,14 @@ Use this directive to construct a main content area inside the main editor windo
                     if (scope.vm.hasCulture) {
                         scope.content.variants.forEach(function (v) {
                             if (v.language !== null && v.segment === null) {
+                                var subVariants = scope.content.variants.filter(function (subVariant) {
+                                    return subVariant.language.culture === v.language.culture && subVariant.segment !== null;
+                                }).sort(contentEditingHelper.sortVariants);
                                 var variantMenuEntry = {
                                     key: String.CreateGuid(),
                                     open: v.language && v.language.culture === scope.editor.culture,
                                     variant: v,
-                                    subVariants: scope.content.variants.filter(function (subVariant) {
-                                        return subVariant.language.culture === v.language.culture && subVariant.segment !== null;
-                                    })
+                                    subVariants: subVariants
                                 };
                                 scope.vm.variantMenu.push(variantMenuEntry);
                             }
@@ -5018,6 +5053,10 @@ Use this directive to construct a main content area inside the main editor windo
                         }
                         unsubscribe.push(serverValidationManager.subscribe(null, variant.language !== null ? variant.language.culture : null, null, onVariantValidation, variant.segment));
                     });
+                    scope.vm.variantMenu.sort(sortVariantsMenu);
+                }
+                function sortVariantsMenu(a, b) {
+                    return contentEditingHelper.sortVariants(a.variant, b.variant);
                 }
                 scope.goBack = function () {
                     if (scope.onBack) {
@@ -5066,6 +5105,12 @@ Use this directive to construct a main content area inside the main editor windo
                     }
                     return false;
                 };
+                scope.toggleDropdown = function () {
+                    scope.vm.dropdownOpen = !scope.vm.dropdownOpen;
+                    if (scope.vm.dropdownOpen) {
+                        scope.vm.variantMenu.sort(sortVariantsMenu);
+                    }
+                };
                 onInit();
                 scope.$on('$destroy', function () {
                     for (var u in unsubscribe) {
@@ -5077,7 +5122,7 @@ Use this directive to construct a main content area inside the main editor windo
                 transclude: true,
                 restrict: 'E',
                 replace: true,
-                template: '<div data-element="editor-header" class="umb-editor-header" ng-class="{\'-split-view-active\': splitViewOpen === true}"> <div class="flex items-center" style="height: 100%;"> <div ng-if="showBackButton === true && splitViewOpen !== true" style="margin-right: 15px;"> <button type="button" class="umb-editor-header__back" ng-click="goBack()" prevent-default> <i class="fa fa-arrow-left" aria-hidden="true"></i> <span class="sr-only"><localize key="visuallyHiddenTexts_goBack">Go back</localize></span> </button> </div> <div class="flex items-center" style="flex: 1;"> <div id="nameField" class="umb-editor-header__name-and-description" style="flex: 1 1 auto;"> <div> <p tabindex="0" class="sr-only"> {{a11yMessage}} </p> </div> <div class="umb-editor-header__name-wrapper"> <label for="headerName" class="sr-only">{{a11yName}}</label> <ng-form name="headerNameForm"> <input data-element="editor-name-field" type="text" class="umb-editor-header__name-input" localize="placeholder" placeholder="@placeholders_entername" name="headerName" id="headerName" ng-model="name" ng-class="{\'name-is-empty\': $parent.name===null || $parent.name===\'\'}" ng-disabled="nameDisabled" umb-auto-focus focus-on-filled="true" val-server-field="{{serverValidationNameField}}" required aria-required="true" aria-invalid="{{contentForm.headerNameForm.headerName.$invalid ? true : false}}" autocomplete="off" maxlength="255"> </ng-form> <button type="button" ng-if="vm.hasVariants === true && hideChangeVariant !== true" class="umb-variant-switcher__toggle umb-outline" ng-click="vm.dropdownOpen = !vm.dropdownOpen" ng-class="{\'--error\': vm.errorsOnOtherVariants}" aria-haspopup="true" aria-expanded="{{vm.dropdownOpen}}"> <span ng-bind="editor.content.displayName"></span> <umb-icon icon="{{vm.dropdownOpen ? \'icon-navigation-up\' : \'icon-navigation-down\'}}" class="umb-variant-switcher__expand" ng-class="{\'icon-navigation-down\': !vm.dropdownOpen, \'icon-navigation-up\': vm.dropdownOpen}">&nbsp;</umb-icon> </button> <span ng-if="vm.hasVariants === true && hideChangeVariant" class="umb-variant-switcher__toggle"> <span ng-bind="editor.content.displayName"></span> </span> <umb-dropdown ng-if="vm.dropdownOpen" class="umb-variant-switcher" ng-class="{\'--has-sub-variants\': vm.hasSubVariants === true}" on-close="vm.dropdownOpen = false" umb-keyboard-list> <umb-dropdown-item ng-repeat-start="entry in vm.variantMenu | orderBy:\'variant.displayName\' track by entry.key" class="umb-variant-switcher__item" ng-class="{\'--current\': entry.variant === editor.content, \'--active\': entry.variant.active && vm.dropdownOpen, \'--error\': entry.variant.active !== true && entry.variant.hasError, \'--state-notCreated\':entry.variant.state===\'NotCreated\' && entry.variant.name == null, \'--state-draft\':entry.variant.state===\'Draft\' || (entry.variant.state===\'NotCreated\' && entry.variant.name != null)}"> <button type="button" ng-if="entry.subVariants && entry.subVariants.length > 0" class="umb-variant-switcher__item-expand-button umb-outline" ng-click="entry.open = !entry.open"> <i class="icon {{entry.open ? \'icon-navigation-down\' : \'icon-navigation-right\'}}"></i> </button> <button type="button" class="umb-variant-switcher__name-wrapper umb-outline" ng-click="selectVariant($event, entry.variant)"> <span class="umb-variant-switcher__name" ng-bind="entry.variant.displayName"></span> <umb-variant-state variant="entry.variant" class="umb-variant-switcher__state"></umb-variant-state> </button> <div ng-if="splitViewOpen !== true && !entry.variant.active" class="umb-variant-switcher__split-view umb-outline" ng-click="openInSplitView($event, entry.variant)">Open in split view</div> </umb-dropdown-item> <div ng-repeat-end ng-if="entry.open === true && entry.subVariants && entry.subVariants.length > 0" class="umb-variant-switcher__sub-variants umb-outline"> <umb-dropdown-item ng-repeat="subVariant in entry.subVariants track by $index" class="umb-variant-switcher__item" ng-class="{\'--current\': subVariant === editor.content, \'--active\': subVariant.active && vm.dropdownOpen, \'--error\': subVariant.active !== true && subVariant.hasError, \'--state-notCreated\':subVariant.state===\'NotCreated\', \'--state-draft\':subVariant.state===\'Draft\'}"> <button type="button" class="umb-variant-switcher__name-wrapper umb-outline" ng-click="selectVariant($event, subVariant)"> <span class="umb-variant-switcher__name" ng-bind="subVariant.segment"></span> <umb-variant-state variant="subVariant" class="umb-variant-switcher__state"></umb-variant-state> </button> <div ng-if="splitViewOpen !== true && !subVariant.active" class="umb-variant-switcher__split-view umb-outline" ng-click="openInSplitView($event, subVariant)">Open in split view</div> </umb-dropdown-item> </div> </umb-dropdown> </div> </div> </div> <div ng-if="splitViewOpen"> <button type="button" class="btn-reset umb-editor-header__close-split-view" ng-click="closeSplitView()"> <umb-icon icon="icon-delete" class="icon-delete"></umb-icon> </button> </div> <div ng-if="editor.variantApps && splitViewOpen !== true"> <umb-editor-navigation data-element="editor-sub-views" navigation="editor.variantApps" on-select="selectNavigationItem(item)" on-anchor-select="selectAnchorItem(item, anchor)"> </umb-editor-navigation> </div> <div ng-if="menu.currentNode && splitViewOpen !== true && hideActionsMenu !== true"> <umb-editor-menu data-element="editor-actions" current-node="menu.currentNode" current-section="{{menu.currentSection}}" is-disabled="disableActionsMenu"> </umb-editor-menu> </div> </div> </div> ',
+                template: '<div data-element="editor-header" class="umb-editor-header" ng-class="{\'-split-view-active\': splitViewOpen === true}"> <div class="flex items-center" style="height: 100%;"> <div ng-if="showBackButton === true && splitViewOpen !== true" style="margin-right: 15px;"> <button type="button" class="umb-editor-header__back" ng-click="goBack()" prevent-default> <i class="fa fa-arrow-left" aria-hidden="true"></i> <span class="sr-only"><localize key="visuallyHiddenTexts_goBack">Go back</localize></span> </button> </div> <div class="flex items-center" style="flex: 1;"> <div id="nameField" class="umb-editor-header__name-and-description" style="flex: 1 1 auto;"> <div> <p tabindex="0" class="sr-only"> {{a11yMessage}} </p> </div> <div class="umb-editor-header__name-wrapper"> <label for="headerName" class="sr-only">{{a11yName}}</label> <ng-form name="headerNameForm"> <input data-element="editor-name-field" type="text" class="umb-editor-header__name-input" localize="placeholder" placeholder="@placeholders_entername" name="headerName" id="headerName" ng-model="name" ng-class="{\'name-is-empty\': $parent.name===null || $parent.name===\'\'}" ng-disabled="nameDisabled" umb-auto-focus focus-on-filled="true" val-server-field="{{serverValidationNameField}}" required aria-required="true" aria-invalid="{{contentForm.headerNameForm.headerName.$invalid ? true : false}}" autocomplete="off" maxlength="255"> </ng-form> <button type="button" ng-if="vm.hasVariants === true && hideChangeVariant !== true" class="umb-variant-switcher__toggle umb-outline" ng-click="toggleDropdown()" ng-class="{\'--error\': vm.errorsOnOtherVariants}" aria-haspopup="true" aria-expanded="{{vm.dropdownOpen}}"> <span ng-bind="editor.content.displayName"></span> <umb-icon icon="{{vm.dropdownOpen ? \'icon-navigation-up\' : \'icon-navigation-down\'}}" class="umb-variant-switcher__expand" ng-class="{\'icon-navigation-down\': !vm.dropdownOpen, \'icon-navigation-up\': vm.dropdownOpen}">&nbsp;</umb-icon> </button> <span ng-if="vm.hasVariants === true && hideChangeVariant" class="umb-variant-switcher__toggle"> <span ng-bind="editor.content.displayName"></span> </span> <umb-dropdown ng-if="vm.dropdownOpen" class="umb-variant-switcher" ng-class="{\'--has-sub-variants\': vm.hasSubVariants === true}" on-close="vm.dropdownOpen = false" umb-keyboard-list> <umb-dropdown-item ng-repeat-start="entry in vm.variantMenu track by entry.key" class="umb-variant-switcher__item" ng-class="{\'--current\': entry.variant === editor.content, \'--active\': entry.variant.active && vm.dropdownOpen, \'--error\': entry.variant.active !== true && entry.variant.hasError, \'--state-notCreated\':entry.variant.state===\'NotCreated\' && entry.variant.name == null, \'--state-draft\':entry.variant.state===\'Draft\' || (entry.variant.state===\'NotCreated\' && entry.variant.name != null)}"> <button type="button" ng-if="entry.subVariants && entry.subVariants.length > 0" class="umb-variant-switcher__item-expand-button umb-outline" ng-click="entry.open = !entry.open"> <i class="icon {{entry.open ? \'icon-navigation-down\' : \'icon-navigation-right\'}}"></i> </button> <button type="button" class="umb-variant-switcher__name-wrapper umb-outline" ng-click="selectVariant($event, entry.variant)"> <span class="umb-variant-switcher__name" ng-bind="entry.variant.displayName"></span> <span class="umb-variant-switcher__state"> <umb-variant-state variant="entry.variant"></umb-variant-state> <span ng-if="entry.variant.language.isMandatory"> - <localize key="general_mandatory"></localize></span> <span ng-if="entry.variant.language.isDefault"> - <localize key="general_default"></localize></span> </span> </button> <div ng-if="splitViewOpen !== true && !entry.variant.active" class="umb-variant-switcher__split-view umb-outline" ng-click="openInSplitView($event, entry.variant)">Open in split view</div> </umb-dropdown-item> <div ng-repeat-end ng-if="entry.open === true && entry.subVariants && entry.subVariants.length > 0" class="umb-variant-switcher__sub-variants umb-outline"> <umb-dropdown-item ng-repeat="subVariant in entry.subVariants track by $index" class="umb-variant-switcher__item" ng-class="{\'--current\': subVariant === editor.content, \'--active\': subVariant.active && vm.dropdownOpen, \'--error\': subVariant.active !== true && subVariant.hasError, \'--state-notCreated\':subVariant.state===\'NotCreated\', \'--state-draft\':subVariant.state===\'Draft\'}"> <button type="button" class="umb-variant-switcher__name-wrapper umb-outline" ng-click="selectVariant($event, subVariant)"> <span class="umb-variant-switcher__name" ng-bind="subVariant.segment"></span> <umb-variant-state variant="subVariant" class="umb-variant-switcher__state"></umb-variant-state> </button> <div ng-if="splitViewOpen !== true && !subVariant.active" class="umb-variant-switcher__split-view umb-outline" ng-click="openInSplitView($event, subVariant)">Open in split view</div> </umb-dropdown-item> </div> </umb-dropdown> </div> </div> </div> <div ng-if="splitViewOpen"> <button type="button" class="btn-reset umb-editor-header__close-split-view" ng-click="closeSplitView()"> <umb-icon icon="icon-delete" class="icon-delete"></umb-icon> </button> </div> <div ng-if="editor.variantApps && splitViewOpen !== true"> <umb-editor-navigation data-element="editor-sub-views" navigation="editor.variantApps" on-select="selectNavigationItem(item)" on-anchor-select="selectAnchorItem(item, anchor)"> </umb-editor-navigation> </div> <div ng-if="menu.currentNode && splitViewOpen !== true && hideActionsMenu !== true"> <umb-editor-menu data-element="editor-actions" current-node="menu.currentNode" current-section="{{menu.currentSection}}" is-disabled="disableActionsMenu"> </umb-editor-menu> </div> </div> </div> ',
                 scope: {
                     name: '=',
                     nameDisabled: '<?',
@@ -5613,8 +5658,11 @@ Use this directive to construct a header inside the main editor window.
                 function SetPageTitle(title) {
                     scope.$emit('$changeTitle', title);
                 }
-                $rootScope.$on('$setAccessibleHeader', function (event, isNew, editorFor, nameLocked, name, contentTypeName, setTitle) {
+                var unbindEventHandler = $rootScope.$on('$setAccessibleHeader', function (event, isNew, editorFor, nameLocked, name, contentTypeName, setTitle) {
                     setAccessibilityHeaderDirective(isNew, editorFor, nameLocked, name, contentTypeName, setTitle);
+                });
+                scope.$on('$destroy', function () {
+                    unbindEventHandler();
                 });
             }
             var directive = {
@@ -6461,18 +6509,18 @@ Use this directive to construct the main editor window.
             function contains(arr, item) {
                 if (Utilities.isArray(arr)) {
                     for (var i = 0; i < arr.length; i++) {
-                        if (angular.equals(arr[i], item)) {
+                        if (Utilities.equals(arr[i], item)) {
                             return true;
                         }
                     }
                 }
                 return false;
             }
-            // add 
+            // add
             function add(arr, item) {
                 arr = Utilities.isArray(arr) ? arr : [];
                 for (var i = 0; i < arr.length; i++) {
-                    if (angular.equals(arr[i], item)) {
+                    if (Utilities.equals(arr[i], item)) {
                         return arr;
                     }
                 }
@@ -6483,7 +6531,7 @@ Use this directive to construct the main editor window.
             function remove(arr, item) {
                 if (Utilities.isArray(arr)) {
                     for (var i = 0; i < arr.length; i++) {
-                        if (angular.equals(arr[i], item)) {
+                        if (Utilities.equals(arr[i], item)) {
                             arr.splice(i, 1);
                             break;
                         }
@@ -8127,7 +8175,7 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
             }
             /** Watches the one way binding changes */
             function onChanges(changes) {
-                if (changes.center && !changes.center.isFirstChange() && changes.center.currentValue && !angular.equals(changes.center.currentValue, changes.center.previousValue)) {
+                if (changes.center && !changes.center.isFirstChange() && changes.center.currentValue && !Utilities.equals(changes.center.currentValue, changes.center.previousValue)) {
                     //when center changes update the dimensions
                     setDimensions();
                 }
@@ -9817,7 +9865,7 @@ Use this directive to render a tabs navigation.
             restrict: 'E',
             replace: true,
             terminal: false,
-            template: '<ul class="umb-tree" ng-class="{\'hide-options\': hideoptions === \'true\'}"> <li ng-if="!tree.root.containsGroups"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(tree.root)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(tree.root, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(tree.root, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <i ng-if="enablecheckboxes === \'true\'" ng-class="selectEnabledNodeClass(tree.root)" aria-hidden="true"></i> {{tree.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(tree.root, $event)" text="Open context node for {{tree.name}}" state="hidden" class="umb-options" ng-hide="tree.root.isContainer || !tree.root.menuUrl" ng-swipe-right="options(tree.root, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in tree.root.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  <li ng-if="tree.root.containsGroups" ng-repeat="group in tree.root.children"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(group)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(group, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(group, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <i ng-if="enablecheckboxes === \'true\'" ng-class="selectEnabledNodeClass(group)" aria-hidden="true"></i> {{group.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(group, $event)" text="Open context node for {{group.name}}" state="hidden" class="umb-options" ng-hide="group.isContainer || !group.menuUrl" ng-swipe-right="options(group, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in group.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  </ul> ',
+            template: '<ul class="umb-tree" ng-class="{\'hide-options\': hideoptions === \'true\'}"> <li ng-if="!tree.root.containsGroups"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(tree.root)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(tree.root, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(tree.root, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <umb-icon icon="icon-check" class="umb-tree-icon icon-check" ng-class="selectEnabledNodeClass(tree.root)" ng-if="enablecheckboxes === \'true\'"> </umb-icon> {{tree.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(tree.root, $event)" text="Open context node for {{tree.name}}" state="hidden" class="umb-options" ng-hide="tree.root.isContainer || !tree.root.menuUrl" ng-swipe-right="options(tree.root, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in tree.root.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  <li ng-if="tree.root.containsGroups" ng-repeat="group in tree.root.children"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(group)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(group, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(group, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <umb-icon icon="icon-check" class="umb-tree-icon icon-check" ng-class="selectEnabledNodeClass(group)" ng-if="enablecheckboxes === \'true\'"> </umb-icon> {{group.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(group, $event)" text="Open context node for {{group.name}}" state="hidden" class="umb-options" ng-hide="group.isContainer || !group.menuUrl" ng-swipe-right="options(group, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in group.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  </ul> ',
             scope: {
                 section: '@',
                 treealias: '@',
@@ -10132,7 +10180,7 @@ Use this directive to render a tabs navigation.
                     return css.join(' ');
                 };
                 $scope.selectEnabledNodeClass = function (node) {
-                    return node && node.selected ? 'icon umb-tree-icon sprTree icon-check green temporary' : '';
+                    return node && node.selected ? 'icon sprTree icon-check green temporary' : '-hidden';
                 };
                 /* helper to force reloading children of a tree node */
                 $scope.loadChildren = function (node, forceReload) {
@@ -10198,8 +10246,8 @@ Use this directive to render a tabs navigation.
                     //load the tree
                     loadTree().then(function () {
                         //because angular doesn't return a promise for the resolve method, we need to resort to some hackery, else
-                        //like normal JS promises we could do resolve(...).then() 
-                        if (args && args.onLoaded && angular.isFunction(args.onLoaded)) {
+                        //like normal JS promises we could do resolve(...).then()
+                        if (args && args.onLoaded && Utilities.isFunction(args.onLoaded)) {
                             args.onLoaded();
                         }
                     });
@@ -10547,7 +10595,7 @@ Use this directive to render a tabs navigation.
             // restrict to an element
             replace: true,
             // replace the html element with the template
-            template: '<div> <umb-empty-state ng-if="results.length === 0" position="{{emptySearchResultPosition}}"> <localize key="general_searchNoResult">Sorry, we can not find what you are looking for.</localize> </umb-empty-state> <ul class="umb-tree"> <li class="root"> <ul class="umb-search-group"> <li class="umb-search-group-item" ng-repeat="result in results"> <div ng-class="{\'umb-tree-node-checked\' : result.selected}"> <button type="button" class="btn-reset umb-search-group-item-link" ng-class="{first:$first}" ng-click="selectResultCallback($event, result)"> <span class="umb-search-group-item-name"> <umb-icon ng-if="result.selected" icon="icon-check" class="icon umb-tree-icon green sprTree icon-check"> </umb-icon> <umb-icon ng-if="!result.selected" icon="{{result.icon}}" class="icon umb-tree-icon sprTree {{result.icon}}"> </umb-icon> <span class="umb-search-group-item-name__text">{{ result.name }}</span> </span> <small class="search-subtitle" ng-if="result.subTitle">{{ result.subTitle }}</small> </button> </div> </li> </ul> </li> </ul> </div> ',
+            template: '<div> <umb-empty-state ng-if="results.length === 0" position="{{emptySearchResultPosition}}"> <localize key="general_searchNoResult">Sorry, we can not find what you are looking for.</localize> </umb-empty-state> <ul class="umb-tree"> <li class="root"> <ul class="umb-search-group"> <li class="umb-search-group-item" ng-repeat="result in results"> <div ng-class="{ \'umb-tree-node-checked\': result.selected }"> <button type="button" class="btn-reset umb-search-group-item-link" ng-class="{ first: $first }" ng-click="selectResultCallback($event, result)"> <span class="umb-search-group-item-name"> <umb-icon icon="{{result.selected ? \'icon-check\' : result.icon}}" class="icon umb-tree-icon sprTree {{result.selected ? \'icon-check\' : result.icon}}"> </umb-icon> <span class="umb-search-group-item-name__text">{{ result.name }}</span> </span> <small class="search-subtitle" ng-if="result.subTitle">{{ result.subTitle }}</small> </button> </div> </li> </ul> </li> </ul> </div> ',
             link: function link(scope, element, attrs, ctrl) {
                 scope.emptySearchResultPosition = scope.emptySearchResultPosition || 'center';
             }
@@ -10632,7 +10680,7 @@ Use this directive to render a tabs navigation.
                 if (Utilities.isDefined(opts.firstLineNumber)) {
                     if (Utilities.isNumber(opts.firstLineNumber)) {
                         session.setOption('firstLineNumber', opts.firstLineNumber);
-                    } else if (angular.isFunction(opts.firstLineNumber)) {
+                    } else if (Utilities.isFunction(opts.firstLineNumber)) {
                         session.setOption('firstLineNumber', opts.firstLineNumber());
                     }
                 }
@@ -10663,7 +10711,7 @@ Use this directive to render a tabs navigation.
                 }
                 // onLoad callbacks
                 angular.forEach(opts.callbacks, function (cb) {
-                    if (angular.isFunction(cb)) {
+                    if (Utilities.isFunction(cb)) {
                         cb(acee);
                     }
                 });
@@ -10743,7 +10791,7 @@ Use this directive to render a tabs navigation.
                         var args = Array.prototype.slice.call(arguments, 1);
                         if (Utilities.isDefined(callback)) {
                             scope.$evalAsync(function () {
-                                if (angular.isFunction(callback)) {
+                                if (Utilities.isFunction(callback)) {
                                     callback(args);
                                 } else {
                                     throw new Error('ui-ace use a function as callback.');
@@ -10907,15 +10955,17 @@ Use this directive to render an avatar.
 **/
     (function () {
         'use strict';
-        function AvatarDirective() {
+        function AvatarDirective(localizationService) {
             function link(scope, element, attrs, ctrl) {
                 var eventBindings = [];
                 scope.initials = '';
+                scope.avatarAlt = '';
                 function onInit() {
                     if (!scope.unknownChar) {
                         scope.unknownChar = '?';
                     }
                     scope.initials = getNameInitials(scope.name);
+                    setAvatarAlt(scope.name);
                 }
                 function getNameInitials(name) {
                     if (name) {
@@ -10927,6 +10977,14 @@ Use this directive to render an avatar.
                     }
                     return null;
                 }
+                function setAvatarAlt(name) {
+                    if (name) {
+                        localizationService.localize('general_avatar').then(function (data) {
+                            scope.avatarAlt = data + ' ' + name;
+                        });
+                    }
+                    scope.avatarAlt = null;
+                }
                 eventBindings.push(scope.$watch('name', function (newValue, oldValue) {
                     if (newValue === oldValue) {
                         return;
@@ -10935,13 +10993,14 @@ Use this directive to render an avatar.
                         return;
                     }
                     scope.initials = getNameInitials(newValue);
+                    setAvatarAlt(newValue);
                 }));
                 onInit();
             }
             var directive = {
                 restrict: 'E',
                 replace: true,
-                template: '<div> <img class="umb-avatar umb-avatar--{{size}}" ng-if="imgSrc" ng-src="{{imgSrc}}" ng-srcset="{{imgSrcset}}"> <div class="umb-avatar umb-avatar--{{size}} umb-avatar--{{color}}" ng-if="!imgSrc"> <span ng-if="name">{{ initials }}</span> <span ng-if="!name">{{unknownChar}}</span> </div> </div>',
+                template: '<div> <img class="umb-avatar umb-avatar--{{size}}" ng-if="imgSrc" ng-src="{{imgSrc}}" ng-srcset="{{imgSrcset}}" alt="{{avatarAlt}}"> <div class="umb-avatar umb-avatar--{{size}} umb-avatar--{{color}}" ng-if="!imgSrc"> <span ng-if="name">{{ initials }}</span> <span ng-if="!name">{{unknownChar}}</span> </div> </div> ',
                 scope: {
                     size: '@',
                     name: '@',
@@ -14873,7 +14932,7 @@ Use this directive to generate a thumbnail grid of media items.
                         });
                         // advanced item filtering is handled here
                         if (scope.entityTypeFilter && scope.entityTypeFilter.filter && scope.entityTypeFilter.filterAdvanced) {
-                            var filtered = angular.isFunction(scope.entityTypeFilter.filter) ? _.filter(miniListView.children, scope.entityTypeFilter.filter) : _.where(miniListView.children, scope.entityTypeFilter.filter);
+                            var filtered = Utilities.isFunction(scope.entityTypeFilter.filter) ? _.filter(miniListView.children, scope.entityTypeFilter.filter) : _.where(miniListView.children, scope.entityTypeFilter.filter);
                             filtered.forEach(function (node) {
                                 return node.allowed = false;
                             });
@@ -15262,6 +15321,7 @@ Use this directive to generate a pagination.
             total-pages="vm.pagination.totalPages"
             on-next="vm.nextPage"
             on-prev="vm.prevPage"
+            on-change="vm.changePage"
             on-go-to-page="vm.goToPage">
         </umb-pagination>
 
@@ -15280,10 +15340,11 @@ Use this directive to generate a pagination.
             vm.pagination = {
                 pageNumber: 1,
                 totalPages: 10
-            }
+            };
 
             vm.nextPage = nextPage;
             vm.prevPage = prevPage;
+            vm.changePage = changePage;
             vm.goToPage = goToPage;
 
             function nextPage(pageNumber) {
@@ -15296,6 +15357,12 @@ Use this directive to generate a pagination.
                 // do magic here
                 console.log(pageNumber);
                 alert("prevpage");
+            }
+            
+            function changePage(pageNumber) {
+                // do magic here
+                console.log(pageNumber);
+                alert("changepage");
             }
 
             function goToPage(pageNumber) {
@@ -15323,6 +15390,11 @@ Use this directive to generate a pagination.
         <li><code>pageNumber</code>: The page number</li>
     </ul>
 @param {callback=} onGoToPage (<code>binding</code>): Callback method to go to a specific page.
+    <h3>The callback returns:</h3>
+    <ul>
+        <li><code>pageNumber</code>: The page number</li>
+    </ul>
+@param {callback=} onChange (<code>binding</code>): Callback method when changing page.
     <h3>The callback returns:</h3>
     <ul>
         <li><code>pageNumber</code>: The page number</li>
@@ -15419,9 +15491,7 @@ Use this directive to generate a pagination.
                         scope.onGoToPage(scope.pageNumber);
                     }
                     if (scope.onChange) {
-                        if (scope.onChange) {
-                            scope.onChange({ 'pageNumber': scope.pageNumber });
-                        }
+                        scope.onChange({ 'pageNumber': scope.pageNumber });
                     }
                 };
                 var unbindPageNumberWatcher = scope.$watchCollection('[pageNumber, totalPages]', function (newValues, oldValues) {
@@ -18113,8 +18183,8 @@ Use this directive to render a user group preview, where you can see the permiss
             link: function link(scope, element, attrs, ctrls) {
                 var modelCtrl = ctrls[0];
                 var propCtrl = ctrls.length > 1 ? ctrls[1] : null;
-                // Check whether the scope has a valPropertyValidator method 
-                if (!scope.valPropertyValidator || !angular.isFunction(scope.valPropertyValidator)) {
+                // Check whether the scope has a valPropertyValidator method
+                if (!scope.valPropertyValidator || !Utilities.isFunction(scope.valPropertyValidator)) {
                     throw new Error('val-property-validator directive must specify a function to call');
                 }
                 // Validation method
@@ -18309,7 +18379,7 @@ Use this directive to render a user group preview, where you can see the permiss
                         watcher = scope.$watch(function () {
                             return modelCtrl.$modelValue;
                         }, function (newValue, oldValue) {
-                            if (!newValue || angular.equals(newValue, oldValue)) {
+                            if (!newValue || Utilities.equals(newValue, oldValue)) {
                                 return;
                             }
                             if (modelCtrl.$invalid) {

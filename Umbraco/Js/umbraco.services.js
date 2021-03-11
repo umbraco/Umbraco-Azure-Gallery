@@ -149,11 +149,11 @@
      */
             safeApply: function safeApply(scope, fn) {
                 if (scope.$$phase || scope.$root && scope.$root.$$phase) {
-                    if (angular.isFunction(fn)) {
+                    if (Utilities.isFunction(fn)) {
                         fn();
                     }
                 } else {
-                    if (angular.isFunction(fn)) {
+                    if (Utilities.isFunction(fn)) {
                         scope.$apply(fn);
                     } else {
                         scope.$apply();
@@ -2305,6 +2305,24 @@
     }
     angular.module('umbraco.services').factory('contentAppHelper', contentAppHelper);
     'use strict';
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+    }
+    function _nonIterableSpread() {
+        throw new TypeError('Invalid attempt to spread non-iterable instance');
+    }
+    function _iterableToArray(iter) {
+        if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === '[object Arguments]')
+            return Array.from(iter);
+    }
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr)) {
+            for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+                arr2[i] = arr[i];
+            }
+            return arr2;
+        }
+    }
     function _slicedToArray(arr, i) {
         return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
     }
@@ -2873,7 +2891,7 @@
                             //instead of having a property editor $watch their expression to check if it has
                             // been updated, instead we'll check for the existence of a special method on their model
                             // and just call it.
-                            if (angular.isFunction(origProp.onValueChanged)) {
+                            if (Utilities.isFunction(origProp.onValueChanged)) {
                                 //send the newVal + oldVal
                                 origProp.onValueChanged(origProp.value, origVal);
                             }
@@ -2915,7 +2933,7 @@
                             // If we are not redirecting it's because this is not newly created content, else in some cases we are
                             // soft-redirecting which means the URL will change but the route wont (i.e. creating content).
                             // In this case we need to detect what properties have changed and re-bind them with the server data.
-                            if (args.rebindCallback && angular.isFunction(args.rebindCallback)) {
+                            if (args.rebindCallback && Utilities.isFunction(args.rebindCallback)) {
                                 args.rebindCallback();
                             }
                             // In this case notify all validators (don't clear the server validations though since we need to maintain their state because of
@@ -2953,7 +2971,7 @@
                     // If we are not redirecting it's because this is not newly created content, else in some cases we are
                     // soft-redirecting which means the URL will change but the route wont (i.e. creating content).
                     // In this case we need to detect what properties have changed and re-bind them with the server data.
-                    if (args.rebindCallback && angular.isFunction(args.rebindCallback)) {
+                    if (args.rebindCallback && Utilities.isFunction(args.rebindCallback)) {
                         args.rebindCallback();
                     }
                 }
@@ -3012,6 +3030,74 @@
                 //don't add a browser history for this
                 $location.replace();
                 return true;
+            },
+            /**
+     * @ngdoc function
+     * @name umbraco.services.contentEditingHelper#sortVariants
+     * @methodOf umbraco.services.contentEditingHelper
+     * @function
+     *
+     * @description
+     * Sorts the variants so default language is shown first. Mandatory languages are shown next and all other underneath. Both Mandatory and non mandatory languages are
+     * sorted in the following groups 'Published', 'Draft', 'Not Created'. Within each of those groups the variants are
+     * sorted by the language display name.
+     *
+     */
+            sortVariants: function sortVariants(a, b) {
+                var statesOrder = {
+                    'PublishedPendingChanges': 1,
+                    'Published': 1,
+                    'Draft': 2,
+                    'NotCreated': 3
+                };
+                var compareDefault = function compareDefault(a, b) {
+                    return (!a.language.isDefault ? 1 : -1) - (!b.language.isDefault ? 1 : -1);
+                };
+                // Make sure mandatory variants goes on top, unless they are published, cause then they already goes to the top and then we want to mix them with other published variants.
+                var compareMandatory = function compareMandatory(a, b) {
+                    return a.state === 'PublishedPendingChanges' || a.state === 'Published' ? 0 : (!a.language.isMandatory ? 1 : -1) - (!b.language.isMandatory ? 1 : -1);
+                };
+                var compareState = function compareState(a, b) {
+                    return (statesOrder[a.state] || 99) - (statesOrder[b.state] || 99);
+                };
+                var compareName = function compareName(a, b) {
+                    return a.displayName.localeCompare(b.displayName);
+                };
+                return compareDefault(a, b) || compareMandatory(a, b) || compareState(a, b) || compareName(a, b);
+            },
+            /**
+     * @ngdoc function
+     * @name umbraco.services.contentEditingHelper#getSortedVariantsAndSegments
+     * @methodOf umbraco.services.contentEditingHelper
+     * @function
+     *
+     * @description
+     * Returns an array of variants and segments sorted by the rules in the sortVariants method.
+     * A variant language is followed by its segments in the array. If a segment doesn't have a parent variant it is
+     * added to the end of the array.
+     *
+     */
+            getSortedVariantsAndSegments: function getSortedVariantsAndSegments(variantsAndSegments) {
+                var _this = this;
+                var sortedVariants = variantsAndSegments.filter(function (variant) {
+                    return !variant.segment;
+                }).sort(this.sortVariants);
+                var segments = variantsAndSegments.filter(function (variant) {
+                    return variant.segment;
+                });
+                var sortedAvailableVariants = [];
+                sortedVariants.forEach(function (variant) {
+                    var sortedMatchedSegments = segments.filter(function (segment) {
+                        return segment.language.culture === variant.language.culture;
+                    }).sort(_this.sortVariants);
+                    segments = segments.filter(function (segment) {
+                        return segment.language.culture !== variant.language.culture;
+                    });
+                    sortedAvailableVariants = [].concat(_toConsumableArray(sortedAvailableVariants), [variant], _toConsumableArray(sortedMatchedSegments));
+                });
+                // if we have segments without a parent language variant we need to add the remaining segments to the array
+                sortedAvailableVariants = [].concat(_toConsumableArray(sortedAvailableVariants), _toConsumableArray(segments.sort(this.sortVariants)));
+                return sortedAvailableVariants;
             }
         };
     }
@@ -4057,6 +4143,22 @@ When building a custom infinite editor view you can use the same components as a
             }
             /**
      * @ngdoc method
+     * @name umbraco.services.editorService#mediaCropDetails
+     * @methodOf umbraco.services.editorService
+     *
+     * @description
+     * Opens the media crop details editor in infinite editing, the submit callback returns the updated media object.
+     * @param {object} editor rendering options.
+     * @param {function} editor.submit Submits the editor.
+     * @param {function} editor.close Closes the editor.
+     * @returns {object} editor object
+     */
+            function mediaCropDetails(editor) {
+                editor.view = 'views/common/infiniteeditors/mediapicker/overlays/mediacropdetails.html';
+                open(editor);
+            }
+            /**
+     * @ngdoc method
      * @name umbraco.services.editorService#iconPicker
      * @methodOf umbraco.services.editorService
      *
@@ -4506,7 +4608,8 @@ When building a custom infinite editor view you can use the same components as a
                 macroPicker: macroPicker,
                 memberGroupPicker: memberGroupPicker,
                 memberPicker: memberPicker,
-                memberEditor: memberEditor
+                memberEditor: memberEditor,
+                mediaCropDetails: mediaCropDetails
             };
             return service;
         }
@@ -4641,7 +4744,7 @@ When building a custom infinite editor view you can use the same components as a
             },
             /** pass in the result of 'on' to this method, or just call the method returned from 'on' to unsubscribe */
             unsubscribe: function unsubscribe(handle) {
-                if (angular.isFunction(handle)) {
+                if (Utilities.isFunction(handle)) {
                     handle();
                 }
             }
@@ -4984,7 +5087,7 @@ When building a custom infinite editor view you can use the same components as a
     *
     * @description
     * Called by submitForm when a form has been submitted, it will fire a focus on the first found invalid umb-property it finds in the form..
-    * 
+    *
     * @param {object} form Pass in a form object.
     */
             focusOnFirstError: function focusOnFirstError(form) {
@@ -4996,7 +5099,7 @@ When building a custom infinite editor view you can use the same components as a
                         var firstErrorEl = focusableFields.find(function (el) {
                             return el.type !== 'hidden' && el.hasAttribute('readonly') === false;
                         });
-                        if (firstErrorEl.length !== 0) {
+                        if (firstErrorEl !== undefined) {
                             firstErrorEl.focus();
                         }
                     }
@@ -6145,7 +6248,7 @@ When building a custom infinite editor view you can use the same components as a
  */
     (function () {
         'use strict';
-        function listViewHelper($location, $rootScope, localStorageService, urlHelper) {
+        function listViewHelper($location, $rootScope, localStorageService, urlHelper, editorService) {
             var firstSelectedIndex = 0;
             var localStorageKey = 'umblistViewLayout';
             /**
@@ -6574,9 +6677,35 @@ When building a custom infinite editor view you can use the same components as a
     *
     * @param {Object} item The item to edit
     */
-            function editItem(item) {
+            function editItem(item, scope) {
                 if (!item.editPath) {
                     return;
+                }
+                if (scope.options.useInfiniteEditor) {
+                    var editorModel = {
+                        id: item.id,
+                        submit: function submit(model) {
+                            editorService.close();
+                            scope.getContent(scope.contentId);
+                        },
+                        close: function close() {
+                            editorService.close();
+                            scope.getContent(scope.contentId);
+                        }
+                    };
+                    if (item.editPath.indexOf('/content/') == 0) {
+                        editorService.contentEditor(editorModel);
+                        return;
+                    }
+                    if (item.editPath.indexOf('/media/') == 0) {
+                        editorService.mediaEditor(editorModel);
+                        return;
+                    }
+                    if (item.editPath.indexOf('/member/') == 0) {
+                        editorModel.id = item.key;
+                        editorService.memberEditor(editorModel);
+                        return;
+                    }
                 }
                 var parts = item.editPath.split('?');
                 var path = parts[0];
@@ -8842,8 +8971,7 @@ When building a custom infinite editor view you can use the same components as a
                 if (!args.term) {
                     throw 'args.term is required';
                 }
-                return entityResource.search(args.term, 'Document', args.searchFrom, args.canceler, args.dataTypeKey);
-                _.each(data, function (item) {
+                return entityResource.search(args.term, 'Document', args.searchFrom, args.canceler, args.dataTypeKey).then(function (data) {
                     data.forEach(function (item) {
                         return searchResultFormatter.configureContentResult(item);
                     });
@@ -12168,7 +12296,7 @@ When building a custom infinite editor view you can use the same components as a
                                 return cc;
                             }
                         });
-                    } else if (args.filter && angular.isFunction(args.filter)) {
+                    } else if (args.filter && Utilities.isFunction(args.filter)) {
                         //if a filter is supplied a cacheKey must be supplied as well
                         if (!args.cacheKey) {
                             throw 'args.cacheKey is required if args.filter is supplied';
@@ -12235,7 +12363,7 @@ When building a custom infinite editor view you can use the same components as a
                         args.node.expanded = true;
                         args.node.hasChildren = true;
                         //Since we've removed the children &  reloaded them, we need to refresh the UI now because the tree node UI doesn't operate on normal angular $watch since that will be pretty slow
-                        if (angular.isFunction(args.node.updateNodeData)) {
+                        if (Utilities.isFunction(args.node.updateNodeData)) {
                             args.node.updateNodeData(args.node);
                         }
                     }
@@ -12261,7 +12389,7 @@ When building a custom infinite editor view you can use the same components as a
      * @param {object} treeNode the node to remove
      */
             removeNode: function removeNode(treeNode) {
-                if (!angular.isFunction(treeNode.parent)) {
+                if (!Utilities.isFunction(treeNode.parent)) {
                     return;
                 }
                 if (treeNode.parent() == null) {
@@ -12400,7 +12528,7 @@ When building a custom infinite editor view you can use the same components as a
                 while (root === null && current) {
                     if (current.metaData && current.metaData['treeAlias']) {
                         root = current;
-                    } else if (angular.isFunction(current.parent)) {
+                    } else if (Utilities.isFunction(current.parent)) {
                         //we can only continue if there is a parent() method which means this
                         // tree node was loaded in as part of a real tree, not just as a single tree
                         // node from the server.
@@ -12574,7 +12702,7 @@ When building a custom infinite editor view you can use the same components as a
                         //the trick here is to not actually replace the node - this would cause the delete animations
                         //to fire, instead we're just going to replace all the properties of this node.
                         //there should always be a method assigned but we'll check anyways
-                        if (angular.isFunction(node.parent().children[index].updateNodeData)) {
+                        if (Utilities.isFunction(node.parent().children[index].updateNodeData)) {
                             node.parent().children[index].updateNodeData(found);
                         } else {
                             //just update as per normal - this means styles, etc.. won't be applied
@@ -12605,7 +12733,7 @@ When building a custom infinite editor view you can use the same components as a
                 if (!node) {
                     throw 'node cannot be null';
                 }
-                if (!angular.isFunction(node.parent)) {
+                if (!Utilities.isFunction(node.parent)) {
                     throw 'node.parent is not a function, the path cannot be resolved';
                 }
                 var reversePath = [];

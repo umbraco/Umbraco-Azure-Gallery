@@ -3219,7 +3219,7 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.Editors.MediaController.CheckPermissions(System.Collections.Generic.IDictionary{System.String,System.Object},Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Services.IMediaService,Umbraco.Core.Services.IEntityService,System.Int32,Umbraco.Core.Models.IMedia)">
+        <member name="M:Umbraco.Web.Editors.MediaController.CheckPermissions(System.Collections.Generic.IDictionary{System.String,System.Object},Umbraco.Core.Models.Membership.IUser,Umbraco.Core.Services.IMediaService,Umbraco.Core.Services.IEntityService,Umbraco.Core.Cache.AppCaches,System.Int32,Umbraco.Core.Models.IMedia)">
             <summary>
             Performs a permissions check for the user to check if it has access to the node based on
             start node and/or permissions for the node
@@ -9491,6 +9491,11 @@
         <member name="T:Umbraco.Web.Mvc.JsonNetResult">
             <summary>
             Custom json result using newtonsoft json.net
+            </summary>
+        </member>
+        <member name="F:Umbraco.Web.Mvc.JsonNetResult.DefaultJsonSerializerSettings">
+            <summary>
+            Default, unchanged JsonSerializerSettings
             </summary>
         </member>
         <member name="T:Umbraco.Web.Mvc.MinifyJavaScriptResultAttribute">
@@ -22137,6 +22142,11 @@
         <member name="T:Umbraco.Web.UmbracoApplication">
             <summary>
             Represents the Umbraco global.asax class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.UmbracoApplication.GetBootErrorFileName">
+            <summary>
+            Returns the absolute filename to the BootException html file.
             </summary>
         </member>
         <member name="M:Umbraco.Web.UmbracoApplication.GetMainDom(Umbraco.Core.Logging.ILogger)">
