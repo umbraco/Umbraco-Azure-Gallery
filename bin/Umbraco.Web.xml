@@ -451,10 +451,6 @@
             <summary>
             Authorize that the user is not adding a section to the group that they don't have access to
             </summary>
-            <param name="currentUser"></param>
-            <param name="currentAllowedSections"></param>
-            <param name="proposedAllowedSections"></param>
-            <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.Filters.UserGroupEditorAuthorizationHelper.AuthorizeStartNodeChanges(Umbraco.Core.Models.Membership.IUser,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -582,6 +578,12 @@
             <returns></returns>
         </member>
         <member name="M:Umbraco.Web.Editors.IconController.GetAllIcons">
+            <summary>
+            Gets a list of all svg icons found at at the global icons path.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Web.Editors.IconController.GetIcons">
             <summary>
             Gets a list of all svg icons found at at the global icons path.
             </summary>
@@ -2351,6 +2353,13 @@
             <summary>
             Returns all member types
             </summary>
+        </member>
+        <member name="M:Umbraco.Web.Editors.MemberTypeController.PostCopy(Umbraco.Web.Models.ContentEditing.MoveOrCopy)">
+            <summary>
+            Copy the member type
+            </summary>
+            <param name="copy"></param>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Web.Editors.UpdateCheckController.UpdateCheckResponseFilter">
             <summary>
@@ -10882,6 +10891,15 @@
             Represents a block list property editor.
             </summary>
         </member>
+        <member name="M:Umbraco.Web.PropertyEditors.EyeDropperColorPickerConfigurationEditor.ToConfigurationEditor(Umbraco.Core.PropertyEditors.EyeDropperColorPickerConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.EyeDropperColorPickerConfigurationEditor.FromConfigurationEditor(System.Collections.Generic.IDictionary{System.String,System.Object},Umbraco.Core.PropertyEditors.EyeDropperColorPickerConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.EyeDropperColorPickerPropertyEditor.CreateConfigurationEditor">
+            <inheritdoc />
+        </member>
         <member name="T:Umbraco.Web.PropertyEditors.ComplexEditorValidator">
             <summary>
             Used to validate complex editors that contain nested editors
@@ -16498,6 +16516,9 @@
         <member name="M:Umbraco.Web.Services.DashboardService.GetDashboards(Umbraco.Core.Models.Membership.IUser)">
             <inheritdoc />
         </member>
+        <member name="M:Umbraco.Web.Services.IconService.GetIcons">
+            <inheritdoc />
+        </member>
         <member name="M:Umbraco.Web.Services.IconService.GetAllIcons">
             <inheritdoc />
         </member>
@@ -20916,6 +20937,38 @@
             <param name="orSelf">Indicates whether the content should be included.</param>
             <returns>Enumerates bottom-up ie walking up the tree (parent, grand-parent, etc).</returns>
         </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.Breadcrumbs(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.Boolean)">
+            <summary>
+            Gets the breadcrumbs (ancestors and self, top to bottom) for the specified <paramref name="content" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="andSelf">Indicates whether the specified content should be included.</param>
+            <returns>
+            The breadcrumbs (ancestors and self, top to bottom) for the specified <paramref name="content" />.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.Breadcrumbs(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.Int32,System.Boolean)">
+            <summary>
+            Gets the breadcrumbs (ancestors and self, top to bottom) for the specified <paramref name="content" /> at a level higher or equal to <paramref name="minLevel" />.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="minLevel">The minimum level.</param>
+            <param name="andSelf">Indicates whether the specified content should be included.</param>
+            <returns>
+            The breadcrumbs (ancestors and self, top to bottom) for the specified <paramref name="content" /> at a level higher or equal to <paramref name="minLevel" />.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.Breadcrumbs``1(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.Boolean)">
+            <summary>
+            Gets the breadcrumbs (ancestors and self, top to bottom) for the specified <paramref name="content" /> at a level higher or equal to the specified root content type <typeparamref name="T" />.
+            </summary>
+            <typeparam name="T">The root content type.</typeparam>
+            <param name="content">The content.</param>
+            <param name="andSelf">Indicates whether the specified content should be included.</param>
+            <returns>
+            The breadcrumbs (ancestors and self, top to bottom) for the specified <paramref name="content" /> at a level higher or equal to the specified root content type <typeparamref name="T" />.
+            </returns>
+        </member>
         <member name="M:Umbraco.Web.PublishedContentExtensions.DescendantsOrSelfOfType(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PublishedContent.IPublishedContent},System.String,System.String)">
             <summary>
             Returns all DescendantsOrSelf of all content referenced
@@ -21068,10 +21121,28 @@
         </member>
         <member name="M:Umbraco.Web.PublishedContentExtensions.Root(Umbraco.Core.Models.PublishedContent.IPublishedContent)">
             <summary>
-            Gets the root content for this content.
+            Gets the root content (ancestor or self at level 1) for the specified <paramref name="content" />.
             </summary>
             <param name="content">The content.</param>
-            <returns>The 'site' content ie AncestorOrSelf(1).</returns>
+            <returns>
+            The root content (ancestor or self at level 1) for the specified <paramref name="content" />.
+            </returns>
+            <remarks>
+            This is the same as calling <see cref="M:Umbraco.Web.PublishedContentExtensions.AncestorOrSelf(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.Int32)" /> with <c>maxLevel</c> set to 1.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Web.PublishedContentExtensions.Root``1(Umbraco.Core.Models.PublishedContent.IPublishedContent)">
+            <summary>
+            Gets the root content (ancestor or self at level 1) for the specified <paramref name="content" /> if it's of the specified content type <typeparamref name="T" />.
+            </summary>
+            <typeparam name="T">The content type.</typeparam>
+            <param name="content">The content.</param>
+            <returns>
+            The root content (ancestor or self at level 1) for the specified <paramref name="content" /> of content type <typeparamref name="T" />.
+            </returns>
+            <remarks>
+            This is the same as calling <see cref="M:Umbraco.Web.PublishedContentExtensions.AncestorOrSelf``1(Umbraco.Core.Models.PublishedContent.IPublishedContent,System.Int32)" /> with <c>maxLevel</c> set to 1.
+            </remarks>
         </member>
         <member name="P:Umbraco.Web.PublishedContentExtensions.GetPropertyAliasesAndNames">
             <summary>

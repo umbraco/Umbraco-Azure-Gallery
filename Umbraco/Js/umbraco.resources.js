@@ -2050,10 +2050,11 @@
                 if (!args.id) {
                     throw 'args.id cannot be null';
                 }
+                var promise = localizationService.localize('contentType_moveFailed');
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('contentTypeApiBaseUrl', 'PostMove'), {
                     parentId: args.parentId,
                     id: args.id
-                }, { responseType: 'text' }), 'Failed to move content');
+                }, { responseType: 'text' }), promise);
             },
             /**
      * @ngdoc method
@@ -2088,10 +2089,11 @@
                 if (!args.id) {
                     throw 'args.id cannot be null';
                 }
+                var promise = localizationService.localize('contentType_copyFailed');
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('contentTypeApiBaseUrl', 'PostCopy'), {
                     parentId: args.parentId,
                     id: args.id
-                }, { responseType: 'text' }), 'Failed to copy content');
+                }, { responseType: 'text' }), promise);
             },
             /**
     * @ngdoc method
@@ -4493,7 +4495,7 @@
                 if (!args.id) {
                     throw 'args.id cannot be null';
                 }
-                var promise = localizationService.localize('media_moveFailed');
+                var promise = localizationService.localize('mediaType_moveFailed');
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('mediaTypeApiBaseUrl', 'PostMove'), {
                     parentId: args.parentId,
                     id: args.id
@@ -4509,7 +4511,7 @@
                 if (!args.id) {
                     throw 'args.id cannot be null';
                 }
-                var promise = localizationService.localize('media_copyFailed');
+                var promise = localizationService.localize('mediaType_copyFailed');
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('mediaTypeApiBaseUrl', 'PostCopy'), {
                     parentId: args.parentId,
                     id: args.id
@@ -4776,7 +4778,7 @@
     * @name umbraco.resources.memberTypeResource
     * @description Loads in data for member types
     **/
-    function memberTypeResource($q, $http, umbRequestHelper, umbDataFormatter) {
+    function memberTypeResource($q, $http, umbRequestHelper, umbDataFormatter, localizationService) {
         return {
             getAvailableCompositeContentTypes: function getAvailableCompositeContentTypes(contentTypeId, filterContentTypes, filterPropertyTypes) {
                 if (!filterContentTypes) {
@@ -4831,6 +4833,22 @@
             save: function save(contentType) {
                 var saveModel = umbDataFormatter.formatContentTypePostData(contentType);
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('memberTypeApiBaseUrl', 'PostSave'), saveModel), 'Failed to save data for member type id ' + contentType.id);
+            },
+            copy: function copy(args) {
+                if (!args) {
+                    throw 'args cannot be null';
+                }
+                if (!args.parentId) {
+                    throw 'args.parentId cannot be null';
+                }
+                if (!args.id) {
+                    throw 'args.id cannot be null';
+                }
+                var promise = localizationService.localize('memberType_copyFailed');
+                return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('memberTypeApiBaseUrl', 'PostCopy'), {
+                    parentId: args.parentId,
+                    id: args.id
+                }, { responseType: 'text' }), promise);
             }
         };
     }

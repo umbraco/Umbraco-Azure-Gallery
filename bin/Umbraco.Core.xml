@@ -157,21 +157,6 @@
             Char array containing |
             </summary>
         </member>
-        <member name="T:Umbraco.Core.Constants.SvgSanitizer">
-            <summary>
-            Defines the alias identifiers for Umbraco's core application sections.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Constants.SvgSanitizer.Attributes">
-            <summary>
-            Allowlist for SVG attributes.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Constants.SvgSanitizer.Tags">
-            <summary>
-            Allowlist for SVG tabs.
-            </summary>
-        </member>
         <member name="T:Umbraco.Core.Constants.Applications">
             <summary>
             Defines the alias identifiers for Umbraco's core application sections.
@@ -1013,6 +998,11 @@
             Color Picker.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.ColorPickerEyeDropper">
+            <summary>
+            EyeDropper Color Picker.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.ContentPicker">
             <summary>
             Content Picker.
@@ -1368,6 +1358,11 @@
         <member name="F:Umbraco.Core.Constants.AppSettings.UseHttps">
             <summary>
             A true or false indicating whether umbraco should force a secure (https) connection to the backoffice.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.AppSettings.AllowContentDashboardAccessToAllUsers">
+            <summary>
+            A true/false value indicating whether the content dashboard should be visible for all user groups.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.AppSettings.DisableElectionForSingleServer">
@@ -1821,6 +1816,1299 @@
             <param name="throwOnMissing">A value indicating whether to throw on missing dependency, or just ignore the dependency.</param>
             <param name="reverse">A value indicating whether to reverse the order.</param>
             <returns>The (topologically) sorted items.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Fatal``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <summary>
+            Logs a fatal message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Fatal``2(System.Type,System.Exception,System.String,``0,``1)">
+            <summary>
+            Logs a fatal message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Fatal``1(System.Type,System.Exception,System.String,``0)">
+            <summary>
+            Logs a fatal message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Error``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Error``2(System.Type,System.Exception,System.String,``0,``1)">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Error``1(System.Type,System.Exception,System.String,``0)">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``2(System.Type,System.Exception,System.String,``0,``1)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``1(System.Type,System.Exception,System.String,``0)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``1(System.Type,System.String,``0)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Info``3(System.Type,System.String,``0,``1,``2)">
+            <summary>
+            Logs a info message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Info``2(System.Type,System.String,``0,``1)">
+            <summary>
+            Logs a info message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Info``1(System.Type,System.String,``0)">
+            <summary>
+            Logs a info message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Debug``3(System.Type,System.String,``0,``1,``2)">
+            <summary>
+            Logs a debug message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Debug``2(System.Type,System.String,``0,``1)">
+            <summary>
+            Logs a debug message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Debug``1(System.Type,System.String,``0)">
+            <summary>
+            Logs a debug message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Verbose``3(System.Type,System.String,``0,``1,``2)">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Verbose``2(System.Type,System.String,``0,``1)">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Verbose``1(System.Type,System.String,``0)">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Error``1(System.Type,System.String,``0)">
+            <summary>
+            Logs a error message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Error``2(System.Type,System.String,``0,``1)">
+            <summary>
+            Logs a error message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Error``3(System.Type,System.String,``0,``1,``2)">
+            <summary>
+            Logs a error message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``3(System.String,``1,``2)">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``4(System.String,``1,``2,``3)">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``3(System.Type,System.String,``0,``1,``2)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+            <param name="propertyValue2">Property value 2</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger2.Warn``2(System.Type,System.String,``0,``1)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValue0">Property value 0</param>
+            <param name="propertyValue1">Property value 1</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetSavedSearches">
+            <summary>
+            Get all saved searches from your chosen data source
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.AddSavedSearch(System.String,System.String)">
+            <summary>
+            Adds a new saved search to chosen data source and returns the updated searches
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.DeleteSavedSearch(System.String,System.String)">
+            <summary>
+            Deletes a saved search to chosen data source and returns the remaining searches
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Logging.Viewer.ILogViewer.GetNumberOfErrors(Umbraco.Core.Logging.Viewer.LogTimePeriod)" -->
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogLevelCounts(Umbraco.Core.Logging.Viewer.LogTimePeriod)">
+            <summary>
+            Returns a number of the different log level entries
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetMessageTemplates(Umbraco.Core.Logging.Viewer.LogTimePeriod)">
+            <summary>
+            Returns a list of all unique message templates and their counts
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogLevel">
+            <summary>
+            Gets the current Serilog minimum log level
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogs(Umbraco.Core.Logging.Viewer.LogTimePeriod,System.Int32,System.Int32,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String,System.String[])">
+            <summary>
+            Returns the collection of logs
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Timestamp">
+            <summary>
+            The time at which the log event occurred.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Level">
+            <summary>
+            The level of the event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.MessageTemplateText">
+            <summary>
+            The message template describing the log event.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.RenderedMessage">
+            <summary>
+            The message template filled with the log event properties.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Properties">
+            <summary>
+            Properties associated with the log event, including those presented in Serilog.Events.LogEvent.MessageTemplate.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Exception">
+            <summary>
+            An exception associated with the log event, or null.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.LogViewerSourceBase.GetLogs(Umbraco.Core.Logging.Viewer.LogTimePeriod,Umbraco.Core.Logging.Viewer.ILogFilter,System.Int32,System.Int32)">
+            <summary>
+            Get all logs from your chosen data source back as Serilog LogEvents
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Viewer.LogViewerSourceBase.GetLogLevel">
+            <summary>
+            Get the Serilog minimum-level value from the config file. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Logging.IProfilingLogger">
+            <summary>
+            Defines the profiling logging service.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfilingLogger.TraceDuration``1(System.String)">
+            <summary>
+            Profiles an action and log as information messages.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfilingLogger.TraceDuration``1(System.String,System.String,System.String)">
+            <summary>
+            Profiles an action and log as information messages.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfilingLogger.TraceDuration(System.Type,System.String,System.String,System.String)">
+            <summary>
+            Profiles an action and log as information messages.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfilingLogger.DebugDuration``1(System.String)">
+            <summary>
+            Profiles an action and log as debug messages.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfilingLogger.DebugDuration``1(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Profiles an action and log as debug messages.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfilingLogger.DebugDuration(System.Type,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Profiles an action and log as debug messages.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogHttpRequest.TryGetCurrentHttpRequestId(System.Guid@)">
+            <summary>
+            Retrieve the id assigned to the currently-executing HTTP request, if any.
+            </summary>
+            <param name="requestId">The request id.</param>
+            <returns><c>true</c> if there is a request in progress; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LogLevel">
+            <summary>
+            Specifies the level of a log event.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.MessageTemplates">
+            <summary>
+            Provides tools to support message templates.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestIdEnricher" -->
+        <member name="F:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestIdEnricher.HttpRequestIdPropertyName">
+            <summary>
+            The property name added to enriched log events.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestIdEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
+            <summary>
+            Enrich the log event with an id assigned to the currently-executing HTTP request, if any.
+            </summary>
+            <param name="logEvent">The log event to enrich.</param>
+            <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestNumberEnricher" -->
+        <member name="F:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestNumberEnricher.HttpRequestNumberPropertyName">
+            <summary>
+            The property name added to enriched log events.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestNumberEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
+            <summary>
+            Enrich the log event with the number assigned to the currently-executing HTTP request, if any.
+            </summary>
+            <param name="logEvent">The log event to enrich.</param>
+            <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Logging.Serilog.Enrichers.HttpSessionIdEnricher" -->
+        <member name="F:Umbraco.Core.Logging.Serilog.Enrichers.HttpSessionIdEnricher.HttpSessionIdPropertyName">
+            <summary>
+            The property name added to enriched log events.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.Enrichers.HttpSessionIdEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
+            <summary>
+            Enrich the log event with the current ASP.NET session id, if sessions are enabled.</summary>
+            <param name="logEvent">The log event to enrich.</param>
+            <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
+        </member>
+        <member name="T:Umbraco.Core.Logging.Serilog.Enrichers.Log4NetLevelMapperEnricher">
+            <summary>
+            This is used to create a new property in Logs called 'Log4NetLevel'
+            So that we can map Serilog levels to Log4Net levels - so log files stay consistent
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.MinimalConfiguration(Serilog.LoggerConfiguration)">
+            <summary>
+            This configures Serilog with some defaults
+            Such as adding ProcessID, Thread, AppDomain etc
+            It is highly recommended that you keep/use this default in your own logging config customizations
+            </summary>
+            <param name="logConfig">A Serilog LoggerConfiguration</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.OutputDefaultTextFile(Serilog.LoggerConfiguration,Serilog.Events.LogEventLevel,System.Nullable{System.Int32})">
+            <summary>
+            Outputs a .txt format log at /App_Data/Logs/
+            </summary>
+            <param name="logConfig">A Serilog LoggerConfiguration</param>
+            <param name="minimumLevel">The log level you wish the JSON file to collect - default is Verbose (highest)</param>
+            <param name="retainedFileCount">The number of days to keep log files. Default is set to null which means all logs are kept</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.File(Serilog.Configuration.LoggerSinkConfiguration,Serilog.Formatting.ITextFormatter,System.String,Serilog.Events.LogEventLevel,Serilog.Core.LoggingLevelSwitch,System.Nullable{System.Int64},System.Nullable{System.TimeSpan},Serilog.RollingInterval,System.Boolean,System.Nullable{System.Int32},System.Text.Encoding)">
+            <remarks>
+               Used in config - If renamed or moved to other assembly the config file also has be updated.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.OutputDefaultJsonFile(Serilog.LoggerConfiguration,Serilog.Events.LogEventLevel,System.Nullable{System.Int32})">
+            <summary>
+            Outputs a CLEF format JSON log at /App_Data/Logs/
+            </summary>
+            <param name="logConfig">A Serilog LoggerConfiguration</param>
+            <param name="minimumLevel">The log level you wish the JSON file to collect - default is Verbose (highest)</param>
+            <param name="retainedFileCount">The number of days to keep log files. Default is set to null which means all logs are kept</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.ReadFromConfigFile(Serilog.LoggerConfiguration)">
+            <summary>
+            Reads settings from /config/serilog.config
+            That allows the main logging pipeline to be configured
+            </summary>
+            <param name="logConfig">A Serilog LoggerConfiguration</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.ReadFromUserConfigFile(Serilog.LoggerConfiguration)">
+            <summary>
+            Reads settings from /config/serilog.user.config
+            That allows a separate logging pipeline to be configured that will not affect the main Umbraco log
+            </summary>
+            <param name="logConfig">A Serilog LoggerConfiguration</param>
+        </member>
+        <member name="T:Umbraco.Core.Logging.Serilog.SerilogLogger">
+            <summary>
+             Implements <see cref="T:Umbraco.Core.Logging.ILogger"/> on top of Serilog.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.#ctor(System.IO.FileInfo)">
+            <summary>
+            Initialize a new instance of the <see cref="T:Umbraco.Core.Logging.Serilog.SerilogLogger"/> class with a configuration file.
+            </summary>
+            <param name="logConfigFile"></param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.CreateWithDefaultConfiguration">
+            <summary>
+            Creates a logger with some pre-defined configuration and remainder from config file
+            </summary>
+            <remarks>Used by UmbracoApplicationBase to get its logger.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.LoggerFor(System.Type)">
+            <summary>
+            Gets a contextualized logger.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.MapLevel(Umbraco.Core.Logging.LogLevel)">
+            <summary>
+            Maps Umbraco's log level to Serilog's.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.IsEnabled(System.Type,Umbraco.Core.Logging.LogLevel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.Exception,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.Exception,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal``1(System.Type,System.Exception,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal``2(System.Type,System.Exception,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.Exception,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.Exception,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error``1(System.Type,System.Exception,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error``2(System.Type,System.Exception,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn``1(System.Type,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.Exception,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.Exception,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn``1(System.Type,System.Exception,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn``2(System.Type,System.Exception,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info``1(System.Type,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info``2(System.Type,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info``3(System.Type,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug``1(System.Type,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug``2(System.Type,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug``3(System.Type,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose``1(System.Type,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose``2(System.Type,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose``3(System.Type,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Umbraco.Core.Logging.DisposableTimer">
+            <summary>
+            Starts the timer and invokes a  callback upon disposal. Provides a simple way of timing an operation by wrapping it in a <code>using</code> (C#) statement.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DisposableTimer.Fail(System.String,System.Exception)">
+            <summary>
+            Reports a failure.
+            </summary>
+            <param name="failMessage">The fail message.</param>
+            <param name="exception">The exception.</param>
+            <remarks>Completion of the timer will be reported as an error, with the specified message and exception.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DisposableTimer.DisposeResources">
+             <summary>
+            Disposes resources.
+             </summary>
+             <remarks>Overrides abstract class <see cref="!:DisposableObject"/> which handles required locking.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.DebugDiagnosticsLogger">
+            <summary>
+            Implements <see cref="T:Umbraco.Core.Logging.ILogger"/> on top of <see cref="N:System.Diagnostics"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.Exception,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.Exception,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.Exception,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.Exception,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.Exception,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.Exception,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Info(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Info(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Debug(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Debug(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Verbose(System.Type,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Verbose(System.Type,System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal``2(System.Type,System.Exception,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal``1(System.Type,System.Exception,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error``2(System.Type,System.Exception,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error``1(System.Type,System.Exception,System.String,``0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn``3(System.Type,System.Exception,System.String,``0,``1,``2)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn``2(System.Type,System.Exception,System.String,``0,``1)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Umbraco.Core.Logging.ILogger">
+            <summary>
+            Defines the logging service.
+            </summary>
+            <remarks>
+            <para>Message templates in logging methods follow the Message Templates specification
+            available at https://messagetemplates.org/ in order to support structured logging.</para>
+            <para>Implementations must ensure that they support these templates. Note that the
+            specification includes support for traditional C# numeric placeholders.</para>
+            <para>For instance, "Processed {Input} in {Time}ms."</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.IsEnabled(System.Type,Umbraco.Core.Logging.LogLevel)">
+            <summary>
+            Determines if logging is enabled at a specified level, for a reporting type.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="level">The level.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.Exception,System.String)">
+            <summary>
+            Logs a fatal message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.Exception)">
+            <summary>
+            Logs a fatal exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <remarks>The message string is unspecified and is implementation-specific.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.String)">
+            <summary>
+            Logs a fatal message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs a fatal message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.String,System.Object[])">
+            <summary>
+            Logs a fatal message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.Exception,System.String)">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.Exception)">
+            <summary>
+            Logs an error exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <remarks>The message string is unspecified and is implementation-specific.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.String)">
+            <summary>
+            Logs an error message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.String,System.Object[])">
+            <summary>
+            Logs an error message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.String)">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.String,System.Object[])">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.Exception,System.String)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Info(System.Type,System.String)">
+            <summary>
+            Logs an information message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Info(System.Type,System.String,System.Object[])">
+            <summary>
+            Logs a info message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Debug(System.Type,System.String)">
+            <summary>
+            Logs a debugging message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Debug(System.Type,System.String,System.Object[])">
+            <summary>
+            Logs a debug message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Verbose(System.Type,System.String)">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ILogger.Verbose(System.Type,System.String,System.Object[])">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <param name="reporting">The reporting type.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="T:Umbraco.Core.Logging.IProfiler">
+            <summary>
+            Defines the profiling service.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfiler.Render">
+            <summary>
+            Renders the profiling results.
+            </summary>
+            <returns>The profiling results.</returns>
+            <remarks>Generally used for HTML rendering.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfiler.Step(System.String)">
+            <summary>
+            Gets an <see cref="T:System.IDisposable"/> that will time the code between its creation and disposal.
+            </summary>
+            <param name="name">The name of the step.</param>
+            <returns>A step.</returns>
+            <remarks>The returned <see cref="T:System.IDisposable"/> is meant to be used within a <c>using (...) {{ ... }}</c> block.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfiler.Start">
+            <summary>
+            Starts the profiler.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.IProfiler.Stop(System.Boolean)">
+            <summary>
+            Stops the profiler.
+            </summary>
+            <param name="discardResults">A value indicating whether to discard results.</param>
+            <remarks>Set discardResult to true to abandon all profiling - useful when eg someone is not
+            authenticated or you want to clear the results, based upon some other mechanism.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LoggerExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:Umbraco.Core.Logging.ILogger"/> interface.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.IsEnabled``1(Umbraco.Core.Logging.ILogger,Umbraco.Core.Logging.LogLevel)">
+            <summary>
+            Determines if logging is enabled at a specified level, for a reporting type.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="level">The level.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String)">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="message">A message.</param>
+            <param name="exception">An exception.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs an error message with an exception.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.Exception)">
+            <summary>
+            Logs an error exception.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="exception">An exception.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.String)">
+            <summary>
+            Logs an error message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
+            <summary>
+            Logs an error message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.String)">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
+            <summary>
+            Logs a warning message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String)">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="exception">An exception.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs a warning message with an exception.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.String)">
+            <summary>
+            Logs an information message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
+            <summary>
+            Logs a information message.
+            </summary>
+            <typeparam name="T">The reporting type</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.String)">
+            <summary>
+            Logs a debugging message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
+            <summary>
+            Logs a debugging message.
+            </summary>
+            <typeparam name="T">The reporting type</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Verbose``1(Umbraco.Core.Logging.ILogger,System.String)">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Verbose``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
+            <summary>
+            Logs a verbose message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Fatal``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String)">
+            <summary>
+            Logs a fatal message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="exception">An exception.</param>
+            <param name="message">A message.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Fatal``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String,System.Object[])">
+            <summary>
+            Logs a fatal message.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="logger">The logger.</param>
+            <param name="exception">An exception.</param>
+            <param name="messageTemplate">A message template.</param>
+            <param name="propertyValues">Property values.</param>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrors(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
+             <summary>
+                 This task shouldn't be waited on (as it's not guaranteed to run), and you shouldn't wait on the parent task either (because it might throw an
+                 exception that doesn't get handled). If you want to be waiting on something, use LogErrorsWaitable instead.
+            
+                 None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
+                 errors yourself.
+             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrorsWaitable(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
+             <summary>
+                 This task can be waited on (as it's guaranteed to run), and you should wait on this rather than the parent task. Because it's
+                 guaranteed to run, it may be slower than using LogErrors, and you should consider using that method if you don't want to wait.
+            
+                 None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
+                 errors yourself.
+             </summary>
+        </member>
+        <member name="T:Umbraco.Core.Logging.LogProfiler">
+            <summary>
+            Implements <see cref="T:Umbraco.Core.Logging.IProfiler"/> by writing profiling results to an <see cref="T:Umbraco.Core.Logging.ILogger"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogProfiler.Render">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogProfiler.Step(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogProfiler.Start">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.LogProfiler.Stop(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.OwinLogger.WriteCore(System.Diagnostics.TraceEventType,System.Int32,System.Object,System.Exception,System.Func{System.Object,System.Exception,System.String})">
+            <summary>
+            Aggregates most logging patterns to a single method.  This must be compatible with the Func representation in the OWIN environment.
+                        To check IsEnabled call WriteCore with only TraceEventType and check the return value, no event will be written.
+            </summary>
+            <param name="eventType"/><param name="eventId"/><param name="state"/><param name="exception"/><param name="formatter"/>
+            <returns/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.OwinLoggerFactory.Create(System.String)">
+            <summary>
+            Creates a new ILogger instance of the given name.
+            </summary>
+            <param name="name"/>
+            <returns/>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ProfilerExtensions.Step``1(Umbraco.Core.Logging.IProfiler,System.String)">
+            <summary>
+            Gets an <see cref="T:System.IDisposable"/> that will time the code between its creation and disposal,
+            prefixing the name of the step with a reporting type name.
+            </summary>
+            <typeparam name="T">The reporting type.</typeparam>
+            <param name="profiler">The profiler.</param>
+            <param name="name">The name of the step.</param>
+            <returns>A step.</returns>
+            <remarks>The returned <see cref="T:System.IDisposable"/> is meant to be used within a <c>using (...) {{ ... }}</c> block.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ProfilerExtensions.Step(Umbraco.Core.Logging.IProfiler,System.Type,System.String)">
+            <summary>
+            Gets an <see cref="T:System.IDisposable"/> that will time the code between its creation and disposal,
+            prefixing the name of the step with a reporting type name.
+            </summary>
+            <param name="profiler">The profiler.</param>
+            <param name="reporting">The reporting type.</param>
+            <param name="name">The name of the step.</param>
+            <returns>A step.</returns>
+            <remarks>The returned <see cref="T:System.IDisposable"/> is meant to be used within a <c>using (...) {{ ... }}</c> block.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.Logging.ProfilingLogger">
+            <summary>
+            Provides logging and profiling services.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.ProfilingLogger.Logger">
+            <summary>
+            Gets the underlying <see cref="T:Umbraco.Core.Logging.ILogger"/> implementation.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Logging.ProfilingLogger.Profiler">
+            <summary>
+            Gets the underlying <see cref="T:Umbraco.Core.Logging.IProfiler"/> implementation.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Logging.ProfilingLogger.#ctor(Umbraco.Core.Logging.ILogger,Umbraco.Core.Logging.IProfiler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Logging.ProfilingLogger"/> class.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.ContentDashboardSettings.AllowContentDashboardAccessToAllUsers">
+            <summary>
+            Gets a value indicating whether the content dashboard should be available to all users.
+            </summary>
+            <value>
+                <c>true</c> if the dashboard is visible for all user groups; otherwise, <c>false</c>
+                and the default access rules for that dashboard will be in use.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IContentDashboardSettings.AllowContentDashboardAccessToAllUsers">
+            <summary>
+            Gets a value indicating whether the content dashboard should be available to all users.
+            </summary>
+            <value>
+                <c>true</c> if the dashboard is visible for all user groups; otherwise, <c>false</c>
+                and the default access rules for that dashboard will be in use.
+            </value>
+        </member>
+        <member name="T:Umbraco.Core.Dashboards.AccessRule">
+            <summary>
+            Implements <see cref="T:Umbraco.Core.Dashboards.IAccessRule"/>.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.AccessRule.Type">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.AccessRule.Value">
+            <inheritdoc />
+        </member>
+        <member name="T:Umbraco.Core.Dashboards.AccessRuleType">
+            <summary>
+            Defines dashboard access rules type.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.Unknown">
+            <summary>
+            Unknown (default value).
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.Grant">
+            <summary>
+            Grant access to the dashboard if user belongs to the specified user group.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.Deny">
+            <summary>
+            Deny access to the dashboard if user belongs to the specified user group.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.GrantBySection">
+            <summary>
+            Grant access to the dashboard if user has access to the specified section.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Dashboards.IAccessRule">
+            <summary>
+            Represents an access rule.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IAccessRule.Type">
+            <summary>
+            Gets or sets the rule type.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IAccessRule.Value">
+            <summary>
+            Gets or sets the value for the rule.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Dashboards.IDashboard">
+            <summary>
+            Represents a dashboard.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IDashboard.Sections">
+            <summary>
+            Gets the aliases of sections/applications where this dashboard appears.
+            </summary>
+            <remarks>
+            <para>This field is *not* needed by the UI and therefore we want to exclude
+            it from serialization, but it is deserialized as part of the manifest,
+            therefore we cannot plainly ignore it.</para>
+            <para>So, it has to remain a data member, plus we use our special
+            JsonDontSerialize attribute (see attribute for more details).</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IDashboard.AccessRules">
+            <summary>
+            Gets the access rule determining the visibility of the dashboard.
+            </summary>
+            <remarks>
+            <para>This field is *not* needed by the UI and therefore we want to exclude
+            it from serialization, but it is deserialized as part of the manifest,
+            therefore we cannot plainly ignore it.</para>
+            <para>So, it has to remain a data member, plus we use our special
+            JsonDontSerialize attribute (see attribute for more details).</para>
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Dashboards.IDashboardSlim">
+            <summary>
+            Represents a dashboard with only minimal data.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IDashboardSlim.Alias">
+            <summary>
+            Gets the alias of the dashboard.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IDashboardSlim.View">
+            <summary>
+            Gets the view used to render the dashboard.
+            </summary>
         </member>
         <member name="T:Umbraco.Core.Exceptions.UnattendedInstallException">
             <summary>
@@ -18129,6 +19417,11 @@
         <member name="M:Umbraco.Core.Persistence.UmbracoDatabaseFactory.CreateDatabase">
             <inheritdoc />
         </member>
+        <member name="T:Umbraco.Core.PropertyEditors.EyeDropperColorPickerConfiguration">
+            <summary>
+            Represents the configuration for the Eye Dropper picker value editor.
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.PropertyEditors.ComplexPropertyEditorContentEventHandler">
             <summary>
             Utility class for dealing with <see cref="T:Umbraco.Core.Services.Implement.ContentService"/> Copying/Saving events for complex editors
@@ -19855,12 +21148,18 @@
         </member>
         <member name="M:Umbraco.Core.Services.IIconService.GetIcon(System.String)">
             <summary>
-            Gets an IconModel containing the icon name and SvgString according to an icon name found at the global icons path
+            Gets the svg string for the icon name found at the global icons path
             </summary>
             <param name="iconName"></param>
             <returns></returns>
         </member>
         <member name="M:Umbraco.Core.Services.IIconService.GetAllIcons">
+            <summary>
+            Gets a list of all svg icons found at at the global icons path.
+            </summary>
+            <returns>A list of <see cref="T:Umbraco.Core.Models.IconModel"/></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.IIconService.GetIcons">
             <summary>
             Gets a list of all svg icons found at at the global icons path.
             </summary>
@@ -30467,6 +31766,12 @@
             <param name="logger">A profiling logger.</param>
             <returns>The hash.</returns>
         </member>
+        <member name="M:Umbraco.Core.Composing.TypeLoader.GetFileBasePath">
+            <summary>
+            Used to produce the Lazy value of _fileBasePath
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Composing.TypeLoader.ClearTypesCache">
             <summary>
             Removes cache files and internal cache.
@@ -31641,861 +32946,6 @@
         <member name="P:Umbraco.Core.IO.SystemDirectories.Root">
             <summary>
             Gets the root path of the application
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetSavedSearches">
-            <summary>
-            Get all saved searches from your chosen data source
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.AddSavedSearch(System.String,System.String)">
-            <summary>
-            Adds a new saved search to chosen data source and returns the updated searches
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.DeleteSavedSearch(System.String,System.String)">
-            <summary>
-            Deletes a saved search to chosen data source and returns the remaining searches
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Logging.Viewer.ILogViewer.GetNumberOfErrors(Umbraco.Core.Logging.Viewer.LogTimePeriod)" -->
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogLevelCounts(Umbraco.Core.Logging.Viewer.LogTimePeriod)">
-            <summary>
-            Returns a number of the different log level entries
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetMessageTemplates(Umbraco.Core.Logging.Viewer.LogTimePeriod)">
-            <summary>
-            Returns a list of all unique message templates and their counts
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogLevel">
-            <summary>
-            Gets the current Serilog minimum log level
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.ILogViewer.GetLogs(Umbraco.Core.Logging.Viewer.LogTimePeriod,System.Int32,System.Int32,Umbraco.Core.Persistence.DatabaseModelDefinitions.Direction,System.String,System.String[])">
-            <summary>
-            Returns the collection of logs
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Timestamp">
-            <summary>
-            The time at which the log event occurred.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Level">
-            <summary>
-            The level of the event.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.MessageTemplateText">
-            <summary>
-            The message template describing the log event.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.RenderedMessage">
-            <summary>
-            The message template filled with the log event properties.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Properties">
-            <summary>
-            Properties associated with the log event, including those presented in Serilog.Events.LogEvent.MessageTemplate.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.Viewer.LogMessage.Exception">
-            <summary>
-            An exception associated with the log event, or null.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.LogViewerSourceBase.GetLogs(Umbraco.Core.Logging.Viewer.LogTimePeriod,Umbraco.Core.Logging.Viewer.ILogFilter,System.Int32,System.Int32)">
-            <summary>
-            Get all logs from your chosen data source back as Serilog LogEvents
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Viewer.LogViewerSourceBase.GetLogLevel">
-            <summary>
-            Get the Serilog minimum-level value from the config file. 
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Umbraco.Core.Logging.IProfilingLogger">
-            <summary>
-            Defines the profiling logging service.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfilingLogger.TraceDuration``1(System.String)">
-            <summary>
-            Profiles an action and log as information messages.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfilingLogger.TraceDuration``1(System.String,System.String,System.String)">
-            <summary>
-            Profiles an action and log as information messages.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfilingLogger.TraceDuration(System.Type,System.String,System.String,System.String)">
-            <summary>
-            Profiles an action and log as information messages.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfilingLogger.DebugDuration``1(System.String)">
-            <summary>
-            Profiles an action and log as debug messages.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfilingLogger.DebugDuration``1(System.String,System.String,System.String,System.Int32)">
-            <summary>
-            Profiles an action and log as debug messages.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfilingLogger.DebugDuration(System.Type,System.String,System.String,System.String,System.Int32)">
-            <summary>
-            Profiles an action and log as debug messages.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogHttpRequest.TryGetCurrentHttpRequestId(System.Guid@)">
-            <summary>
-            Retrieve the id assigned to the currently-executing HTTP request, if any.
-            </summary>
-            <param name="requestId">The request id.</param>
-            <returns><c>true</c> if there is a request in progress; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LogLevel">
-            <summary>
-            Specifies the level of a log event.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.MessageTemplates">
-            <summary>
-            Provides tools to support message templates.
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestIdEnricher" -->
-        <member name="F:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestIdEnricher.HttpRequestIdPropertyName">
-            <summary>
-            The property name added to enriched log events.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestIdEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
-            <summary>
-            Enrich the log event with an id assigned to the currently-executing HTTP request, if any.
-            </summary>
-            <param name="logEvent">The log event to enrich.</param>
-            <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
-        </member>
-        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestNumberEnricher" -->
-        <member name="F:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestNumberEnricher.HttpRequestNumberPropertyName">
-            <summary>
-            The property name added to enriched log events.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.Enrichers.HttpRequestNumberEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
-            <summary>
-            Enrich the log event with the number assigned to the currently-executing HTTP request, if any.
-            </summary>
-            <param name="logEvent">The log event to enrich.</param>
-            <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
-        </member>
-        <!-- Badly formed XML comment ignored for member "T:Umbraco.Core.Logging.Serilog.Enrichers.HttpSessionIdEnricher" -->
-        <member name="F:Umbraco.Core.Logging.Serilog.Enrichers.HttpSessionIdEnricher.HttpSessionIdPropertyName">
-            <summary>
-            The property name added to enriched log events.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.Enrichers.HttpSessionIdEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
-            <summary>
-            Enrich the log event with the current ASP.NET session id, if sessions are enabled.</summary>
-            <param name="logEvent">The log event to enrich.</param>
-            <param name="propertyFactory">Factory for creating new properties to add to the event.</param>
-        </member>
-        <member name="T:Umbraco.Core.Logging.Serilog.Enrichers.Log4NetLevelMapperEnricher">
-            <summary>
-            This is used to create a new property in Logs called 'Log4NetLevel'
-            So that we can map Serilog levels to Log4Net levels - so log files stay consistent
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.MinimalConfiguration(Serilog.LoggerConfiguration)">
-            <summary>
-            This configures Serilog with some defaults
-            Such as adding ProcessID, Thread, AppDomain etc
-            It is highly recommended that you keep/use this default in your own logging config customizations
-            </summary>
-            <param name="logConfig">A Serilog LoggerConfiguration</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.OutputDefaultTextFile(Serilog.LoggerConfiguration,Serilog.Events.LogEventLevel,System.Nullable{System.Int32})">
-            <summary>
-            Outputs a .txt format log at /App_Data/Logs/
-            </summary>
-            <param name="logConfig">A Serilog LoggerConfiguration</param>
-            <param name="minimumLevel">The log level you wish the JSON file to collect - default is Verbose (highest)</param>
-            <param name="retainedFileCount">The number of days to keep log files. Default is set to null which means all logs are kept</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.File(Serilog.Configuration.LoggerSinkConfiguration,Serilog.Formatting.ITextFormatter,System.String,Serilog.Events.LogEventLevel,Serilog.Core.LoggingLevelSwitch,System.Nullable{System.Int64},System.Nullable{System.TimeSpan},Serilog.RollingInterval,System.Boolean,System.Nullable{System.Int32},System.Text.Encoding)">
-            <remarks>
-               Used in config - If renamed or moved to other assembly the config file also has be updated.
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.OutputDefaultJsonFile(Serilog.LoggerConfiguration,Serilog.Events.LogEventLevel,System.Nullable{System.Int32})">
-            <summary>
-            Outputs a CLEF format JSON log at /App_Data/Logs/
-            </summary>
-            <param name="logConfig">A Serilog LoggerConfiguration</param>
-            <param name="minimumLevel">The log level you wish the JSON file to collect - default is Verbose (highest)</param>
-            <param name="retainedFileCount">The number of days to keep log files. Default is set to null which means all logs are kept</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.ReadFromConfigFile(Serilog.LoggerConfiguration)">
-            <summary>
-            Reads settings from /config/serilog.config
-            That allows the main logging pipeline to be configured
-            </summary>
-            <param name="logConfig">A Serilog LoggerConfiguration</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.LoggerConfigExtensions.ReadFromUserConfigFile(Serilog.LoggerConfiguration)">
-            <summary>
-            Reads settings from /config/serilog.user.config
-            That allows a separate logging pipeline to be configured that will not affect the main Umbraco log
-            </summary>
-            <param name="logConfig">A Serilog LoggerConfiguration</param>
-        </member>
-        <member name="T:Umbraco.Core.Logging.Serilog.SerilogLogger">
-            <summary>
-             Implements <see cref="T:Umbraco.Core.Logging.ILogger"/> on top of Serilog.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.#ctor(System.IO.FileInfo)">
-            <summary>
-            Initialize a new instance of the <see cref="T:Umbraco.Core.Logging.Serilog.SerilogLogger"/> class with a configuration file.
-            </summary>
-            <param name="logConfigFile"></param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.CreateWithDefaultConfiguration">
-            <summary>
-            Creates a logger with some pre-defined configuration and remainder from config file
-            </summary>
-            <remarks>Used by UmbracoApplicationBase to get its logger.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.LoggerFor(System.Type)">
-            <summary>
-            Gets a contextualized logger.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.MapLevel(Umbraco.Core.Logging.LogLevel)">
-            <summary>
-            Maps Umbraco's log level to Serilog's.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.IsEnabled(System.Type,Umbraco.Core.Logging.LogLevel)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.Exception,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.Exception)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Fatal(System.Type,System.Exception,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.Exception,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.Exception)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Error(System.Type,System.Exception,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.Exception,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Warn(System.Type,System.Exception,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Info(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Debug(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.Serilog.SerilogLogger.Verbose(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="T:Umbraco.Core.Logging.DisposableTimer">
-            <summary>
-            Starts the timer and invokes a  callback upon disposal. Provides a simple way of timing an operation by wrapping it in a <code>using</code> (C#) statement.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DisposableTimer.Fail(System.String,System.Exception)">
-            <summary>
-            Reports a failure.
-            </summary>
-            <param name="failMessage">The fail message.</param>
-            <param name="exception">The exception.</param>
-            <remarks>Completion of the timer will be reported as an error, with the specified message and exception.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DisposableTimer.DisposeResources">
-             <summary>
-            Disposes resources.
-             </summary>
-             <remarks>Overrides abstract class <see cref="!:DisposableObject"/> which handles required locking.</remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.DebugDiagnosticsLogger">
-            <summary>
-            Implements <see cref="T:Umbraco.Core.Logging.ILogger"/> on top of <see cref="N:System.Diagnostics"/>.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.Exception,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.Exception)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.Exception,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Fatal(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.Exception,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.Exception)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.Exception,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Error(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.Exception,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Warn(System.Type,System.Exception,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Info(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Info(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Debug(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Debug(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Verbose(System.Type,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.DebugDiagnosticsLogger.Verbose(System.Type,System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="T:Umbraco.Core.Logging.ILogger">
-            <summary>
-            Defines the logging service.
-            </summary>
-            <remarks>
-            <para>Message templates in logging methods follow the Message Templates specification
-            available at https://messagetemplates.org/ in order to support structured logging.</para>
-            <para>Implementations must ensure that they support these templates. Note that the
-            specification includes support for traditional C# numeric placeholders.</para>
-            <para>For instance, "Processed {Input} in {Time}ms."</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.IsEnabled(System.Type,Umbraco.Core.Logging.LogLevel)">
-            <summary>
-            Determines if logging is enabled at a specified level, for a reporting type.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="level">The level.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.Exception,System.String)">
-            <summary>
-            Logs a fatal message with an exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.Exception)">
-            <summary>
-            Logs a fatal exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <remarks>The message string is unspecified and is implementation-specific.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.String)">
-            <summary>
-            Logs a fatal message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.Exception,System.String,System.Object[])">
-            <summary>
-            Logs a fatal message with an exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Fatal(System.Type,System.String,System.Object[])">
-            <summary>
-            Logs a fatal message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.Exception,System.String)">
-            <summary>
-            Logs an error message with an exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.Exception)">
-            <summary>
-            Logs an error exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <remarks>The message string is unspecified and is implementation-specific.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.String)">
-            <summary>
-            Logs an error message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.Exception,System.String,System.Object[])">
-            <summary>
-            Logs an error message with an exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Error(System.Type,System.String,System.Object[])">
-            <summary>
-            Logs an error message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.String)">
-            <summary>
-            Logs a warning message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.String,System.Object[])">
-            <summary>
-            Logs a warning message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.Exception,System.String)">
-            <summary>
-            Logs a warning message with an exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Warn(System.Type,System.Exception,System.String,System.Object[])">
-            <summary>
-            Logs a warning message with an exception.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="exception">An exception.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Info(System.Type,System.String)">
-            <summary>
-            Logs an information message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Info(System.Type,System.String,System.Object[])">
-            <summary>
-            Logs a info message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Debug(System.Type,System.String)">
-            <summary>
-            Logs a debugging message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Debug(System.Type,System.String,System.Object[])">
-            <summary>
-            Logs a debug message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Verbose(System.Type,System.String)">
-            <summary>
-            Logs a verbose message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ILogger.Verbose(System.Type,System.String,System.Object[])">
-            <summary>
-            Logs a verbose message.
-            </summary>
-            <param name="reporting">The reporting type.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="T:Umbraco.Core.Logging.IProfiler">
-            <summary>
-            Defines the profiling service.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfiler.Render">
-            <summary>
-            Renders the profiling results.
-            </summary>
-            <returns>The profiling results.</returns>
-            <remarks>Generally used for HTML rendering.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfiler.Step(System.String)">
-            <summary>
-            Gets an <see cref="T:System.IDisposable"/> that will time the code between its creation and disposal.
-            </summary>
-            <param name="name">The name of the step.</param>
-            <returns>A step.</returns>
-            <remarks>The returned <see cref="T:System.IDisposable"/> is meant to be used within a <c>using (...) {{ ... }}</c> block.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfiler.Start">
-            <summary>
-            Starts the profiler.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.IProfiler.Stop(System.Boolean)">
-            <summary>
-            Stops the profiler.
-            </summary>
-            <param name="discardResults">A value indicating whether to discard results.</param>
-            <remarks>Set discardResult to true to abandon all profiling - useful when eg someone is not
-            authenticated or you want to clear the results, based upon some other mechanism.</remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LoggerExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:Umbraco.Core.Logging.ILogger"/> interface.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.IsEnabled``1(Umbraco.Core.Logging.ILogger,Umbraco.Core.Logging.LogLevel)">
-            <summary>
-            Determines if logging is enabled at a specified level, for a reporting type.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="level">The level.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String)">
-            <summary>
-            Logs an error message with an exception.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="message">A message.</param>
-            <param name="exception">An exception.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String,System.Object[])">
-            <summary>
-            Logs an error message with an exception.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="exception">An exception.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.Exception)">
-            <summary>
-            Logs an error exception.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="exception">An exception.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.String)">
-            <summary>
-            Logs an error message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Error``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
-            <summary>
-            Logs an error message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.String)">
-            <summary>
-            Logs a warning message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
-            <summary>
-            Logs a warning message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String)">
-            <summary>
-            Logs a warning message with an exception.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="exception">An exception.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Warn``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String,System.Object[])">
-            <summary>
-            Logs a warning message with an exception.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="exception">An exception.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.String)">
-            <summary>
-            Logs an information message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Info``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
-            <summary>
-            Logs a information message.
-            </summary>
-            <typeparam name="T">The reporting type</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.String)">
-            <summary>
-            Logs a debugging message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Debug``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
-            <summary>
-            Logs a debugging message.
-            </summary>
-            <typeparam name="T">The reporting type</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Verbose``1(Umbraco.Core.Logging.ILogger,System.String)">
-            <summary>
-            Logs a verbose message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Verbose``1(Umbraco.Core.Logging.ILogger,System.String,System.Object[])">
-            <summary>
-            Logs a verbose message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Fatal``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String)">
-            <summary>
-            Logs a fatal message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="exception">An exception.</param>
-            <param name="message">A message.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggerExtensions.Fatal``1(Umbraco.Core.Logging.ILogger,System.Exception,System.String,System.Object[])">
-            <summary>
-            Logs a fatal message.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="logger">The logger.</param>
-            <param name="exception">An exception.</param>
-            <param name="messageTemplate">A message template.</param>
-            <param name="propertyValues">Property values.</param>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrors(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
-             <summary>
-                 This task shouldn't be waited on (as it's not guaranteed to run), and you shouldn't wait on the parent task either (because it might throw an
-                 exception that doesn't get handled). If you want to be waiting on something, use LogErrorsWaitable instead.
-            
-                 None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
-                 errors yourself.
-             </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LoggingTaskExtension.LogErrorsWaitable(System.Threading.Tasks.Task,System.Action{System.String,System.Exception})">
-             <summary>
-                 This task can be waited on (as it's guaranteed to run), and you should wait on this rather than the parent task. Because it's
-                 guaranteed to run, it may be slower than using LogErrors, and you should consider using that method if you don't want to wait.
-            
-                 None of these methods are suitable for tasks that return a value. If you're wanting a result, you should probably be handling
-                 errors yourself.
-             </summary>
-        </member>
-        <member name="T:Umbraco.Core.Logging.LogProfiler">
-            <summary>
-            Implements <see cref="T:Umbraco.Core.Logging.IProfiler"/> by writing profiling results to an <see cref="T:Umbraco.Core.Logging.ILogger"/>.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogProfiler.Render">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogProfiler.Step(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogProfiler.Start">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.LogProfiler.Stop(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.OwinLogger.WriteCore(System.Diagnostics.TraceEventType,System.Int32,System.Object,System.Exception,System.Func{System.Object,System.Exception,System.String})">
-            <summary>
-            Aggregates most logging patterns to a single method.  This must be compatible with the Func representation in the OWIN environment.
-                        To check IsEnabled call WriteCore with only TraceEventType and check the return value, no event will be written.
-            </summary>
-            <param name="eventType"/><param name="eventId"/><param name="state"/><param name="exception"/><param name="formatter"/>
-            <returns/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.OwinLoggerFactory.Create(System.String)">
-            <summary>
-            Creates a new ILogger instance of the given name.
-            </summary>
-            <param name="name"/>
-            <returns/>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ProfilerExtensions.Step``1(Umbraco.Core.Logging.IProfiler,System.String)">
-            <summary>
-            Gets an <see cref="T:System.IDisposable"/> that will time the code between its creation and disposal,
-            prefixing the name of the step with a reporting type name.
-            </summary>
-            <typeparam name="T">The reporting type.</typeparam>
-            <param name="profiler">The profiler.</param>
-            <param name="name">The name of the step.</param>
-            <returns>A step.</returns>
-            <remarks>The returned <see cref="T:System.IDisposable"/> is meant to be used within a <c>using (...) {{ ... }}</c> block.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ProfilerExtensions.Step(Umbraco.Core.Logging.IProfiler,System.Type,System.String)">
-            <summary>
-            Gets an <see cref="T:System.IDisposable"/> that will time the code between its creation and disposal,
-            prefixing the name of the step with a reporting type name.
-            </summary>
-            <param name="profiler">The profiler.</param>
-            <param name="reporting">The reporting type.</param>
-            <param name="name">The name of the step.</param>
-            <returns>A step.</returns>
-            <remarks>The returned <see cref="T:System.IDisposable"/> is meant to be used within a <c>using (...) {{ ... }}</c> block.</remarks>
-        </member>
-        <member name="T:Umbraco.Core.Logging.ProfilingLogger">
-            <summary>
-            Provides logging and profiling services.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.ProfilingLogger.Logger">
-            <summary>
-            Gets the underlying <see cref="T:Umbraco.Core.Logging.ILogger"/> implementation.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Logging.ProfilingLogger.Profiler">
-            <summary>
-            Gets the underlying <see cref="T:Umbraco.Core.Logging.IProfiler"/> implementation.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Logging.ProfilingLogger.#ctor(Umbraco.Core.Logging.ILogger,Umbraco.Core.Logging.IProfiler)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Logging.ProfilingLogger"/> class.
             </summary>
         </member>
         <member name="T:Umbraco.Core.Manifest.IManifestFilter">
@@ -33836,101 +34286,6 @@
             <para>Basically, exact is for one content type, or one property type, and !exact is for "all property types" of one content type.</para>
             <para>Both <paramref name="culture" /> and <paramref name="segment" /> can be "*" to indicate "all of them".</para>
             </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Dashboards.AccessRule">
-            <summary>
-            Implements <see cref="T:Umbraco.Core.Dashboards.IAccessRule"/>.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.AccessRule.Type">
-            <inheritdoc />
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.AccessRule.Value">
-            <inheritdoc />
-        </member>
-        <member name="T:Umbraco.Core.Dashboards.AccessRuleType">
-            <summary>
-            Defines dashboard access rules type.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.Unknown">
-            <summary>
-            Unknown (default value).
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.Grant">
-            <summary>
-            Grant access to the dashboard if user belongs to the specified user group.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.Deny">
-            <summary>
-            Deny access to the dashboard if user belongs to the specified user group.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Dashboards.AccessRuleType.GrantBySection">
-            <summary>
-            Grant access to the dashboard if user has access to the specified section.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Dashboards.IAccessRule">
-            <summary>
-            Represents an access rule.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.IAccessRule.Type">
-            <summary>
-            Gets or sets the rule type.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.IAccessRule.Value">
-            <summary>
-            Gets or sets the value for the rule.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Dashboards.IDashboard">
-            <summary>
-            Represents a dashboard.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.IDashboard.Sections">
-            <summary>
-            Gets the aliases of sections/applications where this dashboard appears.
-            </summary>
-            <remarks>
-            <para>This field is *not* needed by the UI and therefore we want to exclude
-            it from serialization, but it is deserialized as part of the manifest,
-            therefore we cannot plainly ignore it.</para>
-            <para>So, it has to remain a data member, plus we use our special
-            JsonDontSerialize attribute (see attribute for more details).</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.IDashboard.AccessRules">
-            <summary>
-            Gets the access rule determining the visibility of the dashboard.
-            </summary>
-            <remarks>
-            <para>This field is *not* needed by the UI and therefore we want to exclude
-            it from serialization, but it is deserialized as part of the manifest,
-            therefore we cannot plainly ignore it.</para>
-            <para>So, it has to remain a data member, plus we use our special
-            JsonDontSerialize attribute (see attribute for more details).</para>
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Dashboards.IDashboardSlim">
-            <summary>
-            Represents a dashboard with only minimal data.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.IDashboardSlim.Alias">
-            <summary>
-            Gets the alias of the dashboard.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Dashboards.IDashboardSlim.View">
-            <summary>
-            Gets the view used to render the dashboard.
-            </summary>
         </member>
         <member name="T:Umbraco.Core.Deploy.IDataTypeConfigurationConnector">
             <summary>
@@ -37833,6 +38188,35 @@
         <member name="M:Umbraco.Core.Scoping.Scope.Complete">
             <inheritdoc />
         </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.GenerateUnclearedScopesLogMessage">
+            <summary>
+            Generates a log message with all scopes that hasn't cleared their locks, including how many, and what locks they have requested.
+            </summary>
+            <returns>Log message.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.WriteLockDictionaryToString(System.Collections.Generic.Dictionary{System.Guid,System.Collections.Generic.Dictionary{System.Int32,System.Int32}},System.Text.StringBuilder,System.String)">
+            <summary>
+            Writes a locks dictionary to a <see cref="T:System.Text.StringBuilder"/> for logging purposes.
+            </summary>
+            <param name="dict">Lock dictionary to report on.</param>
+            <param name="builder">String builder to write to.</param>
+            <param name="dictName">The name to report the dictionary as.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.IncrementLock(System.Int32,System.Guid,System.Collections.Generic.Dictionary{System.Guid,System.Collections.Generic.Dictionary{System.Int32,System.Int32}}@)">
+            <summary>
+            Increment the counter of a locks dictionary, either ReadLocks or WriteLocks,
+            for a specific scope instance and lock identifier. Must be called within a lock.
+            </summary>
+            <param name="lockId">Lock ID to increment.</param>
+            <param name="instanceId">Instance ID of the scope requesting the lock.</param>
+            <param name="locks">Reference to the dictionary to increment on</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.ClearLocks(System.Guid)">
+            <summary>
+            Clears all lock counters for a given scope instance, signalling that the scope has been disposed.
+            </summary>
+            <param name="instanceId">Instance ID of the scope to clear.</param>
+        </member>
         <member name="M:Umbraco.Core.Scoping.Scope.ReadLock(System.Int32[])">
             <inheritdoc />
         </member>
@@ -37844,6 +38228,60 @@
         </member>
         <member name="M:Umbraco.Core.Scoping.Scope.WriteLock(System.TimeSpan,System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.ReadLockInner(System.Guid,System.Nullable{System.TimeSpan},System.Int32[])">
+            <summary>
+            Handles acquiring a read lock, will delegate it to the parent if there are any.
+            </summary>
+            <param name="instanceId">Instance ID of the requesting scope.</param>
+            <param name="timeout">Optional database timeout in milliseconds.</param>
+            <param name="lockIds">Array of lock object identifiers.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.WriteLockInner(System.Guid,System.Nullable{System.TimeSpan},System.Int32[])">
+            <summary>
+            Handles acquiring a write lock with a specified timeout, will delegate it to the parent if there are any.
+            </summary>
+            <param name="instanceId">Instance ID of the requesting scope.</param>
+            <param name="timeout">Optional database timeout in milliseconds.</param>
+            <param name="lockIds">Array of lock object identifiers.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.LockInner(System.Guid,System.Collections.Generic.Dictionary{System.Guid,System.Collections.Generic.Dictionary{System.Int32,System.Int32}}@,System.Collections.Generic.HashSet{System.Int32}@,System.Action{System.Int32},System.Action{System.Int32,System.TimeSpan},System.Nullable{System.TimeSpan},System.Int32[])">
+            <summary>
+            Handles acquiring a lock, this should only be called from the outermost scope.
+            </summary>
+            <param name="instanceId">Instance ID of the scope requesting the lock.</param>
+            <param name="locks">Reference to the applicable locks dictionary (ReadLocks or WriteLocks).</param>
+            <param name="locksSet">Reference to the applicable locks hashset (_readLocks or _writeLocks).</param>
+            <param name="obtainLock">Delegate used to request the lock from the database without a timeout.</param>
+            <param name="obtainLockTimeout">Delegate used to request the lock from the database with a timeout.</param>
+            <param name="timeout">Optional timeout parameter to specify a timeout.</param>
+            <param name="lockIds">Lock identifiers to lock on.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainReadLock(System.Int32)">
+            <summary>
+            Obtains an ordinary read lock.
+            </summary>
+            <param name="lockId">Lock object identifier to lock.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainTimeoutReadLock(System.Int32,System.TimeSpan)">
+            <summary>
+            Obtains a read lock with a custom timeout.
+            </summary>
+            <param name="lockId">Lock object identifier to lock.</param>
+            <param name="timeout">TimeSpan specifying the timout period.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainWriteLock(System.Int32)">
+            <summary>
+            Obtains an ordinary write lock.
+            </summary>
+            <param name="lockId">Lock object identifier to lock.</param>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainTimeoutWriteLock(System.Int32,System.TimeSpan)">
+            <summary>
+            Obtains a write lock with a custom timeout.
+            </summary>
+            <param name="lockId">Lock object identifier to lock.</param>
+            <param name="timeout">TimeSpan specifying the timout period.</param>
         </member>
         <member name="T:Umbraco.Core.Scoping.ScopeContextualBase">
             <summary>
@@ -39441,6 +39879,15 @@
             <summary>
             Turns an null-or-whitespace string into a null string.
             </summary>
+        </member>
+        <member name="M:Umbraco.Core.StringExtensions.EscapedSplit(System.String,System.Char,System.Char)">
+            <summary>
+            Splits a string with an escape character that allows for the split character to exist in a string
+            </summary>
+            <param name="value">The string to split</param>
+            <param name="splitChar">The character to split on</param>
+            <param name="escapeChar">The character which can be used to escape the character to split on</param>
+            <returns>The string split into substrings delimited by the split character</returns>
         </member>
         <member name="T:Umbraco.Core.Strings.CleanStringType">
             <summary>
