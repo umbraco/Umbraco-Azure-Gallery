@@ -2607,6 +2607,8 @@ Use this directive to render a button with a dropdown of alternative actions.
                 replace: true,
                 template: '<button role="checkbox" aria-checked="{{checked}}" ng-click="click()" type="button" class="umb-toggle" ng-disabled="disabled" ng-class="{\'umb-toggle--checked\': checked, \'umb-toggle--disabled\': disabled}" id="{{inputId}}"> <span ng-if="!labelPosition && showLabels === \'true\' || labelPosition === \'left\' && showLabels === \'true\'"> <span class="umb-toggle__label umb-toggle__label--left">{{ checked ? displayLabelOn : displayLabelOff }}</span> </span> <div class="umb-toggle__toggle"> <i ng-show="hideIcons !== \'true\'" class="umb-toggle__icon umb-toggle__icon--left icon-check"></i> <i ng-show="hideIcons !== \'true\'" class="umb-toggle__icon umb-toggle__icon--right icon-wrong"></i> <div class="umb-toggle__handler"></div> </div> <span ng-if="labelPosition === \'right\' && showLabels === \'true\'"> <span class="umb-toggle__label umb-toggle__label--right">{{ checked ? displayLabelOn : displayLabelOff }}</span> </span> </button> ',
                 scope: {
+                    // TODO: This should have required ngModel so we can track and validate user input correctly
+                    // https://docs.angularjs.org/api/ng/type/ngModel.NgModelController#custom-control-example
                     checked: '=',
                     disabled: '=',
                     inputId: '@',
@@ -3087,7 +3089,8 @@ Use this directive to render a group of toggle buttons.
                     create: $scope.page.isNew,
                     action: args.action,
                     showNotifications: args.showNotifications,
-                    softRedirect: true
+                    softRedirect: true,
+                    skipValidation: args.skipValidation
                 }).then(function (data) {
                     //success
                     init();
@@ -3099,11 +3102,16 @@ Use this directive to render a group of toggle buttons.
                         action: args.action,
                         valid: true
                     });
-                    resetNestedFieldValiation(fieldsToRollback);
+                    if ($scope.contentForm.$invalid !== true) {
+                        resetNestedFieldValiation(fieldsToRollback);
+                    }
                     ensureDirtyIsSetIfAnyVariantIsDirty();
                     return $q.when(data);
                 }, function (err) {
                     syncTreeNode($scope.content, $scope.content.path);
+                    if ($scope.contentForm.$invalid !== true) {
+                        resetNestedFieldValiation(fieldsToRollback);
+                    }
                     if (err && err.status === 400 && err.data) {
                         // content was saved but is invalid.
                         eventsService.emit('content.saved', {
@@ -3112,7 +3120,6 @@ Use this directive to render a group of toggle buttons.
                             valid: false
                         });
                     }
-                    resetNestedFieldValiation(fieldsToRollback);
                     return $q.reject(err);
                 });
             }
@@ -3357,60 +3364,65 @@ Use this directive to render a group of toggle buttons.
                 clearNotifications($scope.content);
                 // TODO: Add "..." to save button label if there are more than one variant to publish - currently it just adds the elipses if there's more than 1 variant
                 if (hasVariants($scope.content)) {
-                    //before we launch the dialog we want to execute all client side validations first
-                    if (formHelper.submitForm({
-                            scope: $scope,
-                            action: 'openSaveDialog'
-                        })) {
-                        var dialog = {
-                            parentScope: $scope,
-                            view: 'views/content/overlays/save.html',
-                            variants: $scope.content.variants,
-                            //set a model property for the dialog
-                            skipFormValidation: true,
-                            //when submitting the overlay form, skip any client side validation
-                            submitButtonLabelKey: 'buttons_save',
-                            submit: function submit(model) {
-                                model.submitButtonState = 'busy';
+                    var dialog = {
+                        parentScope: $scope,
+                        view: 'views/content/overlays/save.html',
+                        variants: $scope.content.variants,
+                        //set a model property for the dialog
+                        skipFormValidation: true,
+                        //when submitting the overlay form, skip any client side validation
+                        submitButtonLabelKey: 'buttons_save',
+                        submit: function submit(model) {
+                            model.submitButtonState = 'busy';
+                            clearNotifications($scope.content);
+                            //we need to return this promise so that the dialog can handle the result and wire up the validation response
+                            return performSave({
+                                saveMethod: $scope.saveMethod(),
+                                action: 'save',
+                                showNotifications: false,
+                                skipValidation: true
+                            }).then(function (data) {
+                                //show all notifications manually here since we disabled showing them automatically in the save method
+                                formHelper.showNotifications(data);
                                 clearNotifications($scope.content);
-                                //we need to return this promise so that the dialog can handle the result and wire up the validation response
-                                return performSave({
-                                    saveMethod: $scope.saveMethod(),
-                                    action: 'save',
-                                    showNotifications: false
-                                }).then(function (data) {
-                                    //show all notifications manually here since we disabled showing them automatically in the save method
-                                    formHelper.showNotifications(data);
-                                    clearNotifications($scope.content);
-                                    overlayService.close();
-                                    return $q.when(data);
-                                }, function (err) {
-                                    clearDirtyState($scope.content.variants);
-                                    model.submitButtonState = 'error';
-                                    //re-map the dialog model since we've re-bound the properties
-                                    dialog.variants = $scope.content.variants;
-                                    handleHttpException(err);
-                                });
-                            },
-                            close: function close(oldModel) {
                                 overlayService.close();
-                            }
-                        };
-                        overlayService.open(dialog);
-                    } else {
-                        showValidationNotification();
-                    }
+                                return $q.when(data);
+                            }, function (err) {
+                                clearDirtyState($scope.content.variants);
+                                //model.submitButtonState = "error";
+                                // Because this is the "save"-action, then we actually save though there was a validation error, therefor we will show success and display the validation errors politely.
+                                if (err && err.data && err.data.ModelState && Object.keys(err.data.ModelState).length > 0) {
+                                    model.submitButtonState = 'success';
+                                } else {
+                                    model.submitButtonState = 'error';
+                                }
+                                //re-map the dialog model since we've re-bound the properties
+                                dialog.variants = $scope.content.variants;
+                                handleHttpException(err);
+                            });
+                        },
+                        close: function close(oldModel) {
+                            overlayService.close();
+                        }
+                    };
+                    overlayService.open(dialog);
                 } else {
                     //ensure the flags are set
                     $scope.content.variants[0].save = true;
                     $scope.page.saveButtonState = 'busy';
                     return performSave({
                         saveMethod: $scope.saveMethod(),
-                        action: 'save'
+                        action: 'save',
+                        skipValidation: true
                     }).then(function () {
                         $scope.page.saveButtonState = 'success';
                     }, function (err) {
-                        $scope.page.saveButtonState = 'error';
+                        // Because this is the "save"-action, then we actually save though there was a validation error, therefor we will show success and display the validation errors politely.
+                        if (err && err.data && err.data.ModelState && Object.keys(err.data.ModelState).length > 0) {
+                            $scope.page.saveButtonState = 'success';
+                        } else {
+                            $scope.page.saveButtonState = 'error';
+                        }
                         handleHttpException(err);
                     });
                 }
@@ -5982,7 +5994,7 @@ Use this directive to construct a header inside the main editor window.
     'use strict';
     (function () {
         'use strict';
-        function EditorsDirective($timeout, eventsService) {
+        function EditorsDirective($timeout, eventsService, focusLockService) {
             function link(scope, el, attr, ctrl) {
                 var evts = [];
                 var allowedNumberOfVisibleEditors = 3;
@@ -5990,6 +6002,10 @@ Use this directive to construct a header inside the main editor window.
                 var sectionId = '#leftcolumn';
                 var isLeftColumnAbove = false;
                 scope.editors = [];
+                /* we need to keep a count of open editors because the length of the editors array is first changed when animations are done
+       we do this because some infinite editors close more than one editor at the time and we get the wrong count from editors.length
+       because of the animation */
+                var editorCount = 0;
                 function addEditor(editor) {
                     editor.inFront = true;
                     editor.moveRight = true;
@@ -6002,6 +6018,8 @@ Use this directive to construct a header inside the main editor window.
                         if (isLeftColumnAbove) {
                             $(sectionId).removeClass(aboveBackDropCssClass);
                         }
+                        // Inert content in the #mainwrapper
+                        focusLockService.addInertAttribute();
                     }
                     $timeout(function () {
                         editor.moveRight = false;
@@ -6020,6 +6038,11 @@ Use this directive to construct a header inside the main editor window.
                             $('#leftcolumn').addClass(aboveBackDropCssClass);
                         }
                         isLeftColumnAbove = false;
+                    }
+                    // when the last editor is closed remove the focus lock
+                    if (editorCount === 0) {
+                        // Remove the inert attribute from the #mainwrapper
+                        focusLockService.removeInertAttribute();
                     }
                 }
                 function revealEditorContent(editor) {
@@ -6053,15 +6076,18 @@ Use this directive to construct a header inside the main editor window.
                     }
                 }
                 evts.push(eventsService.on('appState.editors.open', function (name, args) {
+                    editorCount = editorCount + 1;
                     addEditor(args.editor);
                 }));
                 evts.push(eventsService.on('appState.editors.close', function (name, args) {
                     // remove the closed editor
                     if (args && args.editor) {
+                        editorCount = editorCount - 1;
                         removeEditor(args.editor);
                     }
                     // close all editors
                     if (args && !args.editor && args.editors.length === 0) {
+                        editorCount = 0;
                         scope.editors = [];
                     }
                 }));
@@ -6075,16 +6101,16 @@ Use this directive to construct a header inside the main editor window.
             var directive = {
                 restrict: 'E',
                 replace: true,
-                template: '<div class="umb-editors"> <umb-editor-repeater class="umb-editor" ng-repeat="model in editors" ng-class="{\'umb-editor--small\': model.size === \'small\', \'umb-editor--medium\': model.size === \'medium\', \'umb-editor--animating\': model.animating, \'umb-editor--notInFront\': model.inFront !== true, \'umb-editor--infiniteMode\': model.infiniteMode, \'umb-editor--moveRight\': model.moveRight, \'umb-editor--n0\': model.styleIndex === 0, \'umb-editor--n1\': model.styleIndex === 1, \'umb-editor--n2\': model.styleIndex === 2, \'umb-editor--n3\': model.styleIndex === 3, \'umb-editor--outOfRange\': model.level === -1, \'umb-editor--level0\': model.level === 0, \'umb-editor--level1\': model.level === 1, \'umb-editor--level2\': model.level === 2, \'umb-editor--level3\': model.level === 3}"> <div ng-if="!model.view && !model.animating" ng-transclude></div> <div ng-if="model.view && !model.animating && !model.$parentScope" ng-include="model.view"></div> <div ng-show="model.$parentScope" class="scoped-view"></div> <div class="umb-editor__overlay"></div> </umb-editor-repeater> </div> ',
+                template: '<div class="umb-editors"> <umb-editor-repeater class="umb-editor" ng-repeat="model in editors" ng-attr-umb-focus-lock="{{$last || undefined}}" ng-attr-inert="{{$last ? undefined : true}}" ng-class="{\'umb-editor--small\': model.size === \'small\', \'umb-editor--medium\': model.size === \'medium\', \'umb-editor--animating\': model.animating, \'umb-editor--notInFront\': model.inFront !== true, \'umb-editor--infiniteMode\': model.infiniteMode, \'umb-editor--moveRight\': model.moveRight, \'umb-editor--n0\': model.styleIndex === 0, \'umb-editor--n1\': model.styleIndex === 1, \'umb-editor--n2\': model.styleIndex === 2, \'umb-editor--n3\': model.styleIndex === 3, \'umb-editor--outOfRange\': model.level === -1, \'umb-editor--level0\': model.level === 0, \'umb-editor--level1\': model.level === 1, \'umb-editor--level2\': model.level === 2, \'umb-editor--level3\': model.level === 3}"> <div ng-if="!model.view && !model.animating" ng-transclude></div> <div ng-if="model.view && !model.animating && !model.$parentScope" ng-include="model.view"></div> <div ng-show="model.$parentScope" class="scoped-view"></div> <div class="umb-editor__overlay"></div> </umb-editor-repeater> </div> ',
                 link: link
             };
             return directive;
         }
         // This directive allows for us to run a custom $compile for the view within the repeater which allows
-        // us to maintain a $scope hierarchy with the rendered view based on the $scope that initiated the 
+        // us to maintain a $scope hierarchy with the rendered view based on the $scope that initiated the
         // infinite editing. The retain the $scope hiearchy a special $parentScope property is passed in to the model.
         function EditorRepeaterDirective($http, $templateCache, $compile, angularHelper) {
-            function link(scope, el, attr, ctrl) {
+            function link(scope, el) {
                 var editor = scope && scope.$parent ? scope.$parent.model : null;
                 if (!editor) {
                     return;
@@ -7134,7 +7160,8 @@ Use this directive to prevent default action of an element. Effectively implemen
     'use strict';
     (function () {
         'use strict';
-        function FocusLock($timeout) {
+        function FocusLock($timeout, $rootScope, angularHelper) {
+            // If the umb-auto-focus directive is in use we respect that by leaving the default focus on it instead of choosing the first focusable element using this function
             function getAutoFocusElement(elements) {
                 var elmentWithAutoFocus = null;
                 elements.forEach(function (element) {
@@ -7145,44 +7172,177 @@ Use this directive to prevent default action of an element. Effectively implemen
                 return elmentWithAutoFocus;
             }
             function link(scope, element) {
-                function onInit() {
-                    // List of elements that can be focusable within the focus lock
-                    var focusableElementsSelector = 'a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled])';
-                    var bodyElement = document.querySelector('body');
-                    $timeout(function () {
-                        var target = element[0];
-                        var focusableElements = target.querySelectorAll(focusableElementsSelector);
-                        var defaultFocusedElement = getAutoFocusElement(focusableElements);
-                        var firstFocusableElement = focusableElements[0];
-                        var lastFocusableElement = focusableElements[focusableElements.length - 1];
-                        // If there is no default focused element put focus on the first focusable element in the nodelist
-                        if (defaultFocusedElement === null) {
-                            firstFocusableElement.focus();
-                        }
-                        target.addEventListener('keydown', function (event) {
-                            var isTabPressed = event.key === 'Tab' || event.keyCode === 9;
-                            if (!isTabPressed) {
-                                return;
-                            }
-                            // If shift + tab key
-                            if (event.shiftKey) {
-                                // Set focus on the last focusable element if shift+tab are pressed meaning we go backwards
-                                if (document.activeElement === firstFocusableElement) {
-                                    lastFocusableElement.focus();
-                                    event.preventDefault();
-                                }
-                            }    // Else only the tab key is pressed
-                            else {
-                                // Using only the tab key we set focus on the first focusable element mening we go forward
-                                if (document.activeElement === lastFocusableElement) {
-                                    firstFocusableElement.focus();
-                                    event.preventDefault();
-                                }
-                            }
-                        });
-                    }, 250);
+                var target = element[0];
+                var focusableElements;
+                var firstFocusableElement;
+                var lastFocusableElement;
+                var infiniteEditorsWrapper;
+                var infiniteEditors;
+                var disconnectObserver = false;
+                var closingEditor = false;
+                if (!$rootScope.lastKnownFocusableElements) {
+                    $rootScope.lastKnownFocusableElements = [];
                 }
-                onInit();
+                $rootScope.lastKnownFocusableElements.push(document.activeElement);
+                // List of elements that can be focusable within the focus lock
+                var focusableElementsSelector = '[role="button"], a[href]:not([disabled]):not(.ng-hide), button:not([disabled]):not(.ng-hide), textarea:not([disabled]):not(.ng-hide), input:not([disabled]):not(.ng-hide), select:not([disabled]):not(.ng-hide)';
+                // Grab the body element so we can add the tabbing class on it when needed
+                var bodyElement = document.querySelector('body');
+                function getDomNodes() {
+                    infiniteEditorsWrapper = document.querySelector('.umb-editors');
+                    if (infiniteEditorsWrapper) {
+                        infiniteEditors = Array.from(infiniteEditorsWrapper.querySelectorAll('.umb-editor') || []);
+                    }
+                }
+                function getFocusableElements(targetElm) {
+                    var elm = targetElm ? targetElm : target;
+                    focusableElements = elm.querySelectorAll(focusableElementsSelector);
+                    // Set first and last focusable elements
+                    firstFocusableElement = focusableElements[0];
+                    lastFocusableElement = focusableElements[focusableElements.length - 1];
+                }
+                function handleKeydown(event) {
+                    var isTabPressed = event.key === 'Tab' || event.keyCode === 9;
+                    if (!isTabPressed) {
+                        return;
+                    }
+                    // If shift + tab key
+                    if (event.shiftKey) {
+                        // Set focus on the last focusable element if shift+tab are pressed meaning we go backwards
+                        if (document.activeElement === firstFocusableElement) {
+                            lastFocusableElement.focus();
+                            event.preventDefault();
+                        }
+                    }    // Else only the tab key is pressed
+                    else {
+                        // Using only the tab key we set focus on the first focusable element mening we go forward
+                        if (document.activeElement === lastFocusableElement) {
+                            firstFocusableElement.focus();
+                            event.preventDefault();
+                        }
+                    }
+                }
+                function clearLastKnownFocusedElements() {
+                    $rootScope.lastKnownFocusableElements = [];
+                }
+                function setElementFocus() {
+                    var defaultFocusedElement = getAutoFocusElement(focusableElements);
+                    var lastKnownElement;
+                    // If an infinite editor is being closed then we reset the focus to the element that triggered the the overlay
+                    if (closingEditor) {
+                        // If there is only one editor open, search for the "editor-info" inside it and set focus on it
+                        // This is relevant when a property editor has been selected and the editor where we selected it from
+                        // is closed taking us back to the first layer
+                        // Otherwise set it to the last element in the lastKnownFocusedElements array
+                        if (infiniteEditors && infiniteEditors.length === 1) {
+                            var editorInfo = infiniteEditors[0].querySelector('.editor-info');
+                            if (infiniteEditors && infiniteEditors.length === 1 && editorInfo !== null) {
+                                lastKnownElement = editorInfo;
+                                // Clear the array
+                                clearLastKnownFocusedElements();
+                            }
+                        } else {
+                            var lastItemIndex = $rootScope.lastKnownFocusableElements.length - 1;
+                            lastKnownElement = $rootScope.lastKnownFocusableElements[lastItemIndex];
+                            // Remove the last item from the array so we always set the correct lastKnowFocus for each layer
+                            $rootScope.lastKnownFocusableElements.splice(lastItemIndex, 1);
+                        }
+                        // Update the lastknowelement variable here
+                        closingEditor = false;
+                    }
+                    // 1st - we check for any last known element - Usually the element the trigger the opening of a new layer
+                    // If it exists it will receive fous
+                    // 2nd - We check to see if a default focus has been set using the umb-auto-focus directive. If not we set focus on
+                    // the first focusable element
+                    // 3rd - Otherwise put the focus on the default focused element
+                    if (lastKnownElement) {
+                        lastKnownElement.focus();
+                    } else if (defaultFocusedElement === null) {
+                        firstFocusableElement.focus();
+                    } else {
+                        defaultFocusedElement.focus();
+                    }
+                }
+                function observeDomChanges() {
+                    // Watch for DOM changes - so we can refresh the focusable elements if an element
+                    // changes from being disabled to being enabled for instance
+                    var observer = new MutationObserver(_.debounce(domChange, 200));
+                    // Options for the observer (which mutations to observe)
+                    var config = {
+                        attributes: true,
+                        childList: true,
+                        subtree: true
+                    };
+                    // Whenever the DOM changes ensure the list of focused elements is updated
+                    function domChange() {
+                        getFocusableElements();
+                    }
+                    // Start observing the target node for configured mutations
+                    observer.observe(target, config);
+                    // Disconnect observer
+                    if (disconnectObserver) {
+                        observer.disconnect();
+                    }
+                }
+                function cleanupEventHandlers() {
+                    //if we're in infinite editing mode
+                    if (infiniteEditors.length > 0) {
+                        var activeEditor = infiniteEditors[infiniteEditors.length - 1];
+                        var inactiveEditors = infiniteEditors.filter(function (editor) {
+                            return editor !== activeEditor;
+                        });
+                        if (inactiveEditors.length > 0) {
+                            for (var index = 0; index < inactiveEditors.length; index++) {
+                                var inactiveEditor = inactiveEditors[index];
+                                // Remove event handlers from inactive editors
+                                inactiveEditor.removeEventListener('keydown', handleKeydown);
+                            }
+                        } else {
+                            // Why is this one only begin called if there is no other infinite editors, wouldn't it make sense always to clean this up?
+                            // Remove event handlers from the active editor
+                            activeEditor.removeEventListener('keydown', handleKeydown);
+                        }
+                    }
+                }
+                function onInit(targetElm) {
+                    $timeout(function () {
+                        // Fetch the DOM nodes we need
+                        getDomNodes();
+                        cleanupEventHandlers();
+                        getFocusableElements(targetElm);
+                        if (focusableElements.length > 0) {
+                            observeDomChanges();
+                            setElementFocus();
+                            //  Handle keydown
+                            target.addEventListener('keydown', handleKeydown);
+                        }
+                    });
+                }
+                scope.$on('$includeContentLoaded', function () {
+                    angularHelper.safeApply(scope, function () {
+                        onInit();
+                    });
+                });
+                // If more than one editor is still open then re-initialize otherwise remove the event listener
+                scope.$on('$destroy', function () {
+                    // Make sure to disconnect the observer so we potentially don't end up with having many active ones
+                    disconnectObserver = true;
+                    if (infiniteEditors && infiniteEditors.length > 1) {
+                        // Pass the correct editor in order to find the focusable elements
+                        var newTarget = infiniteEditors[infiniteEditors.length - 2];
+                        if (infiniteEditors.length > 1) {
+                            // Setting closing till true will let us re-apply the last known focus to then opened layer that then becomes
+                            // active
+                            closingEditor = true;
+                            onInit(newTarget);
+                            return;
+                        }
+                    }
+                    // Clear lastKnownFocusableElements
+                    clearLastKnownFocusedElements();
+                    // Cleanup event handler
+                    target.removeEventListener('keydown', handleKeydown);
+                });
             }
             var directive = {
                 restrict: 'A',
@@ -7192,6 +7352,7 @@ Use this directive to prevent default action of an element. Effectively implemen
         }
         angular.module('umbraco.directives').directive('umbFocusLock', FocusLock);
     }());
+    // TODO: Ensure the domObserver is NOT started when there is only one infinite overlay and it's being destroyed!
     'use strict';
     /**
 @ngdoc directive
@@ -7473,6 +7634,18 @@ will override element type to textarea and add own attribute ngModel tied to jso
         }
         angular.module('umbraco.directives').directive('umbSelectWhen', SelectWhen);
     }());
+    'use strict';
+    angular.module('umbraco.directives').directive('validWhen', function () {
+        return {
+            require: 'ngModel',
+            restrict: 'A',
+            link: function link(scope, element, attr, ngModel) {
+                attr.$observe('validWhen', function (newValue) {
+                    ngModel.$setValidity('validWhen', newValue === 'true');
+                });
+            }
+        };
+    });
     'use strict';
     angular.module('umbraco.directives').directive('gridRte', function (tinyMceService, angularHelper, assetsService, $q, $timeout, eventsService, tinyMceAssets) {
         return {
@@ -7861,31 +8034,38 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
 * @restrict E
 * @function
 **/
-    angular.module('umbraco.directives').directive('umbImageCrop', function ($timeout, cropperHelper) {
+    angular.module('umbraco.directives').directive('umbImageCrop', function ($timeout, $window, cropperHelper) {
+        var MAX_SCALE = 4;
         return {
             restrict: 'E',
             replace: true,
-            template: '<div class="umb-cropper umb-property-editor" ng-show="src"> <div class="crop-container"> <div class="viewport" ng-style="style()"> <img ng-src="{{src}}" ng-style="dimensions.image"> <div class="overlay" ng-style="dimensions.image"></div> </div> </div> <div class="crop-slider-wrapper" ng-if="loaded"> <i class="icon-picture" aria-hidden="true"></i> <div class="crop-slider"> <umb-range-slider ng-model="sliderValue" options="sliderOptions" on-setup="setup(slider)" on-slide="slide(values)" on-change="change(values)"> </umb-range-slider> </div> <i class="icon-picture" aria-hidden="true" style="font-size: 22px"></i> </div> </div> ',
+            transclude: true,
+            template: '<div class="umb-cropper umb-property-editor" ng-show="src"> <div class="crop-container"> <div class="viewport"> <img ng-src="{{src}}" ng-style="{ \'top\': dimensions.image.top + dimensions.margin.top, \'left\': dimensions.image.left + dimensions.margin.left, \'width\': dimensions.image.width, \'height\': dimensions.image.height }"> <div class="__mask" ng-style="maskStyle"> <div class="__mask-info">{{width}}px x {{height}}px</div> </div> <div class="overlay" tabindex="1"></div> </div> </div> <div class="crop-controls-wrapper" ng-if="loaded"> <div class="crop-slider-wrapper"> <i class="icon-picture crop-controls-wrapper__icon-left" aria-hidden="true"></i> <div class="crop-slider"> <umb-range-slider ng-model="sliderValue" options="sliderOptions" on-setup="setup(slider)" on-slide="slide(values)" on-change="change(values)"> </umb-range-slider> </div> <i class="icon-picture crop-controls-wrapper__icon-right" aria-hidden="true"></i> </div> <ng-transclude></ng-transclude> </div> </div> ',
             scope: {
                 src: '=',
                 width: '@',
                 height: '@',
                 crop: '=',
                 center: '=',
-                maxSize: '@'
+                maxSize: '@?',
+                alias: '@?',
+                forceUpdate: '@?'
             },
-            link: function link(scope, element, attrs) {
+            link: function link(scope, element, attrs, windowResizeListener) {
+                var unsubscribe = [];
                 var sliderRef = null;
-                scope.width = 400;
-                scope.height = 320;
+                scope.loaded = false;
+                scope.width = 0;
+                scope.height = 0;
                 scope.dimensions = {
+                    element: {},
                     image: {},
                     cropper: {},
                     viewport: {},
-                    margin: 20,
+                    margin: {},
                     scale: {
-                        min: 0,
-                        max: 3,
+                        min: 1,
+                        max: MAX_SCALE,
                         current: 1
                     }
                 };
@@ -7895,10 +8075,10 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                     'tooltips': [false],
                     'format': {
                         to: function to(value) {
-                            return parseFloat(parseFloat(value).toFixed(3));    //Math.round(value);
+                            return parseFloat(parseFloat(value).toFixed(3));
                         },
                         from: function from(value) {
-                            return parseFloat(parseFloat(value).toFixed(3));    //Math.round(value);
+                            return parseFloat(parseFloat(value).toFixed(3));
                         }
                     },
                     'range': {
@@ -7908,16 +8088,21 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                 };
                 scope.setup = function (slider) {
                     sliderRef = slider;
-                    // Set slider handle position
-                    sliderRef.noUiSlider.set(scope.dimensions.scale.current);
-                    // Update slider range min/max
-                    sliderRef.noUiSlider.updateOptions({
-                        'range': {
-                            'min': scope.dimensions.scale.min,
-                            'max': scope.dimensions.scale.max
-                        }
-                    });
+                    updateSlider();
                 };
+                function updateSlider() {
+                    if (sliderRef) {
+                        // Update slider range min/max
+                        sliderRef.noUiSlider.updateOptions({
+                            'range': {
+                                'min': scope.dimensions.scale.min,
+                                'max': scope.dimensions.scale.max
+                            }
+                        });
+                        // Set slider handle position
+                        sliderRef.noUiSlider.set(scope.dimensions.scale.current);
+                    }
+                }
                 scope.slide = function (values) {
                     if (values) {
                         scope.dimensions.scale.current = parseFloat(values);
@@ -7928,98 +8113,111 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                         scope.dimensions.scale.current = parseFloat(values);
                     }
                 };
+                function onScroll(event) {
+                    // cross-browser wheel delta
+                    var delta = Math.max(-50, Math.min(50, event.wheelDelta || -event.detail));
+                    if (sliderRef) {
+                        var currentScale = sliderRef.noUiSlider.get();
+                        var newScale = Math.min(Math.max(currentScale + delta * 0.001 * scope.dimensions.image.ratio, scope.dimensions.scale.min), scope.dimensions.scale.max);
+                        sliderRef.noUiSlider.set(newScale);
+                        scope.$evalAsync(function () {
+                            scope.dimensions.scale.current = newScale;
+                        });
+                        if (event.preventDefault) {
+                            event.preventDefault();
+                        }
+                    }
+                }
                 //live rendering of viewport and image styles
-                scope.style = function () {
-                    return {
-                        'height': parseInt(scope.dimensions.viewport.height, 10) + 'px',
-                        'width': parseInt(scope.dimensions.viewport.width, 10) + 'px'
+                function updateStyles() {
+                    scope.maskStyle = {
+                        'height': parseInt(scope.dimensions.cropper.height, 10) + 'px',
+                        'width': parseInt(scope.dimensions.cropper.width, 10) + 'px',
+                        'top': parseInt(scope.dimensions.margin.top, 10) + 'px',
+                        'left': parseInt(scope.dimensions.margin.left, 10) + 'px'
                     };
-                };
+                }
+                ;
+                updateStyles();
                 //elements
                 var $viewport = element.find('.viewport');
                 var $image = element.find('img');
                 var $overlay = element.find('.overlay');
-                var $container = element.find('.crop-container');
+                $overlay.bind('focus', function () {
+                    $overlay.bind('DOMMouseScroll mousewheel onmousewheel', onScroll);
+                });
+                $overlay.bind('blur', function () {
+                    $overlay.unbind('DOMMouseScroll mousewheel onmousewheel', onScroll);
+                });
                 //default constraints for drag n drop
                 var constraints = {
                     left: {
-                        max: scope.dimensions.margin,
-                        min: scope.dimensions.margin
+                        max: 0,
+                        min: 0
                     },
                     top: {
-                        max: scope.dimensions.margin,
-                        min: scope.dimensions.margin
+                        max: 0,
+                        min: 0
                     }
                 };
                 scope.constraints = constraints;
                 //set constaints for cropping drag and drop
                 var setConstraints = function setConstraints() {
-                    constraints.left.min = scope.dimensions.margin + scope.dimensions.cropper.width - scope.dimensions.image.width;
-                    constraints.top.min = scope.dimensions.margin + scope.dimensions.cropper.height - scope.dimensions.image.height;
+                    constraints.left.min = scope.dimensions.cropper.width - scope.dimensions.image.width;
+                    constraints.top.min = scope.dimensions.cropper.height - scope.dimensions.image.height;
                 };
-                var setDimensions = function setDimensions(originalImage) {
-                    originalImage.width('auto');
-                    originalImage.height('auto');
-                    var image = {};
-                    image.originalWidth = originalImage.width();
-                    image.originalHeight = originalImage.height();
-                    image.width = image.originalWidth;
-                    image.height = image.originalHeight;
-                    image.left = originalImage[0].offsetLeft;
-                    image.top = originalImage[0].offsetTop;
-                    scope.dimensions.image = image;
+                var setDimensions = function setDimensions() {
+                    scope.dimensions.image.width = scope.dimensions.image.originalWidth;
+                    scope.dimensions.image.height = scope.dimensions.image.originalHeight;
                     //unscaled editor size
-                    //var viewPortW =  $viewport.width();
-                    //var viewPortH =  $viewport.height();
-                    var _viewPortW = parseInt(scope.width, 10);
-                    var _viewPortH = parseInt(scope.height, 10);
-                    //if we set a constraint we will scale it down if needed
-                    if (scope.maxSize) {
-                        var ratioCalculation = cropperHelper.scaleToMaxSize(_viewPortW, _viewPortH, scope.maxSize);
-                        //so if we have a max size, override the thumb sizes
-                        _viewPortW = ratioCalculation.width;
-                        _viewPortH = ratioCalculation.height;
-                    }
-                    scope.dimensions.viewport.width = _viewPortW + 2 * scope.dimensions.margin;
-                    scope.dimensions.viewport.height = _viewPortH + 2 * scope.dimensions.margin;
-                    scope.dimensions.cropper.width = _viewPortW;
-                    // scope.dimensions.viewport.width - 2 * scope.dimensions.margin;
-                    scope.dimensions.cropper.height = _viewPortH;    //  scope.dimensions.viewport.height - 2 * scope.dimensions.margin;
+                    var _cropW = parseInt(scope.width, 10);
+                    var _cropH = parseInt(scope.height, 10);
+                    var ratioCalculation = cropperHelper.scaleToMaxSize(_cropW, _cropH, scope.dimensions.viewport.width - 40, scope.dimensions.viewport.height - 40);
+                    //so if we have a max size, override the thumb sizes
+                    _cropW = ratioCalculation.width;
+                    _cropH = ratioCalculation.height;
+                    // set margins:
+                    scope.dimensions.margin.left = (scope.dimensions.viewport.width - _cropW) * 0.5;
+                    scope.dimensions.margin.top = (scope.dimensions.viewport.height - _cropH) * 0.5;
+                    scope.dimensions.cropper.width = _cropW;
+                    scope.dimensions.cropper.height = _cropH;
+                    updateStyles();
                 };
                 //resize to a given ratio
                 var resizeImageToScale = function resizeImageToScale(ratio) {
-                    //do stuff
-                    var size = cropperHelper.calculateSizeToRatio(scope.dimensions.image.originalWidth, scope.dimensions.image.originalHeight, ratio);
-                    scope.dimensions.image.width = size.width;
-                    scope.dimensions.image.height = size.height;
+                    var prevWidth = scope.dimensions.image.width;
+                    var prevHeight = scope.dimensions.image.height;
+                    scope.dimensions.image.width = scope.dimensions.image.originalWidth * ratio;
+                    scope.dimensions.image.height = scope.dimensions.image.originalHeight * ratio;
+                    var difW = scope.dimensions.image.width - prevWidth;
+                    var difH = scope.dimensions.image.height - prevHeight;
+                    // normalized focus point:
+                    var focusNormX = (-scope.dimensions.image.left + scope.dimensions.cropper.width * 0.5) / prevWidth;
+                    var focusNormY = (-scope.dimensions.image.top + scope.dimensions.cropper.height * 0.5) / prevHeight;
+                    scope.dimensions.image.left = scope.dimensions.image.left - difW * focusNormX;
+                    scope.dimensions.image.top = scope.dimensions.image.top - difH * focusNormY;
                     setConstraints();
                     validatePosition(scope.dimensions.image.left, scope.dimensions.image.top);
                 };
                 //resize the image to a predefined crop coordinate
                 var resizeImageToCrop = function resizeImageToCrop() {
-                    scope.dimensions.image = cropperHelper.convertToStyle(scope.crop, {
+                    scope.dimensions.image = cropperHelper.convertToStyle(runtimeCrop, {
                         width: scope.dimensions.image.originalWidth,
                         height: scope.dimensions.image.originalHeight
-                    }, scope.dimensions.cropper, scope.dimensions.margin);
+                    }, scope.dimensions.cropper, 0);
                     var ratioCalculation = cropperHelper.calculateAspectRatioFit(scope.dimensions.image.originalWidth, scope.dimensions.image.originalHeight, scope.dimensions.cropper.width, scope.dimensions.cropper.height, true);
                     scope.dimensions.scale.current = scope.dimensions.image.ratio;
                     // Update min and max based on original width/height
+                    // Here we update the slider to use the scala of the current setup, i dont know why its made in this way but this is how it is.
                     scope.dimensions.scale.min = ratioCalculation.ratio;
-                    scope.dimensions.scale.max = 2;
+                    // TODO: Investigate wether we can limit users to not scale bigger than the amount of pixels in the source:
+                    //scope.dimensions.scale.max = ratioCalculation.ratio * Math.min(MAX_SCALE, scope.dimensions.image.originalWidth/scope.dimensions.cropper.width);
+                    scope.dimensions.scale.max = ratioCalculation.ratio * MAX_SCALE;
+                    updateSlider();
                 };
                 var validatePosition = function validatePosition(left, top) {
-                    if (left > constraints.left.max) {
-                        left = constraints.left.max;
-                    }
-                    if (left <= constraints.left.min) {
-                        left = constraints.left.min;
-                    }
-                    if (top > constraints.top.max) {
-                        top = constraints.top.max;
-                    }
-                    if (top <= constraints.top.min) {
-                        top = constraints.top.min;
-                    }
+                    left = Math.min(Math.max(left, constraints.left.min), constraints.left.max);
+                    top = Math.min(Math.max(top, constraints.top.min), constraints.top.max);
                     if (scope.dimensions.image.left !== left) {
                         scope.dimensions.image.left = left;
                     }
@@ -8028,30 +8226,46 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                     }
                 };
                 //sets scope.crop to the recalculated % based crop
-                var calculateCropBox = function calculateCropBox() {
-                    scope.crop = cropperHelper.pixelsToCoordinates(scope.dimensions.image, scope.dimensions.cropper.width, scope.dimensions.cropper.height, scope.dimensions.margin);
-                };
+                function calculateCropBox() {
+                    runtimeCrop = cropperHelper.pixelsToCoordinates(scope.dimensions.image, scope.dimensions.cropper.width, scope.dimensions.cropper.height, 0);
+                }
+                ;
+                function saveCropBox() {
+                    scope.crop = Utilities.copy(runtimeCrop);
+                }
                 //Drag and drop positioning, using jquery ui draggable
-                var onStartDragPosition, top, left;
+                //var onStartDragPosition, top, left;
+                var dragStartPosition = {};
                 $overlay.draggable({
+                    start: function start(event, ui) {
+                        dragStartPosition.left = scope.dimensions.image.left;
+                        dragStartPosition.top = scope.dimensions.image.top;
+                    },
                     drag: function drag(event, ui) {
                         scope.$apply(function () {
-                            validatePosition(ui.position.left, ui.position.top);
+                            validatePosition(dragStartPosition.left + (ui.position.left - ui.originalPosition.left), dragStartPosition.top + (ui.position.top - ui.originalPosition.top));
                         });
                     },
                     stop: function stop(event, ui) {
                         scope.$apply(function () {
                             //make sure that every validates one more time...
-                            validatePosition(ui.position.left, ui.position.top);
+                            validatePosition(dragStartPosition.left + (ui.position.left - ui.originalPosition.left), dragStartPosition.top + (ui.position.top - ui.originalPosition.top));
                             calculateCropBox();
-                            scope.dimensions.image.rnd = Math.random();
+                            saveCropBox();
                         });
                     }
                 });
-                var init = function init(image) {
-                    scope.loaded = false;
-                    //set dimensions on image, viewport, cropper etc
-                    setDimensions(image);
+                var runtimeCrop;
+                var init = function init() {
+                    // store original size:
+                    scope.dimensions.image.originalWidth = $image.width();
+                    scope.dimensions.image.originalHeight = $image.height();
+                    // runtime Crop, should not be saved until we have interactions:
+                    runtimeCrop = Utilities.copy(scope.crop);
+                    onViewportSizeChanged();
+                    scope.loaded = true;
+                };
+                function setCrop() {
                     //create a default crop if we haven't got one already
                     var createDefaultCrop = !scope.crop;
                     if (createDefaultCrop) {
@@ -8073,33 +8287,56 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                             resizeImageToCrop();
                         }
                     }
-                    //sets constaints for the cropper
+                }
+                function onViewportSizeChanged() {
+                    scope.dimensions.viewport.width = $viewport.width();
+                    scope.dimensions.viewport.height = $viewport.height();
+                    setDimensions();
+                    setCrop();
                     setConstraints();
-                    scope.loaded = true;
-                };
+                }
                 // Watchers
-                scope.$watchCollection('[width, height]', function (newValues, oldValues) {
+                unsubscribe.push(scope.$watchCollection('[width, height, alias, forceUpdate]', function (newValues, oldValues) {
                     // We have to reinit the whole thing if
                     // one of the external params changes
                     if (newValues !== oldValues) {
-                        setDimensions($image);
+                        runtimeCrop = Utilities.copy(scope.crop);
+                        setDimensions();
+                        setCrop();
                         setConstraints();
                     }
-                });
-                var throttledResizing = _.throttle(function () {
-                    resizeImageToScale(scope.dimensions.scale.current);
-                    calculateCropBox();
-                }, 15);
+                }));
+                var throttledScale = _.throttle(function () {
+                    return scope.$evalAsync(function () {
+                        resizeImageToScale(scope.dimensions.scale.current);
+                        calculateCropBox();
+                        saveCropBox();
+                    });
+                }, 16);
                 // Happens when we change the scale
-                scope.$watch('dimensions.scale.current', function (newValue, oldValue) {
+                unsubscribe.push(scope.$watch('dimensions.scale.current', function (newValue, oldValue) {
                     if (scope.loaded) {
-                        throttledResizing();
+                        throttledScale();
                     }
-                });
+                }));
                 // Init
+                //if we have a max-size we will use it, to keep this backwards compatible.
+                // I dont see this max size begin usefull, as we should aim for responsive UI.
+                if (scope.maxSize) {
+                    element.css('max-width', parseInt(scope.maxSize, 10) + 'px');
+                    element.css('max-height', parseInt(scope.maxSize, 10) + 'px');
+                }
                 $image.on('load', function () {
                     $timeout(function () {
-                        init($image);
+                        init();
+                    });
+                });
+                windowResizeListener.register(onViewportSizeChanged);
+                scope.$on('$destroy', function () {
+                    $image.prop('src', '');
+                    windowResizeListener.unregister(onViewportSizeChanged);
+                    unsubscribe.forEach(function (u) {
+                        return u();
                     });
                 });
             }
@@ -8117,9 +8354,9 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                 left: 0,
                 top: 0
             };
-            var htmlImage = null;
+            var imageElement = null;
             //DOM element reference
-            var htmlOverlay = null;
+            var focalPointElement = null;
             //DOM element reference
             var draggable = null;
             vm.loaded = false;
@@ -8127,27 +8364,29 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
             vm.$onChanges = onChanges;
             vm.$postLink = postLink;
             vm.$onDestroy = onDestroy;
-            vm.style = style;
+            vm.style = {};
+            vm.overlayStyle = {};
             vm.setFocalPoint = setFocalPoint;
             /** Sets the css style for the Dot */
-            function style() {
-                if (vm.dimensions.width <= 0 || vm.dimensions.height <= 0) {
-                    //this initializes the dimensions since when the image element first loads
-                    //there will be zero dimensions
-                    setDimensions();
-                }
-                return {
+            function updateStyle() {
+                vm.style = {
                     'top': vm.dimensions.top + 'px',
                     'left': vm.dimensions.left + 'px'
+                };
+                vm.overlayStyle = {
+                    'width': vm.dimensions.width + 'px',
+                    'height': vm.dimensions.height + 'px'
                 };
             }
             ;
             function setFocalPoint(event) {
                 $scope.$emit('imageFocalPointStart');
-                var offsetX = event.offsetX - 10;
-                var offsetY = event.offsetY - 10;
+                // We do this to get the right position, no matter the focalPoint was clicked.
+                var viewportPosition = imageElement[0].getBoundingClientRect();
+                var offsetX = event.clientX - viewportPosition.left;
+                var offsetY = event.clientY - viewportPosition.top;
                 calculateGravity(offsetX, offsetY);
-                lazyEndEvent();
+                $scope.$emit('imageFocalPointStop');
             }
             ;
             /** Initializes the component */
@@ -8162,36 +8401,29 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
             /** Called when the component has linked everything and the DOM is available */
             function postLink() {
                 //elements
-                htmlImage = $element.find('img');
-                htmlOverlay = $element.find('.overlay');
+                imageElement = $element.find('img');
+                focalPointElement = $element.find('.focalPoint');
                 //Drag and drop positioning, using jquery ui draggable
-                draggable = htmlOverlay.draggable({
+                draggable = focalPointElement.draggable({
                     containment: 'parent',
                     start: function start() {
-                        $scope.$apply(function () {
-                            $scope.$emit('imageFocalPointStart');
-                        });
+                        $scope.$emit('imageFocalPointStart');
                     },
-                    stop: function stop() {
-                        $scope.$apply(function () {
-                            var offsetX = htmlOverlay[0].offsetLeft;
-                            var offsetY = htmlOverlay[0].offsetTop;
-                            calculateGravity(offsetX, offsetY);
-                        });
-                        lazyEndEvent();
+                    stop: function stop(event, ui) {
+                        var offsetX = ui.position.left;
+                        var offsetY = ui.position.top;
+                        $scope.$evalAsync(calculateGravity(offsetX, offsetY));
+                        $scope.$emit('imageFocalPointStop');
                     }
                 });
-                $(window).on('resize.umbImageGravity', function () {
-                    $scope.$apply(function () {
-                        resized();
-                    });
-                });
+                window.addEventListener('resize.umbImageGravity', onResizeHandler);
+                window.addEventListener('resize', onResizeHandler);
                 //if any ancestor directive emits this event, we need to resize
                 $scope.$on('editors.content.splitViewChanged', function () {
                     $timeout(resized, 200);
                 });
                 //listen for the image DOM element loading
-                htmlImage.on('load', function () {
+                imageElement.on('load', function () {
                     $timeout(function () {
                         vm.isCroppable = true;
                         vm.hasDimensions = true;
@@ -8209,6 +8441,7 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                             }
                         }
                         setDimensions();
+                        updateStyle();
                         vm.loaded = true;
                         if (vm.onImageLoaded) {
                             vm.onImageLoaded({
@@ -8220,40 +8453,54 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                 });
             }
             function onDestroy() {
-                $(window).off('resize.umbImageGravity');
-                if (htmlOverlay) {
-                }
-                if (htmlImage) {
-                    htmlImage.off('load');
+                window.removeEventListener('resize.umbImageGravity', onResizeHandler);
+                window.removeEventListener('resize', onResizeHandler);
+                /*
+      if (focalPointElement) {
+          // TODO: This should be destroyed but this will throw an exception:
+          // "cannot call methods on draggable prior to initialization; attempted to call method 'destroy'"
+          // I've tried lots of things and cannot get this to work, we weren't destroying before so hopefully
+          // there's no mem leaks?
+          focalPointElement.draggable("destroy");
+      }
+      */
+                if (imageElement) {
+                    imageElement.off('load');
                 }
             }
             /** Called when we need to resize based on window or DOM dimensions to re-center the focal point */
             function resized() {
                 $timeout(function () {
                     setDimensions();
-                });
-                // Make sure we can find the offset values for the overlay(dot) before calculating
-                // fixes issue with resize event when printing the page (ex. hitting ctrl+p inside the rte)
-                if (htmlOverlay.is(':visible')) {
-                    var offsetX = htmlOverlay[0].offsetLeft;
-                    var offsetY = htmlOverlay[0].offsetTop;
-                    calculateGravity(offsetX, offsetY);
-                }
+                    updateStyle();
+                });    /*
+      // Make sure we can find the offset values for the overlay(dot) before calculating
+      // fixes issue with resize event when printing the page (ex. hitting ctrl+p inside the rte)
+      if (focalPointElement.is(':visible')) {
+          var offsetX = focalPointElement[0].offsetLeft;
+          var offsetY = focalPointElement[0].offsetTop;
+          calculateGravity(offsetX, offsetY);
+      }
+      */
+            }
+            function onResizeHandler() {
+                $scope.$evalAsync(resized);
             }
             /** Watches the one way binding changes */
             function onChanges(changes) {
                 if (changes.center && !changes.center.isFirstChange() && changes.center.currentValue && !Utilities.equals(changes.center.currentValue, changes.center.previousValue)) {
                     //when center changes update the dimensions
                     setDimensions();
+                    updateStyle();
                 }
             }
             /** Sets the width/height/left/top dimentions based on the image size and the "center" value */
             function setDimensions() {
-                if (vm.isCroppable && htmlImage && vm.center) {
-                    vm.dimensions.width = htmlImage.width();
-                    vm.dimensions.height = htmlImage.height();
-                    vm.dimensions.left = vm.center.left * vm.dimensions.width - 10;
-                    vm.dimensions.top = vm.center.top * vm.dimensions.height - 10;
+                if (vm.isCroppable && imageElement && vm.center) {
+                    vm.dimensions.width = imageElement.width();
+                    vm.dimensions.height = imageElement.height();
+                    vm.dimensions.left = vm.center.left * vm.dimensions.width;
+                    vm.dimensions.top = vm.center.top * vm.dimensions.height;
                 }
                 return vm.dimensions.width;
             }
@@ -8265,25 +8512,20 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
      */
             function calculateGravity(offsetX, offsetY) {
                 vm.onValueChanged({
-                    left: (offsetX + 10) / vm.dimensions.width,
-                    top: (offsetY + 10) / vm.dimensions.height
-                });    //vm.center.left = (offsetX + 10) / scope.dimensions.width;
-                       //vm.center.top = (offsetY + 10) / scope.dimensions.height;
+                    left: Math.min(Math.max(offsetX, 0), vm.dimensions.width) / vm.dimensions.width,
+                    top: Math.min(Math.max(offsetY, 0), vm.dimensions.height) / vm.dimensions.height
+                });
             }
             ;
-            var lazyEndEvent = _.debounce(function () {
-                $scope.$apply(function () {
-                    $scope.$emit('imageFocalPointStop');
-                });
-            }, 2000);
         }
         var umbImageGravityComponent = {
-            template: '<div class="umb-cropper-gravity"> <div class="gravity-container" ng-show="vm.loaded"> <div class="viewport"> <img ng-show="vm.isCroppable" ng-src="{{vm.src}}" style="max-width: 100%; max-height: 100%" ng-click="vm.setFocalPoint($event)" draggable="false"> <img ng-show="!vm.isCroppable && !vm.hasDimensions" ng-src="{{vm.src}}" width="200" height="200" draggable="false" style="cursor: default;"> <div ng-show="vm.isCroppable" class="overlay" ng-style="vm.style()"> </div> </div> </div> </div> ',
+            template: '<div class="umb-cropper-gravity"> <div class="gravity-container" ng-show="vm.loaded"> <div class="viewport"> <img ng-show="vm.isCroppable" ng-src="{{vm.src}}" draggable="false"> <img ng-show="!vm.isCroppable && !vm.hasDimensions" ng-src="{{vm.src}}" width="200" height="200" draggable="false" style="cursor: default;"> </div> <div class="overlayViewport"> <div ng-show="vm.isCroppable && vm.disableFocalPoint !== true" class="overlay umb-outline" ng-style="vm.overlayStyle" ng-click="vm.setFocalPoint($event)"> <div class="focalPoint" ng-style="vm.style"> </div> </div> </div> </div> </div> ',
             bindings: {
                 src: '<',
                 center: '<',
                 onImageLoaded: '&?',
-                onValueChanged: '&'
+                onValueChanged: '&',
+                disableFocalPoint: '<?'
             },
             controllerAs: 'vm',
             controller: umbImageGravityController
@@ -9256,6 +9498,11 @@ Opens an overlay to show a custom YSOD. </br>
         function UmbPropertyController($scope, userService, serverValidationManager, udiService, angularHelper) {
             var vm = this;
             vm.$onInit = onInit;
+            vm.setDirty = function () {
+                // NOTE: We need to use scope because we haven't changd it to vm.propertyForm in the html and that
+                // might mean a breaking change.
+                $scope.propertyForm.$setDirty();
+            };
             vm.setPropertyError = function (errorMsg) {
                 vm.property.propertyErrorMessage = errorMsg;
             };
@@ -9935,7 +10182,7 @@ Use this directive to render a tabs navigation.
             restrict: 'E',
             replace: true,
             terminal: false,
-            template: '<ul class="umb-tree" ng-class="{\'hide-options\': hideoptions === \'true\'}"> <li ng-if="!tree.root.containsGroups"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(tree.root)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(tree.root, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(tree.root, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <umb-icon icon="icon-check" class="umb-tree-icon icon-check" ng-class="selectEnabledNodeClass(tree.root)" ng-if="enablecheckboxes === \'true\'"> </umb-icon> {{tree.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(tree.root, $event)" text="Open context node for {{tree.name}}" state="hidden" class="umb-options" ng-hide="tree.root.isContainer || !tree.root.menuUrl" ng-swipe-right="options(tree.root, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in tree.root.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  <li ng-if="tree.root.containsGroups" ng-repeat="group in tree.root.children"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(group)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(group, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(group, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <umb-icon icon="icon-check" class="umb-tree-icon icon-check" ng-class="selectEnabledNodeClass(group)" ng-if="enablecheckboxes === \'true\'"> </umb-icon> {{group.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(group, $event)" text="Open context node for {{group.name}}" state="hidden" class="umb-options" ng-hide="group.isContainer || !group.menuUrl" ng-swipe-right="options(group, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in group.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  </ul> ',
+            template: '<ul class="umb-tree" ng-class="{\'hide-options\': hideoptions === \'true\'}"> <li ng-if="!tree.root.containsGroups"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(tree.root)" ng-if="hideheader !== \'true\'" on-right-click="altSelect(tree.root, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(tree.root, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <umb-icon icon="icon-check" class="umb-tree-icon icon-check" ng-class="selectEnabledNodeClass(tree.root)" ng-if="enablecheckboxes === \'true\'"> </umb-icon> {{tree.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(tree.root, $event)" text="Open context node for {{tree.name}}" state="hidden" class="umb-options" ng-hide="tree.root.isContainer || !tree.root.menuUrl" ng-swipe-right="options(tree.root, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in tree.root.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  <li ng-if="tree.root.containsGroups" ng-repeat="group in tree.root.children"> <div class="umb-tree-root" data-element="tree-root" ng-class="getNodeCssClass(group)" ng-hide="hideheader === \'true\'" on-right-click="altSelect(group, $event)"> <h5> <a ng-href="#/{{section}}" ng-click="select(group, $event)" class="umb-tree-root-link umb-outline" data-element="tree-root-link"> <umb-icon icon="icon-check" class="umb-tree-icon icon-check" ng-class="selectEnabledNodeClass(group)" ng-if="enablecheckboxes === \'true\'"> </umb-icon> {{group.name}} </a> </h5> <umb-button-ellipsis element="tree-item-options" action="options(group, $event)" text="Open context node for {{group.name}}" state="hidden" class="umb-options" ng-hide="group.isContainer || !group.menuUrl" ng-swipe-right="options(group, $event)"> </umb-button-ellipsis> </div> <umb-tree-item class="umb-animated" ng-repeat="child in group.children" enablelistviewexpand="{{enablelistviewexpand}}" node="child" current-node="currentNode" tree="this" is-dialog="isdialog" section="{{section}}"> </umb-tree-item> </li>  </ul> ',
             scope: {
                 section: '@',
                 treealias: '@',
@@ -14838,6 +15085,9 @@ Use this directive to generate a thumbnail grid of media items.
                     }
                 }
                 scope.clickItem = function (item, $event, $index) {
+                    if (item.isFolder === true && item.filtered) {
+                        scope.clickItemName(item, $event, $index);
+                    }
                     if (scope.onClick) {
                         scope.onClick(item, $event, $index);
                         $event.stopPropagation();
@@ -14884,7 +15134,7 @@ Use this directive to generate a thumbnail grid of media items.
                     }
                     scope.sortDirection = scope.sortReverse ? 'desc' : 'asc';
                 };
-                // sort function          
+                // sort function
                 scope.sortBy = function (item) {
                     if (scope.sortColumn === 'updateDate') {
                         return [
@@ -14902,7 +15152,7 @@ Use this directive to generate a thumbnail grid of media items.
             var directive = {
                 restrict: 'E',
                 replace: true,
-                template: '<div class="media-list-grid"> <div data-element="media-grid" class="umb-media-grid" ng-show="!showMediaList"> <div data-element="media-grid-item-{{$index}}" class="umb-media-grid__item umb-outline umb-outline--surrounding" title="{{item.name}}" ng-click="clickItem(item, $event, $index)" ng-repeat="item in items | filter:filterBy" ng-style="item.flexStyle" ng-class="{\'-selected\': item.selected, \'-file\': !item.thumbnail, \'-folder\': item.isFolder, \'-svg\': item.extension == \'svg\', \'-selectable\': item.selectable, \'-unselectable\': !item.selectable}"> <div>  <div data-element="media-grid-item-edit" class="umb-media-grid__item-overlay umb-outline" ng-class="{\'-locked\': item.selected || !item.file || !item.thumbnail, \'-can-open\': (item.isFolder ? allowOpenFolder : allowOpenFile)}" ng-click="clickItemName(item, $event, $index)" tabindex="{{item.isFolder && item.selectable ? \'0\' : \'-1\'}}"> <i ng-if="onDetailsHover" class="icon-info umb-media-grid__info" ng-mouseover="hoverItemDetails(item, $event, true)" ng-mouseleave="hoverItemDetails(item, $event, false)"></i> <div class="umb-media-grid__item-name">{{item.name}}</div> </div>  <div class="umb-media-grid__image-background" ng-if="item.thumbnail || item.extension === \'svg\'"></div>  <img umb-image-lazy-load="{{item.thumbnail}}" class="umb-media-grid__item-image" width="{{item.width}}" height="{{item.height}}" ng-if="item.thumbnail" alt="{{item.name}}" draggable="false">  <img class="umb-media-grid__item-image" width="{{item.width}}" height="{{item.height}}" ng-if="!item.thumbnail && item.extension === \'svg\'" ng-src="{{item.image}}" alt="{{item.name}}" draggable="false">  <img class="umb-media-grid__item-image-placeholder" ng-if="!item.thumbnail && item.extension !== \'svg\'" src="assets/img/transparent.png" alt="{{item.name}}" draggable="false">  <umb-file-icon ng-if="!item.thumbnail && item.extension !== \'svg\'" class="umb-media-grid__item-file-icon" extension="{{item.extension}}" icon="{{item.icon}}" size="s"> </umb-file-icon> </div> </div> </div>  <div class="umb-media-grid__list-view" ng-show="showMediaList"> <div class="umb-table umb-table--condensed"> <div class="umb-table-head"> <div class="umb-table-row"> <div class="umb-table-cell"> <input class="umb-table__input" type="checkbox" ng-show="vm.allowSelectAll" ng-click="vm.selectAll($event)" ng-checked="vm.isSelectedAll()"> </div> <div class="umb-table-cell umb-table__name"> <button type="button" class="umb-table-head__link sortable" ng-click="setSort(\'name\')" prevent-default> <localize key="general_name">Name</localize> <i class="umb-table-head__icon icon" aria-hidden="true" ng-class="{\'icon-navigation-up\': isSortDirection(\'name\', \'asc\'), \'icon-navigation-down\': isSortDirection(\'name\', \'desc\')}"></i> </button> </div> <div class="umb-table-cell"> <button type="button" class="umb-table-head__link sortable" ng-click="setSort(\'updateDate\')" prevent-default> Last Updated <i class="umb-table-head__icon icon" aria-hidden="true" ng-class="{\'icon-navigation-up\': isSortDirection(\'updateDate\', \'asc\'), \'icon-navigation-down\': isSortDirection(\'updateDate\', \'desc\')}"></i> </button> </div> </div> </div> <div class="umb-table-body"> <div class="umb-table-row umb-media-grid__list-item -selectable" ng-click="clickItem(item, $event, $index)" ng-repeat="item in items | filter:filterBy | orderBy:sortBy:sortReverse" ng-class="{\'-selected\': item.selected}"> <div class="umb-table-cell"> <i ng-show="item.selected" class="umb-table-body__icon umb-table-body__checkicon icon-check" aria-hidden="true"></i> <i class="{{item.icon}}" aria-hidden="true" ng-if="!item.thumbnail && item.extension != \'svg\' && !item.selected"></i><i class="icon-picture" aria-hidden="true" ng-if="item.thumbnail && !item.selected"></i> </div> <div class="umb-table-cell umb-table__name"> <ins ng-show="item.isFolder" ng-class="{\'-locked\': item.selected || !item.file || !item.thumbnail}" ng-click="clickItemName(item, $event, $index)" class="icon-navigation-right"></ins> <span data-src="{{item.value.src}}" class="item-name">{{item.name}}</span> </div> <div class="umb-table-cell"> <span class="muted small" style="font-size:0.8em">{{item.updateDate | date:\'medium\'}}</span> </div> </div> </div> </div> </div> </div> ',
+                template: '<div class="media-list-grid"> <div data-element="media-grid" class="umb-media-grid" ng-show="!showMediaList"> <div data-element="media-grid-item-{{$index}}" class="umb-media-grid__item umb-outline umb-outline--surrounding" title="{{item.name}}" ng-click="clickItem(item, $event, $index)" ng-repeat="item in items | filter:filterBy" ng-style="item.flexStyle" ng-class="{\'-selected\': item.selected, \'-file\': !item.thumbnail, \'-folder\': item.isFolder, \'-svg\': item.extension == \'svg\', \'-selectable\': item.selectable, \'-unselectable\': !item.selectable, \'-filtered\': item.filtered}">  <div data-element="media-grid-item-edit" class="umb-media-grid__item-overlay umb-outline" ng-class="{\'-locked\': item.selected || !item.file || !item.thumbnail, \'-can-open\': (item.isFolder ? allowOpenFolder : allowOpenFile)}" ng-click="clickItemName(item, $event, $index)" tabindex="{{item.isFolder && item.selectable ? \'0\' : \'-1\'}}"> <i ng-if="onDetailsHover" class="icon-info umb-media-grid__info" ng-mouseover="hoverItemDetails(item, $event, true)" ng-mouseleave="hoverItemDetails(item, $event, false)"></i> <div class="umb-media-grid__item-name">{{item.name}}</div> </div>  <div class="umb-media-grid__item-select"></div>  <div class="umb-media-grid__image-background" ng-if="item.thumbnail || item.extension === \'svg\'"></div>  <img umb-image-lazy-load="{{item.thumbnail}}" class="umb-media-grid__item-image" width="{{item.width}}" height="{{item.height}}" ng-if="item.thumbnail" alt="{{item.name}}" draggable="false">  <img class="umb-media-grid__item-image" width="{{item.width}}" height="{{item.height}}" ng-if="!item.thumbnail && item.extension === \'svg\'" ng-src="{{item.image}}" alt="{{item.name}}" draggable="false">  <img class="umb-media-grid__item-image-placeholder" ng-if="!item.thumbnail && item.extension !== \'svg\'" src="assets/img/transparent.png" alt="{{item.name}}" draggable="false">  <umb-file-icon ng-if="!item.thumbnail && item.extension !== \'svg\'" class="umb-media-grid__item-file-icon" extension="{{item.extension}}" icon="{{item.icon}}" size="s"> </umb-file-icon> </div> </div>  <div class="umb-media-grid__list-view" ng-show="showMediaList"> <div class="umb-table umb-table--condensed"> <div class="umb-table-head"> <div class="umb-table-row"> <div class="umb-table-cell"> <input class="umb-table__input" type="checkbox" ng-show="vm.allowSelectAll" ng-click="vm.selectAll($event)" ng-checked="vm.isSelectedAll()"> </div> <div class="umb-table-cell umb-table__name"> <button type="button" class="umb-table-head__link sortable" ng-click="setSort(\'name\')" prevent-default> <localize key="general_name">Name</localize> <i class="umb-table-head__icon icon" aria-hidden="true" ng-class="{\'icon-navigation-up\': isSortDirection(\'name\', \'asc\'), \'icon-navigation-down\': isSortDirection(\'name\', \'desc\')}"></i> </button> </div> <div class="umb-table-cell"> <button type="button" class="umb-table-head__link sortable" ng-click="setSort(\'updateDate\')" prevent-default> Last Updated <i class="umb-table-head__icon icon" aria-hidden="true" ng-class="{\'icon-navigation-up\': isSortDirection(\'updateDate\', \'asc\'), \'icon-navigation-down\': isSortDirection(\'updateDate\', \'desc\')}"></i> </button> </div> </div> </div> <div class="umb-table-body"> <div class="umb-table-row umb-media-grid__list-item -selectable" ng-click="clickItem(item, $event, $index)" ng-repeat="item in items | filter:filterBy | orderBy:sortBy:sortReverse" ng-class="{\'-selected\': item.selected}"> <div class="umb-table-cell"> <i ng-show="item.selected" class="umb-table-body__icon umb-table-body__checkicon icon-check" aria-hidden="true"></i> <i class="{{item.icon}}" aria-hidden="true" ng-if="!item.thumbnail && item.extension != \'svg\' && !item.selected"></i><i class="icon-picture" aria-hidden="true" ng-if="item.thumbnail && !item.selected"></i> </div> <div class="umb-table-cell umb-table__name"> <ins ng-show="item.isFolder" ng-class="{\'-locked\': item.selected || !item.file || !item.thumbnail}" ng-click="clickItemName(item, $event, $index)" class="icon-navigation-right"></ins> <span data-src="{{item.value.src}}" class="item-name">{{item.name}}</span> </div> <div class="umb-table-cell"> <span class="muted small" style="font-size:0.8em">{{item.updateDate | date:\'medium\'}}</span> </div> </div> </div> </div> </div> </div> ',
                 scope: {
                     items: '=',
                     onDetailsHover: '=',
@@ -14972,6 +15222,9 @@ Use this directive to generate a thumbnail grid of media items.
                     // start loading animation list view
                     miniListView.loading = true;
                     entityResource.getPagedChildren(miniListView.node.id, scope.entityType, miniListView.pagination).then(function (data) {
+                        if (!data.items) {
+                            data.items = [];
+                        }
                         if (scope.onItemsLoaded) {
                             scope.onItemsLoaded({ items: data.items });
                         }
@@ -15095,7 +15348,7 @@ Use this directive to generate a thumbnail grid of media items.
             var directive = {
                 restrict: 'E',
                 replace: true,
-                template: '<div class="umb-minilistview"> <div class="umb-mini-list-view umb-animated" ng-class="{\'umb-mini-list-view--forward\': listViewAnimation === \'in\', \'umb-mini-list-view--backwards\': listViewAnimation === \'out\'}" ng-repeat="miniListView in miniListViews"> <div class="umb-mini-list-view__title"> <i class="umb-mini-list-view__title-icon {{ miniListView.node.icon }}" aria-hidden="true"></i> <h4 class="umb-mini-list-view__title-text">{{ miniListView.node.name }}</h4> </div> <div class="umb-mini-list-view__breadcrumb"> <button type="button" ng-if="showBackButton()" class="btn-reset umb-mini-list-view__back" ng-click="exitMiniListView()"> <i class="icon-arrow-left umb-mini-list-view__back-icon" aria-hidden="true"></i> <span class="umb-mini-list-view__back-text"><localize key="general_back">Back</localize></span> / </button> <umb-breadcrumbs ng-if="breadcrumb && breadcrumb.length > 0" ancestors="breadcrumb" entity-type="content" on-open="clickBreadcrumb(ancestor)"> </umb-breadcrumbs> </div> <div class="umb-table umb-table--condensed">  <div class="umb-table-head"> <div class="umb-table-row"> <div class="umb-table-cell no-display"></div> <div class="umb-table-cell umb-table-cell-padding"> <form class="form-search -no-margin-bottom" novalidate> <div class="inner-addon left-addon"> <i class="icon icon-search" aria-hidden="true"></i> <input class="form-control search-input" type="text" localize="placeholder" placeholder="@general_typeToSearch" ng-model="search" ng-change="searchMiniListView(search, miniListView)" prevent-enter-submit umb-auto-focus no-dirty-check> </div> </form> </div> </div> </div>  <div class="umb-table-body">  <div class="umb-table__loading-overlay" ng-if="miniListView.loading && miniListView.children.length > 0"> <umb-load-indicator></umb-load-indicator> </div>  <div class="umb-table-row cursor-pointer umb-outline" ng-repeat="child in miniListView.children" ng-click="selectNode(child)" ng-class="{\'-selected\':child.selected, \'not-allowed\':!child.allowed}"> <div class="umb-table-cell umb-table-cell--auto-width" ng-class="{\'umb-table-cell--faded\':child.published === false}"> <div class="flex items-center"> <umb-icon icon="icon-navigation-right" class="icon-navigation-right umb-table__row-expand" ng-click="openNode($event, child)" ng-class="{\'umb-table__row-expand--hidden\': child.metaData.hasChildren !== true}">&nbsp;</umb-icon> <umb-icon icon="{{child.icon}}" class="umb-table-body__icon umb-table-body__fileicon {{child.icon}}"></umb-icon> <umb-icon icon="icon-check" class="umb-table-body__icon umb-table-body__checkicon icon-check"></umb-icon> </div> </div> <div class="umb-table-cell black" ng-class="{\'umb-table-cell--faded\':child.published === false}">{{ child.name }}</div> </div>  <div ng-if="!miniListView.loading && !miniListView.children" class="umb-table-row umb-table-row--empty"> <span ng-if="search === \'\'"><localize key="general_noItemsInList">No items have been added</localize></span> <span ng-if="search !== \'\'"><localize key="general_searchNoResult">Sorry, we can not find what you are looking for.</localize></span> </div>  <div ng-if="miniListView.loading && !miniListView.children" class="umb-table-row umb-table-row--empty"> <umb-load-indicator></umb-load-indicator> </div> </div> </div> <div class="flex justify-center"> <umb-pagination ng-if="miniListView.pagination.totalPages > 0 && !miniListView.loading" page-number="miniListView.pagination.pageNumber" total-pages="miniListView.pagination.totalPages" on-change="goToPage(pageNumber, miniListView)"> </umb-pagination> </div> </div> </div> ',
+                template: '<div class="umb-minilistview"> <div class="umb-mini-list-view umb-animated" ng-class="{\'umb-mini-list-view--forward\': listViewAnimation === \'in\', \'umb-mini-list-view--backwards\': listViewAnimation === \'out\'}" ng-repeat="miniListView in miniListViews"> <div class="umb-mini-list-view__title"> <i class="umb-mini-list-view__title-icon {{ miniListView.node.icon }}" aria-hidden="true"></i> <h4 class="umb-mini-list-view__title-text">{{ miniListView.node.name }}</h4> </div> <div class="umb-mini-list-view__breadcrumb"> <button type="button" ng-if="showBackButton()" class="btn-reset umb-mini-list-view__back" ng-click="exitMiniListView()"> <i class="icon-arrow-left umb-mini-list-view__back-icon" aria-hidden="true"></i> <span class="umb-mini-list-view__back-text"><localize key="general_back">Back</localize></span> / </button> <umb-breadcrumbs ng-if="breadcrumb && breadcrumb.length > 0" ancestors="breadcrumb" entity-type="content" on-open="clickBreadcrumb(ancestor)"> </umb-breadcrumbs> </div> <div class="umb-table umb-table--condensed">  <div class="umb-table-head"> <div class="umb-table-row"> <div class="umb-table-cell no-display"></div> <div class="umb-table-cell umb-table-cell-padding"> <form class="form-search -no-margin-bottom" novalidate> <div class="inner-addon left-addon"> <i class="icon icon-search" aria-hidden="true"></i> <input class="form-control search-input" type="text" localize="placeholder" placeholder="@general_typeToSearch" ng-model="search" ng-change="searchMiniListView(search, miniListView)" prevent-enter-submit umb-auto-focus no-dirty-check> </div> </form> </div> </div> </div>  <div class="umb-table-body">  <div class="umb-table__loading-overlay" ng-if="miniListView.loading && miniListView.children.length > 0"> <umb-load-indicator></umb-load-indicator> </div>  <div class="umb-table-row cursor-pointer umb-outline" ng-repeat="child in miniListView.children" ng-click="selectNode(child)" ng-class="{\'-selected\':child.selected, \'not-allowed\':!child.allowed}"> <div class="umb-table-cell umb-table-cell--auto-width" ng-class="{\'umb-table-cell--faded\':child.published === false}"> <div class="flex items-center"> <umb-icon icon="icon-navigation-right" class="icon-navigation-right umb-table__row-expand" ng-click="openNode($event, child)" ng-class="{\'umb-table__row-expand--hidden\': child.metaData.hasChildren !== true}">&nbsp;</umb-icon> <umb-icon icon="{{child.icon}}" class="umb-table-body__icon umb-table-body__fileicon {{child.icon}}"></umb-icon> <umb-icon icon="icon-check" class="umb-table-body__icon umb-table-body__checkicon icon-check"></umb-icon> </div> </div> <div class="umb-table-cell black" ng-class="{\'umb-table-cell--faded\':child.published === false}">{{ child.name }}</div> </div>  <div ng-if="!miniListView.loading && miniListView.children.length === 0" class="umb-table-row umb-table-row--empty"> <span ng-if="search === \'\'"><localize key="general_noItemsInList">No items have been added</localize></span> <span ng-if="search !== \'\'"><localize key="general_searchNoResult">Sorry, we can not find what you are looking for.</localize></span> </div>  <div ng-if="miniListView.loading && miniListView.children.length === 0" class="umb-table-row umb-table-row--empty"> <umb-load-indicator></umb-load-indicator> </div> </div> </div> <div class="flex justify-center"> <umb-pagination ng-if="miniListView.pagination.totalPages > 0 && !miniListView.loading" page-number="miniListView.pagination.pageNumber" total-pages="miniListView.pagination.totalPages" on-change="goToPage(pageNumber, miniListView)"> </umb-pagination> </div> </div> </div> ',
                 scope: {
                     node: '=',
                     entityType: '@',
@@ -16448,7 +16701,7 @@ TODO
     }
 })
 */
-    angular.module('umbraco.directives').directive('umbFileDropzone', function ($timeout, Upload, localizationService, umbRequestHelper, overlayService) {
+    angular.module('umbraco.directives').directive('umbFileDropzone', function ($timeout, Upload, localizationService, umbRequestHelper, overlayService, mediaHelper, mediaTypeHelper) {
         return {
             restrict: 'E',
             replace: true,
@@ -16505,19 +16758,10 @@ TODO
                             });
                             scope.queue = [];
                         }
-                        // One allowed type
-                        if (scope.acceptedMediatypes && scope.acceptedMediatypes.length === 1) {
-                            // Standard setup - set alias to auto select to let the server best decide which media type to use
-                            if (scope.acceptedMediatypes[0].alias === 'Image') {
-                                scope.contentTypeAlias = 'umbracoAutoSelect';
-                            } else {
-                                scope.contentTypeAlias = scope.acceptedMediatypes[0].alias;
-                            }
+                        // If we have Accepted Media Types, we will ask to choose Media Type, if Choose Media Type returns false, it only had one choice and therefor no reason to
+                        if (scope.acceptedMediatypes && _requestChooseMediaTypeDialog() === false) {
+                            scope.contentTypeAlias = 'umbracoAutoSelect';
                             _processQueueItem();
-                        }
-                        // More than one, open dialog
-                        if (scope.acceptedMediatypes && scope.acceptedMediatypes.length > 1) {
-                            _chooseMediaType();
                         }
                     }
                 }
@@ -16601,30 +16845,54 @@ TODO
                         _processQueueItem();
                     });
                 }
-                function _chooseMediaType() {
-                    var dialog = {
-                        view: 'itempicker',
-                        filter: scope.acceptedMediatypes.length > 15,
-                        availableItems: scope.acceptedMediatypes,
-                        submit: function submit(model) {
-                            scope.contentTypeAlias = model.selectedItem.alias;
-                            _processQueueItem();
-                            overlayService.close();
-                        },
-                        close: function close() {
-                            scope.queue.map(function (file) {
-                                file.uploadStatus = 'error';
-                                file.serverErrorMessage = 'Cannot upload this file, no mediatype selected';
-                                scope.rejected.push(file);
-                            });
-                            scope.queue = [];
-                            overlayService.close();
-                        }
-                    };
-                    localizationService.localize('defaultdialogs_selectMediaType').then(function (value) {
-                        dialog.title = value;
+                function _requestChooseMediaTypeDialog() {
+                    if (scope.acceptedMediatypes.length === 1) {
+                        // if only one accepted type, then we wont ask to choose.
+                        return false;
+                    }
+                    var uploadFileExtensions = scope.queue.map(function (file) {
+                        return mediaHelper.getFileExtension(file.name);
+                    });
+                    var filteredMediaTypes = mediaTypeHelper.getTypeAcceptingFileExtensions(scope.acceptedMediatypes, uploadFileExtensions);
+                    var mediaTypesNotFile = filteredMediaTypes.filter(function (mediaType) {
+                        return mediaType.alias !== 'File';
+                    });
+                    if (mediaTypesNotFile.length <= 1) {
+                        // if only one  or less accepted types when we have filtered type 'file' out, then we wont ask to choose.
+                        return false;
+                    }
+                    localizationService.localizeMany([
+                        'defaultdialogs_selectMediaType',
+                        'mediaType_autoPickMediaType'
+                    ]).then(function (translations) {
+                        filteredMediaTypes.push({
+                            alias: 'umbracoAutoSelect',
+                            name: translations[1],
+                            icon: 'icon-wand'
+                        });
+                        var dialog = {
+                            view: 'itempicker',
+                            filter: filteredMediaTypes.length > 8,
+                            availableItems: filteredMediaTypes,
+                            submit: function submit(model) {
+                                scope.contentTypeAlias = model.selectedItem.alias;
+                                _processQueueItem();
+                                overlayService.close();
+                            },
+                            close: function close() {
+                                scope.queue.map(function (file) {
+                                    file.uploadStatus = 'error';
+                                    file.serverErrorMessage = 'No files uploaded, no mediatype selected';
+                                    scope.rejected.push(file);
+                                });
+                                scope.queue = [];
+                                overlayService.close();
+                            }
+                        };
+                        dialog.title = translations[0];
                         overlayService.open(dialog);
                     });
+                    return true;    // yes, we did open the choose-media dialog, therefor we return true.
                 }
                 scope.handleFiles = function (files, event) {
                     if (scope.filesQueued) {
@@ -16913,7 +17181,7 @@ TODO
         }
         ;
         var umbPropertyFileUploadComponent = {
-            template: ' <div class="umb-property-file-upload"> <ng-form name="vm.fileUploadForm" ng-class="{ \'drag-over\': vm.dragover }"> <input type="hidden" ng-model="mandatoryValidator" ng-required="vm.required && !vm.files.length"> <div class="fileinput-button umb-upload-button-big" ng-hide="vm.files.length > 0"> <i class="icon icon-page-up" aria-hidden="true"></i> <p><localize key="media_clickToUpload">Click to upload</localize></p> <umb-single-file-upload></umb-single-file-upload> </div> <div ng-if="vm.files.length > 0"> <div ng-if="!vm.hideSelection"> <div class="umb-fileupload clearfix" ng-repeat="file in vm.files"> <div ng-if="file.isImage || file.extension === \'svg\'"> <div class="gravity-container"> <div class="viewport"> <img ng-if="file.isClientSide" ng-src="{{file.fileSrc}}" style="max-width: 100%; max-height: 100%" alt="{{file.fileName}}"> <a ng-if="!file.isClientSide" href="#" ng-href="{{file.fileSrc}}" target="_blank" rel="noopener"> <img ng-src="{{file.fileSrc}}" style="max-width: 100%; max-height: 100%" alt="{{file.fileName}}"> </a> </div> </div> </div> <div ng-if="!file.isImage && file.extension !== \'svg\'"> <a class="span6 thumbnail tc" ng-show="!file.isClientSide" href="#" ng-href="{{file.fileName}}" target="_blank" rel="noopener"> <umb-file-icon extension="{{file.extension}}" size="m"> </umb-file-icon> <div class="mt2">{{file.fileName}}</div> </a> <div class="span6 thumbnail tc" ng-show="file.isClientSide"> <umb-file-icon extension="{{file.extension}}" size="m"> </umb-file-icon> <div class="mt2">{{file.fileName}}</div> </div> </div> </div> <div> <button type="button" class="btn btn-link btn-crop-delete" aria-hidden="true" ng-click="vm.clear()"><i class="icon-delete red"></i> <localize key="content_uploadClear">Remove file</localize></button> <button type="button" class="sr-only" ng-if="file.isImage" ng-click="vm.clear()"><localize key="content_uploadClearImageContext">Click here to remove the image from the media item</localize></button> <button type="button" class="sr-only" ng-if="!file.isImage" ng-click="vm.clear()"><localize key="content_uploadClearFileContext">Click here to remove the file from the media item</localize></button> </div> </div> <div ng-if="vm.hideSelection"> <div ng-transclude></div> </div> </div> </ng-form> </div> ',
+            template: ' <div class="umb-property-file-upload"> <ng-form name="vm.fileUploadForm" ng-class="{ \'drag-over\': vm.dragover }"> <input type="hidden" ng-model="mandatoryValidator" ng-required="vm.required && !vm.files.length"> <div class="fileinput-button umb-upload-button-big" ng-hide="vm.files.length > 0"> <i class="icon icon-page-up" aria-hidden="true"></i> <p><localize key="media_clickToUpload">Click to upload</localize></p> <umb-single-file-upload accept-file-ext="vm.acceptFileExt"></umb-single-file-upload> </div> <div ng-if="vm.files.length > 0"> <div ng-if="!vm.hideSelection"> <div class="umb-fileupload clearfix" ng-repeat="file in vm.files"> <div ng-if="file.isImage || file.extension === \'svg\'"> <div class="gravity-container"> <div class="viewport"> <img ng-if="file.isClientSide" ng-src="{{file.fileSrc}}" style="max-width: 100%; max-height: 100%" alt="{{file.fileName}}"> <a ng-if="!file.isClientSide" href="#" ng-href="{{file.fileSrc}}" target="_blank" rel="noopener"> <img ng-src="{{file.fileSrc}}" style="max-width: 100%; max-height: 100%" alt="{{file.fileName}}"> </a> </div> </div> </div> <div ng-if="!file.isImage && file.extension !== \'svg\'"> <a class="span6 thumbnail tc" ng-show="!file.isClientSide" href="#" ng-href="{{file.fileName}}" target="_blank" rel="noopener"> <umb-file-icon extension="{{file.extension}}" size="m"> </umb-file-icon> <div class="mt2">{{file.fileName}}</div> </a> <div class="span6 thumbnail tc" ng-show="file.isClientSide"> <umb-file-icon extension="{{file.extension}}" size="m"> </umb-file-icon> <div class="mt2">{{file.fileName}}</div> </div> </div> </div> <div> <button type="button" class="btn btn-link btn-crop-delete" aria-hidden="true" ng-click="vm.clear()"><i class="icon-delete red"></i> <localize key="content_uploadClear">Remove file</localize></button> <button type="button" class="sr-only" ng-if="file.isImage" ng-click="vm.clear()"><localize key="content_uploadClearImageContext">Click here to remove the image from the media item</localize></button> <button type="button" class="sr-only" ng-if="!file.isImage" ng-click="vm.clear()"><localize key="content_uploadClearFileContext">Click here to remove the file from the media item</localize></button> </div> </div> <div ng-if="vm.hideSelection"> <div ng-transclude></div> </div> </div> </ng-form> </div> ',
             bindings: {
                 culture: '@?',
                 segment: '@?',
@@ -16930,7 +17198,8 @@ TODO
        */
                 onFilesChanged: '&',
                 onInit: '&',
-                required: '='
+                required: '=',
+                acceptFileExt: '<?'
             },
             transclude: true,
             controllerAs: 'vm',
@@ -16950,16 +17219,21 @@ TODO
 *  is required because the only way to reset an upload control is to replace it's html.
 **/
     function umbSingleFileUpload($compile) {
+        // cause we have the same template twice I choose to extract it to its own variable:
+        var innerTemplate = '<input type=\'file\' umb-file-upload accept=\'{{acceptFileExt}}\'/>';
         return {
             restrict: 'E',
-            scope: { rebuild: '=' },
+            scope: {
+                rebuild: '=',
+                acceptFileExt: '<?'
+            },
             replace: true,
-            template: '<div><input type=\'file\' umb-file-upload /></div>',
-            link: function link(scope, el, attrs) {
+            template: '<div>' + innerTemplate + '</div>',
+            link: function link(scope, el) {
                 scope.$watch('rebuild', function (newVal, oldVal) {
                     if (newVal && newVal !== oldVal) {
                         //recompile it!
-                        el.html('<input type=\'file\' umb-file-upload />');
+                        el.html(innerTemplate);
                         $compile(el.contents())(scope);
                     }
                 });
@@ -17660,6 +17934,7 @@ Use this directive to render a user group preview, where you can see the permiss
 **/
     function valFormManager(serverValidationManager, $rootScope, $timeout, $location, overlayService, eventsService, $routeParams, navigationService, editorService, localizationService, angularHelper) {
         var SHOW_VALIDATION_CLASS_NAME = 'show-validation';
+        var SHOW_VALIDATION_Type_CLASS_NAME = 'show-validation-type-';
         var SAVING_EVENT_NAME = 'formSubmitting';
         var SAVED_EVENT_NAME = 'formSubmitted';
         function notify(scope) {
@@ -17667,7 +17942,7 @@ Use this directive to render a user group preview, where you can see the permiss
         }
         function ValFormManagerController($scope) {
             //This exposes an API for direct use with this directive
-            // We need this as a way to reference this directive in the scope chain. Since this directive isn't a component and 
+            // We need this as a way to reference this directive in the scope chain. Since this directive isn't a component and
             // because it's an attribute instead of an element, we can't use controllerAs or anything like that. Plus since this is
             // an attribute an isolated scope doesn't work so it's a bit weird. By doing this we are able to lookup the parent valFormManager
             // in the scope hierarchy even if the DOM hierarchy doesn't match (i.e. in infinite editing)
@@ -17687,9 +17962,10 @@ Use this directive to render a user group preview, where you can see the permiss
             this.isShowingValidation = function () {
                 return $scope.showValidation === true;
             };
-            this.notify = function () {
-                notify($scope);
+            this.getValidationMessageType = function () {
+                return $scope.valMsgType;
             };
+            this.notify = notify;
             this.isValid = function () {
                 return !$scope.formCtrl.$invalid;
             };
@@ -17740,6 +18016,8 @@ Use this directive to render a user group preview, where you can see the permiss
                 var parentFormMgr = scope.parentFormMgr = getAncestorValFormManager(scope, ctrls, 1);
                 var subView = ctrls.length > 1 ? ctrls[2] : null;
                 var labels = {};
+                var valMsgType = 2;
+                // error
                 var labelKeys = [
                     'prompt_unsavedChanges',
                     'prompt_unsavedChangesWarning',
@@ -17752,9 +18030,46 @@ Use this directive to render a user group preview, where you can see the permiss
                     labels.discardChangesButton = values[2];
                     labels.stayButton = values[3];
                 });
-                //watch the list of validation errors to notify the application of any validation changes
+                var lastValidationMessageType = null;
+                function setValidationMessageType(type) {
+                    removeValidationMessageType();
+                    scope.valMsgType = type;
+                    // overall a copy of message types from notifications.service:
+                    var postfix = '';
+                    switch (type) {
+                    case 0:
+                        //save
+                        break;
+                    case 1:
+                        //info
+                        postfix = 'info';
+                        break;
+                    case 2:
+                        //error
+                        postfix = 'error';
+                        break;
+                    case 3:
+                        //success
+                        postfix = 'success';
+                        break;
+                    case 4:
+                        //warning
+                        postfix = 'warning';
+                        break;
+                    }
+                    var cssClass = SHOW_VALIDATION_Type_CLASS_NAME + postfix;
+                    element.addClass(cssClass);
+                    lastValidationMessageType = cssClass;
+                }
+                function removeValidationMessageType() {
+                    if (lastValidationMessageType) {
+                        element.removeClass(lastValidationMessageType);
+                        lastValidationMessageType = null;
+                    }
+                }
+                // watch the list of validation errors to notify the application of any validation changes
                 scope.$watch(function () {
-                    return angularHelper.countAllFormErrors(formCtrl);
+                    return formCtrl.$invalid;
                 }, function (e) {
                     notify(scope);
                     notifySubView();
@@ -17774,13 +18089,24 @@ Use this directive to render a user group preview, where you can see the permiss
                 if (serverValidationManager.items.length > 0 || parentFormMgr && parentFormMgr.isShowingValidation()) {
                     element.addClass(SHOW_VALIDATION_CLASS_NAME);
                     scope.showValidation = true;
+                    var parentValMsgType = parentFormMgr ? parentFormMgr.getValidationMessageType() : 2;
+                    setValidationMessageType(parentValMsgType || 2);
                     notifySubView();
                 }
                 var unsubscribe = [];
                 //listen for the forms saving event
                 unsubscribe.push(scope.$on(SAVING_EVENT_NAME, function (ev, args) {
+                    var messageType = 2;
+                    //error
+                    switch (args.action) {
+                    case 'save':
+                        messageType = 4;
+                        //warning
+                        break;
+                    }
                     element.addClass(SHOW_VALIDATION_CLASS_NAME);
                     scope.showValidation = true;
+                    setValidationMessageType(messageType);
                     notifySubView();
                     //set the flag so we can check to see if we should display the error.
                     isSavingNewItem = $routeParams.create;
@@ -17789,6 +18115,7 @@ Use this directive to render a user group preview, where you can see the permiss
                 unsubscribe.push(scope.$on(SAVED_EVENT_NAME, function (ev, args) {
                     //remove validation class
                     element.removeClass(SHOW_VALIDATION_CLASS_NAME);
+                    removeValidationMessageType();
                     scope.showValidation = false;
                     notifySubView();
                 }));
@@ -18071,8 +18398,9 @@ Use this directive to render a user group preview, where you can see the permiss
                         watcher = scope.$watchCollection(function () {
                             return formCtrl;
                         }, function (updatedFormController) {
+                            var childControls = updatedFormController.$getControls();
                             var ngModels = [];
-                            collectAllNgModelControllersRecursively(updatedFormController.$getControls(), ngModels);
+                            collectAllNgModelControllersRecursively(childControls, ngModels);
                             ngModels.forEach(function (x) {
                                 if (!x.$validators.serverValidityResetter) {
                                     x.$validators.serverValidityResetter = resetServerValidityValidator(x);
@@ -18160,6 +18488,8 @@ Use this directive to render a user group preview, where you can see the permiss
                         //listen for form validation changes.
                         //The alternative is to add a watch to formCtrl.$invalid but that would lead to many more watches then
                         // subscribing to this single watch.
+                        // TODO: Really? Since valFormManager is watching a countof all errors which is more overhead than watching formCtrl.$invalid
+                        // and there's a TODO there that it should just watch formCtrl.$invalid
                         valFormManager.onValidationStatusChanged(function (evt, args) {
                             checkValidationStatus();
                         });
@@ -18558,8 +18888,8 @@ Use this directive to render a user group preview, where you can see the permiss
  * @ngdoc directive
  * @name umbraco.directives.directive:valServerMatch
  * @restrict A
- * @description A custom validator applied to a form/ng-form within an umbProperty that validates server side validation data 
- * contained within the serverValidationManager. The data can be matched on "exact", "prefix", "suffix" or "contains" matches against 
+ * @description A custom validator applied to a form/ng-form within an umbProperty that validates server side validation data
+ * contained within the serverValidationManager. The data can be matched on "exact", "prefix", "suffix" or "contains" matches against
  * a property validation key. The attribute value can be in multiple value types:
  * - STRING = The property validation key to have an exact match on. If matched, then the form will have a valServerMatch validator applied.
  * - OBJECT = A dictionary where the key is the match type: "contains", "prefix", "suffix" and the value is either:
@@ -18852,6 +19182,86 @@ Use this directive to render a user group preview, where you can see the permiss
     'use strict';
     (function () {
         'use strict';
+        angular.module('umbraco').component('umbMediaCard', {
+            template: '<ng-form name="vm.mediaCardForm"> <div class="__showcase"> <div ng-if="vm.loading" class="umb-button__progress"></div> <p ng-if="vm.media.trashed" class="__status --error"> <i class="icon-trash" aria-hidden="true"></i> <localize key="mediaPicker_trashed"></localize> </p> <p ng-if="vm.notAllowed" class="__status --error"> <i class="icon-block" aria-hidden="true"></i> <localize key="mediaPicker_notAllowed"></localize> </p>  <img ng-if="vm.loading === false && vm.thumbnail" ng-class="{\'trashed\': vm.media.trashed}" ng-src="{{vm.thumbnail}}" title="{{vm.media.name}}" alt="{{vm.media.name}}"> <umb-file-icon ng-if="vm.loading === false && vm.icon" icon="{{vm.icon}}" size="s" text="{{vm.name}}"> </umb-file-icon>  <umb-file-icon ng-if="vm.loading === false && !vm.thumbnail" ng-class="{\'trashed\': vm.media.trashed}" title="{{vm.media.name}}" extension="{{vm.media.extension}}" icon="{{vm.media.icon}}" size="s" text="{{vm.media.name}}"> </umb-file-icon> </div> <button type="button" ng-click="vm.onNameClicked($event)" class="btn-reset __info" ng-if="vm.media !== null || vm.name"> <div class="__name" ng-bind="vm.media.name || vm.name"></div> <div class="__subname" ng-if="vm.media.description" ng-bind="vm.media.description"></div> </button> <ng-transclude></ng-transclude> </ng-form> ',
+            controller: MediaCardController,
+            controllerAs: 'vm',
+            transclude: true,
+            bindings: {
+                mediaKey: '<?',
+                icon: '<?',
+                name: '<?',
+                hasError: '<',
+                allowedTypes: '<?',
+                onNameClicked: '&?'
+            }
+        });
+        function MediaCardController($scope, $element, entityResource, mediaHelper, eventsService, localizationService) {
+            var unsubscribe = [];
+            var vm = this;
+            vm.paddingBottom = 100;
+            // Square while loading.
+            vm.loading = false;
+            unsubscribe.push($scope.$watch('vm.mediaKey', function (newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    vm.updateThumbnail();
+                }
+            }));
+            function checkErrorState() {
+                vm.notAllowed = vm.media && vm.allowedTypes && vm.allowedTypes.length > 0 && vm.allowedTypes.indexOf(vm.media.metaData.ContentTypeAlias) === -1;
+                if (vm.hasError === true || vm.notAllowed === true || vm.media && vm.media.trashed === true) {
+                    $element.addClass('--hasError');
+                    vm.mediaCardForm.$setValidity('error', false);
+                } else {
+                    $element.removeClass('--hasError');
+                    vm.mediaCardForm.$setValidity('error', true);
+                }
+            }
+            vm.$onInit = function () {
+                unsubscribe.push($scope.$watchGroup([
+                    'vm.media.trashed',
+                    'vm.hasError'
+                ], checkErrorState));
+                vm.updateThumbnail();
+                unsubscribe.push(eventsService.on('editors.media.saved', function (name, args) {
+                    // if this media item uses the updated media type we want to reload the media file
+                    if (args && args.media && args.media.key === vm.mediaKey) {
+                        vm.updateThumbnail();
+                    }
+                }));
+            };
+            vm.$onDestroy = function () {
+                unsubscribe.forEach(function (x) {
+                    return x();
+                });
+            };
+            vm.updateThumbnail = function () {
+                if (vm.mediaKey && vm.mediaKey !== '') {
+                    vm.loading = true;
+                    entityResource.getById(vm.mediaKey, 'Media').then(function (mediaEntity) {
+                        vm.media = mediaEntity;
+                        checkErrorState();
+                        vm.thumbnail = mediaHelper.resolveFileFromEntity(mediaEntity, true);
+                        vm.loading = false;
+                    }, function () {
+                        localizationService.localize('mediaPicker_deletedItem').then(function (localized) {
+                            vm.media = {
+                                name: localized,
+                                icon: 'icon-picture',
+                                trashed: true
+                            };
+                            vm.loading = false;
+                            $element.addClass('--hasError');
+                            vm.mediaCardForm.$setValidity('error', false);
+                        });
+                    });
+                }
+            };
+        }
+    }());
+    'use strict';
+    (function () {
+        'use strict';
         angular.module('umbraco').component('umbPropertyInfoButton', {
             template: '<button type="button" title="{{ vm.show ? \'\' : vm.buttonTitle}}" class="btn-reset umb-outline umb-outline--surrounding __button" ng-click="vm.onMouseClick($event)" ng-bind="vm.symbol"></button> <div class="__tooltip" ng-if="vm.show" on-outside-click="vm.onMouseClickOutside($event)"><ng-transclude></ng-transclude></div> ',
             controller: UmbPropertyInfoButtonController,
@@ -18921,10 +19331,10 @@ Use this directive to render a user group preview, where you can see the permiss
                 $scope.valFormManager = model.valFormManager;
                 if (model.stylesheet) {
                     var shadowRoot = $element[0].attachShadow({ mode: 'open' });
-                    shadowRoot.innerHTML = '\n                    <style>\n                    @import "'.concat(model.stylesheet, '"\n                    </style>\n                    <div ng-include="\'').concat(model.view, '\'"></div>\n                ');
+                    shadowRoot.innerHTML = '\n                    <style>\n                    @import "'.concat(model.stylesheet, '"\n                    </style>\n                    <div class="umb-block-list__block--view" ng-include="\'').concat(model.view, '\'"></div>\n                ');
                     $compile(shadowRoot)($scope);
                 } else {
-                    $element.append($compile('<div ng-include="model.view"></div>')($scope));
+                    $element.append($compile('<div class="umb-block-list__block--view" ng-include="model.view"></div>')($scope));
                 }
             };
             // We need to watch for changes on primitive types and upate the $scope values.
@@ -18963,7 +19373,7 @@ Use this directive to render a user group preview, where you can see the permiss
    * The component for the block list property editor.
    */
         angular.module('umbraco').component('umbBlockListPropertyEditor', {
-            template: '<div class="umb-block-list"> <umb-load-indicator ng-if="vm.loading"></umb-load-indicator> <div class="umb-block-list__wrapper" ng-style="vm.listWrapperStyles"> <div ui-sortable="vm.sortableOptions" ng-model="vm.layout" ng-if="vm.loading !== true"> <div ng-repeat="layout in vm.layout track by layout.$block.key"> <button type="button" class="btn-reset umb-block-list__block--create-button" ng-click="vm.showCreateDialog($index, $event)" ng-controller="Umbraco.PropertyEditors.BlockListPropertyEditor.CreateButtonController as inlineCreateButtonCtrl" ng-mousemove="inlineCreateButtonCtrl.onMouseMove($event)"> <div class="__plus" ng-style="{\'left\':inlineCreateButtonCtrl.plusPosX}"> <i class="icon icon-add" aria-hidden="true"></i> </div> </button> <umb-block-list-row block-editor-api="vm.blockEditorApi" layout="layout" index="$index"> </umb-block-list-row> </div> </div> <button ng-if="vm.loading !== true" id="{{vm.model.alias}}" type="button" class="btn-reset umb-block-list__create-button umb-outline" ng-class="{ \'--disabled\': vm.availableBlockTypes.length === 0 }" ng-click="vm.showCreateDialog(vm.layout.length, $event)"> <localize key="grid_addElement">Add content</localize> </button> <input type="hidden" name="minCount" ng-model="vm.layout" val-server="minCount"> <input type="hidden" name="maxCount" ng-model="vm.layout" val-server="maxCount"> <div ng-messages="vm.propertyForm.minCount.$error"> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.validationLimit.min, vm.validationLimit.min - vm.layout.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> <span class="help-inline" ng-message="valServer" ng-bind-html="vm.propertyForm.minCount.errorMsg">></span> </div> <div ng-messages="vm.propertyForm.maxCount.$error"> <div class="help text-error" ng-message="maxCount"> <localize key="validation_entriesExceed" tokens="[vm.validationLimit.max, vm.layout.length - vm.validationLimit.max]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> <span class="help-inline" ng-message="valServer" ng-bind-html="vm.propertyForm.maxCount.errorMsg"></span> </div> </div> <umb-overlay ng-if="vm.blockTypePicker.show" position="target" size="vm.blockTypePicker.size" view="vm.blockTypePicker.view" model="vm.blockTypePicker"> </umb-overlay> </div> ',
+            template: '<div class="umb-block-list"> <umb-load-indicator ng-if="vm.loading"></umb-load-indicator> <div class="umb-block-list__wrapper" ng-style="vm.listWrapperStyles"> <div ui-sortable="vm.sortableOptions" ng-model="vm.layout" ng-if="vm.loading !== true"> <div ng-repeat="layout in vm.layout track by layout.$block.key"> <button type="button" class="btn-reset umb-block-list__block--create-button" ng-click="vm.requestShowCreate($index, $event)" ng-controller="Umbraco.PropertyEditors.BlockListPropertyEditor.CreateButtonController as inlineCreateButtonCtrl" ng-mousemove="inlineCreateButtonCtrl.onMouseMove($event)"> <div class="__plus" ng-style="{\'left\':inlineCreateButtonCtrl.plusPosX}"> <i class="icon icon-add" aria-hidden="true"></i> </div> </button> <umb-block-list-row block-editor-api="vm.blockEditorApi" layout="layout" index="$index"> </umb-block-list-row> </div> </div> <div class="umb-block-list__actions" ng-if="vm.loading !== true"> <button id="{{vm.model.alias}}" type="button" class="btn-reset umb-block-list__create-button umb-outline" ng-disabled="vm.availableBlockTypes.length === 0" ng-click="vm.requestShowCreate(vm.layout.length, $event)"> <localize ng-if="vm.availableBlockTypes.length !== 1" key="blockEditor_addBlock">Add content</localize> <localize ng-if="vm.availableBlockTypes.length === 1" key="blockEditor_addThis" tokens="[vm.availableBlockTypes[0].elementTypeModel.name]">Add content</localize> </button> <button type="button" class="btn-reset umb-block-list__clipboard-button umb-outline" ng-class="{\'--jump\': vm.jumpClipboardButton}" ng-disabled="vm.clipboardItems.length === 0" ng-click="vm.requestShowClipboard(vm.layout.length, $event)" localize="title" title="@blockEditor_tabClipboard"> <i class="icon icon-paste-in" aria-hidden="true"></i> <span class="sr-only"> <localize key="blockEditor_tabClipboard">Clipboard</localize> </span> </button> </div> <input type="hidden" name="minCount" ng-model="vm.layout" val-server="minCount"> <input type="hidden" name="maxCount" ng-model="vm.layout" val-server="maxCount"> <div ng-messages="vm.propertyForm.minCount.$error"> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.validationLimit.min, vm.validationLimit.min - vm.layout.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> <span class="help-inline" ng-message="valServer" ng-bind-html="vm.propertyForm.minCount.errorMsg">></span> </div> <div ng-messages="vm.propertyForm.maxCount.$error"> <div class="help text-error" ng-message="maxCount"> <localize key="validation_entriesExceed" tokens="[vm.validationLimit.max, vm.layout.length - vm.validationLimit.max]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> <span class="help-inline" ng-message="valServer" ng-bind-html="vm.propertyForm.maxCount.errorMsg"></span> </div> </div> <umb-overlay ng-if="vm.blockTypePicker.show" position="target" size="vm.blockTypePicker.size" view="vm.blockTypePicker.view" model="vm.blockTypePicker"> </umb-overlay> </div> ',
             controller: BlockListController,
             controllerAs: 'vm',
             bindings: { model: '=' },
@@ -18975,7 +19385,7 @@ Use this directive to render a user group preview, where you can see the permiss
                 umbElementEditorContent: '?^^umbElementEditorContent'
             }
         });
-        function BlockListController($scope, editorService, clipboardService, localizationService, overlayService, blockEditorService, udiService, serverValidationManager, angularHelper) {
+        function BlockListController($scope, $timeout, editorService, clipboardService, localizationService, overlayService, blockEditorService, udiService, serverValidationManager, angularHelper, eventsService) {
             var unsubscribe = [];
             var modelObject;
             // Property actions:
@@ -18994,6 +19404,16 @@ Use this directive to render a user group preview, where you can see the permiss
                 block.focus = true;
             };
             vm.supportCopy = clipboardService.isSupported();
+            vm.clipboardItems = [];
+            unsubscribe.push(eventsService.on('clipboardService.storageUpdate', updateClipboard));
+            unsubscribe.push($scope.$on('editors.content.splitViewChanged', function (event, eventData) {
+                var compositeId = vm.umbVariantContent.editor.compositeId;
+                if (eventData.editors.some(function (x) {
+                        return x.compositeId === compositeId;
+                    })) {
+                    updateAllBlockObjects();
+                }
+            }));
             vm.layout = [];
             // The layout object specific to this Block Editor, will be a direct reference from Property Model.
             vm.availableBlockTypes = [];
@@ -19098,6 +19518,8 @@ Use this directive to render a user group preview, where you can see the permiss
                             // is invalid for some reason or the data structure has changed.
                             invalidLayoutItems.push(entry);
                         }
+                    } else {
+                        updateBlockObject(entry.$block);
                     }
                 });
                 // remove the ones that are invalid
@@ -19111,8 +19533,18 @@ Use this directive to render a user group preview, where you can see the permiss
                 });
                 vm.availableContentTypesAliases = modelObject.getAvailableAliasesForBlockContent();
                 vm.availableBlockTypes = modelObject.getAvailableBlocksForBlockPicker();
+                updateClipboard(true);
                 vm.loading = false;
                 $scope.$evalAsync();
+            }
+            function updateAllBlockObjects() {
+                // Update the blockObjects in our layout.
+                vm.layout.forEach(function (entry) {
+                    // $block must have the data property to be a valid BlockObject, if not its considered as a destroyed blockObject.
+                    if (entry.$block) {
+                        updateBlockObject(entry.$block);
+                    }
+                });
             }
             function getDefaultViewForBlock(block) {
                 var defaultViewFolderPath = 'views/propertyeditors/blocklist/blocklistentryeditors/';
@@ -19147,8 +19579,6 @@ Use this directive to render a user group preview, where you can see the permiss
                 var block = modelObject.getBlockObject(entry);
                 if (block === null)
                     return null;
-                ensureCultureData(block.content);
-                ensureCultureData(block.settings);
                 block.view = block.config.view ? block.config.view : getDefaultViewForBlock(block);
                 block.showValidation = block.config.view ? true : false;
                 block.hideContentInOverlay = block.config.forceHideContentEditorInOverlay === true || inlineEditing === true;
@@ -19160,19 +19590,46 @@ Use this directive to render a user group preview, where you can see the permiss
                 block.setParentForm = function (parentForm) {
                     this._parentForm = parentForm;
                 };
-                block.activate = activateBlock.bind(null, block);
+                /** decorator methods, to enable switching out methods without loosing references that would have been made in Block Views codes */
+                block.activate = function () {
+                    this._activate();
+                };
                 block.edit = function () {
+                    this._edit();
+                };
+                block.editSettings = function () {
+                    this._editSettings();
+                };
+                block.requestDelete = function () {
+                    this._requestDelete();
+                };
+                block.delete = function () {
+                    this._delete();
+                };
+                block.copy = function () {
+                    this._copy();
+                };
+                updateBlockObject(block);
+                return block;
+            }
+            /** As the block object now contains references to this instance of a property editor, we need to ensure that the Block Object contains latest references.
+     * This is a bit hacky but the only way to maintain this reference currently.
+     * Notice this is most relevant for invariant properties on variant documents, specially for the scenario where the scope of the reference we stored is destroyed, therefor we need to ensure we always have references to a current running property editor*/
+            function updateBlockObject(block) {
+                ensureCultureData(block.content);
+                ensureCultureData(block.settings);
+                block._activate = activateBlock.bind(null, block);
+                block._edit = function () {
                     var blockIndex = vm.layout.indexOf(this.layout);
                     editBlock(this, false, blockIndex, this._parentForm);
                 };
-                block.editSettings = function () {
+                block._editSettings = function () {
                     var blockIndex = vm.layout.indexOf(this.layout);
                     editBlock(this, true, blockIndex, this._parentForm);
                 };
-                block.requestDelete = requestDeleteBlock.bind(null, block);
-                block.delete = deleteBlock.bind(null, block);
-                block.copy = copyBlock.bind(null, block);
-                return block;
+                block._requestDelete = requestDeleteBlock.bind(null, block);
+                block._delete = deleteBlock.bind(null, block);
+                block._copy = copyBlock.bind(null, block);
             }
             function addNewBlock(index, contentElementTypeKey) {
                 // Create layout entry. (not added to property model jet.)
@@ -19293,8 +19750,28 @@ Use this directive to render a user group preview, where you can see the permiss
                 // open property settings editor
                 editorService.open(blockEditorModel);
             }
+            vm.requestShowCreate = requestShowCreate;
+            function requestShowCreate(createIndex, mouseEvent) {
+                if (vm.blockTypePicker) {
+                    return;
+                }
+                if (vm.availableBlockTypes.length === 1) {
+                    var wasAdded = false;
+                    var blockType = vm.availableBlockTypes[0];
+                    wasAdded = addNewBlock(createIndex, blockType.blockConfigModel.contentElementTypeKey);
+                    if (wasAdded && !(mouseEvent.ctrlKey || mouseEvent.metaKey)) {
+                        userFlowWhenBlockWasCreated(createIndex);
+                    }
+                } else {
+                    showCreateDialog(createIndex);
+                }
+            }
+            vm.requestShowClipboard = requestShowClipboard;
+            function requestShowClipboard(createIndex, mouseEvent) {
+                showCreateDialog(createIndex, true);
+            }
             vm.showCreateDialog = showCreateDialog;
-            function showCreateDialog(createIndex, $event) {
+            function showCreateDialog(createIndex, openClipboard) {
                 if (vm.blockTypePicker) {
                     return;
                 }
@@ -19309,6 +19786,7 @@ Use this directive to render a user group preview, where you can see the permiss
                     // pass in a $parentForm, this maintains the FormController hierarchy with the infinite editing view (if it contains a form)
                     availableItems: vm.availableBlockTypes,
                     title: vm.labels.grid_addElement,
+                    openClipboard: openClipboard,
                     orderBy: '$index',
                     view: 'views/common/infiniteeditors/blockpicker/blockpicker.html',
                     size: amountOfAvailableTypes > 8 ? 'medium' : 'small',
@@ -19329,18 +19807,14 @@ Use this directive to render a user group preview, where you can see the permiss
                         }
                     },
                     submit: function submit(blockPickerModel, mouseEvent) {
-                        var added = false;
+                        var wasAdded = false;
                         if (blockPickerModel && blockPickerModel.selectedItem) {
-                            added = addNewBlock(createIndex, blockPickerModel.selectedItem.blockConfigModel.contentElementTypeKey);
+                            wasAdded = addNewBlock(createIndex, blockPickerModel.selectedItem.blockConfigModel.contentElementTypeKey);
                         }
                         if (!(mouseEvent.ctrlKey || mouseEvent.metaKey)) {
                             editorService.close();
-                            if (added && vm.layout.length > createIndex) {
-                                if (inlineEditing === true) {
-                                    activateBlock(vm.layout[createIndex].$block);
-                                } else if (inlineEditing === false && vm.layout[createIndex].$block.hideContentInOverlay !== true) {
-                                    editBlock(vm.layout[createIndex].$block, false, createIndex, blockPickerModel.$parentForm, { createFlow: true });
-                                }
+                            if (wasAdded) {
+                                userFlowWhenBlockWasCreated(createIndex);
                             }
                         }
                     },
@@ -19356,7 +19830,24 @@ Use this directive to render a user group preview, where you can see the permiss
                     clipboardService.clearEntriesOfType(clipboardService.TYPES.ELEMENT_TYPE, vm.availableContentTypesAliases);
                     clipboardService.clearEntriesOfType(clipboardService.TYPES.BLOCK, vm.availableContentTypesAliases);
                 };
-                blockPickerModel.clipboardItems = [];
+                blockPickerModel.clipboardItems = vm.clipboardItems;
+                // open block picker overlay
+                editorService.open(blockPickerModel);
+            }
+            ;
+            function userFlowWhenBlockWasCreated(createIndex) {
+                if (vm.layout.length > createIndex) {
+                    var blockObject = vm.layout[createIndex].$block;
+                    if (inlineEditing === true) {
+                        blockObject.activate();
+                    } else if (inlineEditing === false && blockObject.hideContentInOverlay !== true) {
+                        blockObject.edit();
+                    }
+                }
+            }
+            function updateClipboard(firstTime) {
+                var oldAmount = vm.clipboardItems.length;
+                vm.clipboardItems = [];
                 var entriesForPaste = clipboardService.retriveEntriesOfType(clipboardService.TYPES.ELEMENT_TYPE, vm.availableContentTypesAliases);
                 entriesForPaste.forEach(function (entry) {
                     var pasteEntry = {
@@ -19390,16 +19881,27 @@ Use this directive to render a user group preview, where you can see the permiss
                     if (Array.isArray(entry.data) === false) {
                         pasteEntry.blockConfigModel = modelObject.getBlockConfiguration(entry.data.data.contentTypeKey);
                     }
-                    blockPickerModel.clipboardItems.push(pasteEntry);
+                    vm.clipboardItems.push(pasteEntry);
                 });
-                blockPickerModel.clipboardItems.sort(function (a, b) {
+                vm.clipboardItems.sort(function (a, b) {
                     return b.date - a.date;
                 });
-                // open block picker overlay
-                editorService.open(blockPickerModel);
+                if (firstTime !== true && vm.clipboardItems.length > oldAmount) {
+                    jumpClipboard();
+                }
             }
-            ;
-            var requestCopyAllBlocks = function requestCopyAllBlocks() {
+            var jumpClipboardTimeout;
+            function jumpClipboard() {
+                if (jumpClipboardTimeout) {
+                    return;
+                }
+                vm.jumpClipboardButton = true;
+                jumpClipboardTimeout = $timeout(function () {
+                    vm.jumpClipboardButton = false;
+                    jumpClipboardTimeout = null;
+                }, 2000);
+            }
+            function requestCopyAllBlocks() {
                 var aliases = [];
                 var elementTypesToCopy = vm.layout.filter(function (entry) {
                     return entry.$block.config.unsupported !== true;
@@ -19435,7 +19937,8 @@ Use this directive to render a user group preview, where you can see the permiss
                 ]).then(function (localizedLabel) {
                     clipboardService.copyArray(clipboardService.TYPES.BLOCK, aliases, elementTypesToCopy, localizedLabel, contentNodeIcon || 'icon-thumbnail-list', vm.model.id);
                 });
-            };
+            }
+            ;
             function copyBlock(block) {
                 clipboardService.copy(clipboardService.TYPES.BLOCK, block.content.contentTypeAlias, {
                     'layout': block.layout,
@@ -19606,6 +20109,397 @@ Use this directive to render a user group preview, where you can see the permiss
             var vm = this;
             vm.$onInit = function () {
             };
+        }
+    }());
+    'use strict';
+    (function () {
+        'use strict';
+        /**
+   * @ngdoc directive
+   * @name umbraco.directives.directive:umbMediaPicker3PropertyEditor
+   * @function
+   *
+   * @description
+   * The component for the Media Picker property editor.
+   */
+        angular.module('umbraco').component('umbMediaPicker3PropertyEditor', {
+            template: '<div class="umb-mediapicker3"> <umb-load-indicator ng-if="vm.loading"></umb-load-indicator> <div class="umb-media-card-grid" ng-class="{\'--singleMode\':(vm.validationLimit.max === 1 && vm.model.value.length <= 1)}"> <div style="display:contents;" ui-sortable="vm.sortableOptions" ng-model="vm.model.value" ng-if="vm.loading !== true"> <div ng-repeat="media in vm.model.value track by media.key" class="umb-media-card-grid__cell"> <button type="button" ng-if="vm.loading !== true && vm.allowAdd && ((vm.singleMode === true && vm.model.value.length === 0) || vm.singleMode === false)" class="btn-reset umb-media-card-grid--inline-create-button" ng-click="vm.addMediaAt($index, $event)" ng-controller="Umbraco.PropertyEditors.MediaPicker3PropertyEditor.CreateButtonController as inlineCreateButtonCtrl" ng-mousemove="inlineCreateButtonCtrl.onMouseMove($event)"> <div class="__plus" ng-style="{\'top\':inlineCreateButtonCtrl.plusPosY}"> <i class="icon icon-add" aria-hidden="true"></i> </div> </button> <umb-media-card media-key="media.mediaKey" on-name-clicked="vm.editMedia(media, $index, $event)" ng-class="{\'--active\': vm.activeMediaEntry === media}" has-error="vm.propertyForm.maxCount.$valid === false && $index >= vm.validationLimit.max" allowed-types="vm.allowedTypes"> <div class="__actions"> <button ng-if="vm.supportCopy" type="button" class="btn-reset __action umb-outline" localize="title" title="actions_copy" ng-click="vm.copyMedia(media); $event.stopPropagation();"> <i class="icon icon-documents" aria-hidden="true"></i> </button> <button type="button" class="btn-reset __action umb-outline" localize="title" title="general_remove" ng-click="vm.removeMedia(media); $event.stopPropagation();"> <i class="icon icon-trash" aria-hidden="true"></i> </button> </div> </umb-media-card> </div> </div> <button ng-if="vm.loading !== true && ((vm.singleMode === true && vm.model.value.length === 0) || vm.singleMode !== true)" id="{{vm.model.alias}}" type="button" class="btn-reset umb-media-card-grid__create-button umb-outline" disbled="!vm.allowAdd" ng-click="vm.addMediaAt(vm.model.value.length, $event)"> <div> <i class="icon icon-add large" aria-hidden="true"></i> <localize key="general_add">Add</localize> </div> </button> </div> <input type="hidden" name="minCount" ng-model="vm.model.value" val-server="minCount"> <input type="hidden" name="maxCount" ng-model="vm.model.value" val-server="maxCount"> <div ng-messages="vm.propertyForm.minCount.$error"> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.validationLimit.min, vm.validationLimit.min - vm.model.value.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> <span class="help-inline" ng-message="valServer" ng-bind-html="vm.propertyForm.minCount.errorMsg">></span> </div> <div ng-messages="vm.propertyForm.maxCount.$error"> <div class="help text-error" ng-message="maxCount"> <localize key="validation_entriesExceed" tokens="[vm.validationLimit.max, vm.model.value.length - vm.validationLimit.max]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> <span class="help-inline" ng-message="valServer" ng-bind-html="vm.propertyForm.maxCount.errorMsg"></span> </div> </div> ',
+            controller: MediaPicker3Controller,
+            controllerAs: 'vm',
+            bindings: { model: '=' },
+            require: {
+                propertyForm: '^form',
+                umbProperty: '?^umbProperty',
+                umbVariantContent: '?^^umbVariantContent',
+                umbVariantContentEditors: '?^^umbVariantContentEditors',
+                umbElementEditorContent: '?^^umbElementEditorContent'
+            }
+        });
+        function MediaPicker3Controller($scope, editorService, clipboardService, localizationService, overlayService, userService, entityResource) {
+            var unsubscribe = [];
+            // Property actions:
+            var copyAllMediasAction = null;
+            var removeAllMediasAction = null;
+            var vm = this;
+            vm.loading = true;
+            vm.supportCopy = clipboardService.isSupported();
+            vm.labels = {};
+            localizationService.localizeMany([
+                'grid_addElement',
+                'content_createEmpty'
+            ]).then(function (data) {
+                vm.labels.grid_addElement = data[0];
+                vm.labels.content_createEmpty = data[1];
+            });
+            vm.$onInit = function () {
+                vm.validationLimit = vm.model.config.validationLimit || {};
+                // If single-mode we only allow 1 item as the maximum:
+                if (vm.model.config.multiple === false) {
+                    vm.validationLimit.max = 1;
+                }
+                vm.model.config.crops = vm.model.config.crops || [];
+                vm.singleMode = vm.validationLimit.max === 1;
+                vm.allowedTypes = vm.model.config.filter ? vm.model.config.filter.split(',') : null;
+                copyAllMediasAction = {
+                    labelKey: 'clipboard_labelForCopyAllEntries',
+                    labelTokens: [vm.model.label],
+                    icon: 'documents',
+                    method: requestCopyAllMedias,
+                    isDisabled: true
+                };
+                removeAllMediasAction = {
+                    labelKey: 'clipboard_labelForRemoveAllEntries',
+                    labelTokens: [],
+                    icon: 'trash',
+                    method: requestRemoveAllMedia,
+                    isDisabled: true
+                };
+                var propertyActions = [];
+                if (vm.supportCopy) {
+                    propertyActions.push(copyAllMediasAction);
+                }
+                propertyActions.push(removeAllMediasAction);
+                if (vm.umbProperty) {
+                    vm.umbProperty.setPropertyActions(propertyActions);
+                }
+                if (vm.model.value === null || !Array.isArray(vm.model.value)) {
+                    vm.model.value = [];
+                }
+                vm.model.value.forEach(function (mediaEntry) {
+                    return updateMediaEntryData(mediaEntry);
+                });
+                userService.getCurrentUser().then(function (userData) {
+                    if (!vm.model.config.startNodeId) {
+                        if (vm.model.config.ignoreUserStartNodes === true) {
+                            vm.model.config.startNodeId = -1;
+                            vm.model.config.startNodeIsVirtual = true;
+                        } else {
+                            vm.model.config.startNodeId = userData.startMediaIds.length !== 1 ? -1 : userData.startMediaIds[0];
+                            vm.model.config.startNodeIsVirtual = userData.startMediaIds.length !== 1;
+                        }
+                    }
+                    // only allow users to add and edit media if they have access to the media section
+                    var hasAccessToMedia = userData.allowedSections.indexOf('media') !== -1;
+                    vm.allowEdit = hasAccessToMedia;
+                    vm.allowAdd = hasAccessToMedia;
+                    vm.loading = false;
+                });
+            };
+            function setDirty() {
+                if (vm.propertyForm) {
+                    vm.propertyForm.$setDirty();
+                }
+            }
+            vm.addMediaAt = addMediaAt;
+            function addMediaAt(createIndex, $event) {
+                var mediaPicker = {
+                    startNodeId: vm.model.config.startNodeId,
+                    startNodeIsVirtual: vm.model.config.startNodeIsVirtual,
+                    dataTypeKey: vm.model.dataTypeKey,
+                    multiPicker: vm.singleMode !== true,
+                    clickPasteItem: function clickPasteItem(item, mouseEvent) {
+                        if (Array.isArray(item.data)) {
+                            var indexIncrementor = 0;
+                            item.data.forEach(function (entry) {
+                                if (requestPasteFromClipboard(createIndex + indexIncrementor, entry, item.type)) {
+                                    indexIncrementor++;
+                                }
+                            });
+                        } else {
+                            requestPasteFromClipboard(createIndex, item.data, item.type);
+                        }
+                        if (!(mouseEvent.ctrlKey || mouseEvent.metaKey)) {
+                            mediaPicker.close();
+                        }
+                    },
+                    submit: function submit(model) {
+                        editorService.close();
+                        var indexIncrementor = 0;
+                        model.selection.forEach(function (entry) {
+                            var mediaEntry = {};
+                            mediaEntry.key = String.CreateGuid();
+                            mediaEntry.mediaKey = entry.key;
+                            updateMediaEntryData(mediaEntry);
+                            vm.model.value.splice(createIndex + indexIncrementor, 0, mediaEntry);
+                            indexIncrementor++;
+                        });
+                        setDirty();
+                    },
+                    close: function close() {
+                        editorService.close();
+                    }
+                };
+                if (vm.model.config.filter) {
+                    mediaPicker.filter = vm.model.config.filter;
+                }
+                mediaPicker.clickClearClipboard = function ($event) {
+                    clipboardService.clearEntriesOfType(clipboardService.TYPES.Media, vm.allowedTypes || null);
+                };
+                mediaPicker.clipboardItems = clipboardService.retriveEntriesOfType(clipboardService.TYPES.MEDIA, vm.allowedTypes || null);
+                mediaPicker.clipboardItems.sort(function (a, b) {
+                    return b.date - a.date;
+                });
+                editorService.mediaPicker(mediaPicker);
+            }
+            // To be used by infinite editor. (defined here cause we need configuration from property editor)
+            function changeMediaFor(mediaEntry, onSuccess) {
+                var mediaPicker = {
+                    startNodeId: vm.model.config.startNodeId,
+                    startNodeIsVirtual: vm.model.config.startNodeIsVirtual,
+                    dataTypeKey: vm.model.dataTypeKey,
+                    multiPicker: false,
+                    submit: function submit(model) {
+                        editorService.close();
+                        model.selection.forEach(function (entry) {
+                            // only one.
+                            mediaEntry.mediaKey = entry.key;
+                        });
+                        // reset focal and crops:
+                        mediaEntry.crops = null;
+                        mediaEntry.focalPoint = null;
+                        updateMediaEntryData(mediaEntry);
+                        if (onSuccess) {
+                            onSuccess();
+                        }
+                    },
+                    close: function close() {
+                        editorService.close();
+                    }
+                };
+                if (vm.model.config.filter) {
+                    mediaPicker.filter = vm.model.config.filter;
+                }
+                editorService.mediaPicker(mediaPicker);
+            }
+            function resetCrop(cropEntry) {
+                Object.assign(cropEntry, vm.model.config.crops.find(function (c) {
+                    return c.alias === cropEntry.alias;
+                }));
+                cropEntry.coordinates = null;
+                setDirty();
+            }
+            function updateMediaEntryData(mediaEntry) {
+                mediaEntry.crops = mediaEntry.crops || [];
+                mediaEntry.focalPoint = mediaEntry.focalPoint || {
+                    left: 0.5,
+                    top: 0.5
+                };
+                // Copy config and only transfer coordinates.
+                var newCrops = Utilities.copy(vm.model.config.crops);
+                newCrops.forEach(function (crop) {
+                    var oldCrop = mediaEntry.crops.filter(function (x) {
+                        return x.alias === crop.alias;
+                    }).shift();
+                    if (oldCrop && oldCrop.height === crop.height && oldCrop.width === crop.width) {
+                        crop.coordinates = oldCrop.coordinates;
+                    }
+                });
+                mediaEntry.crops = newCrops;
+            }
+            vm.removeMedia = removeMedia;
+            function removeMedia(media) {
+                var index = vm.model.value.indexOf(media);
+                if (index !== -1) {
+                    vm.model.value.splice(index, 1);
+                }
+            }
+            function deleteAllMedias() {
+                vm.model.value = [];
+            }
+            vm.activeMediaEntry = null;
+            function setActiveMedia(mediaEntryOrNull) {
+                vm.activeMediaEntry = mediaEntryOrNull;
+            }
+            vm.editMedia = editMedia;
+            function editMedia(mediaEntry, options, $event) {
+                if ($event)
+                    $event.stopPropagation();
+                options = options || {};
+                setActiveMedia(mediaEntry);
+                var documentInfo = getDocumentNameAndIcon();
+                // make a clone to avoid editing model directly.
+                var mediaEntryClone = Utilities.copy(mediaEntry);
+                var mediaEditorModel = {
+                    $parentScope: $scope,
+                    // pass in a $parentScope, this maintains the scope inheritance in infinite editing
+                    $parentForm: vm.propertyForm,
+                    // pass in a $parentForm, this maintains the FormController hierarchy with the infinite editing view (if it contains a form)
+                    createFlow: options.createFlow === true,
+                    documentName: documentInfo.name,
+                    mediaEntry: mediaEntryClone,
+                    propertyEditor: {
+                        changeMediaFor: changeMediaFor,
+                        resetCrop: resetCrop
+                    },
+                    enableFocalPointSetter: vm.model.config.enableLocalFocalPoint || false,
+                    view: 'views/common/infiniteeditors/mediaEntryEditor/mediaEntryEditor.html',
+                    size: 'large',
+                    submit: function submit(model) {
+                        vm.model.value[vm.model.value.indexOf(mediaEntry)] = mediaEntryClone;
+                        setActiveMedia(null);
+                        editorService.close();
+                    },
+                    close: function close(model) {
+                        if (model.createFlow === true) {
+                        }
+                        setActiveMedia(null);
+                        editorService.close();
+                    }
+                };
+                // open property settings editor
+                editorService.open(mediaEditorModel);
+            }
+            var getDocumentNameAndIcon = function getDocumentNameAndIcon() {
+                // get node name
+                var contentNodeName = '?';
+                var contentNodeIcon = null;
+                if (vm.umbVariantContent) {
+                    contentNodeName = vm.umbVariantContent.editor.content.name;
+                    if (vm.umbVariantContentEditors) {
+                        contentNodeIcon = vm.umbVariantContentEditors.content.icon.split(' ')[0];
+                    } else if (vm.umbElementEditorContent) {
+                        contentNodeIcon = vm.umbElementEditorContent.model.documentType.icon.split(' ')[0];
+                    }
+                } else if (vm.umbElementEditorContent) {
+                    contentNodeName = vm.umbElementEditorContent.model.documentType.name;
+                    contentNodeIcon = vm.umbElementEditorContent.model.documentType.icon.split(' ')[0];
+                }
+                return {
+                    name: contentNodeName,
+                    icon: contentNodeIcon
+                };
+            };
+            var requestCopyAllMedias = function requestCopyAllMedias() {
+                var mediaKeys = vm.model.value.map(function (x) {
+                    return x.mediaKey;
+                });
+                entityResource.getByIds(mediaKeys, 'Media').then(function (entities) {
+                    // gather aliases
+                    var aliases = entities.map(function (mediaEntity) {
+                        return mediaEntity.metaData.ContentTypeAlias;
+                    });
+                    // remove duplicate aliases
+                    aliases = aliases.filter(function (item, index) {
+                        return aliases.indexOf(item) === index;
+                    });
+                    var documentInfo = getDocumentNameAndIcon();
+                    localizationService.localize('clipboard_labelForArrayOfItemsFrom', [
+                        vm.model.label,
+                        documentInfo.name
+                    ]).then(function (localizedLabel) {
+                        clipboardService.copyArray(clipboardService.TYPES.MEDIA, aliases, vm.model.value, localizedLabel, documentInfo.icon || 'icon-thumbnail-list', vm.model.id);
+                    });
+                });
+            };
+            vm.copyMedia = copyMedia;
+            function copyMedia(mediaEntry) {
+                entityResource.getById(mediaEntry.mediaKey, 'Media').then(function (mediaEntity) {
+                    clipboardService.copy(clipboardService.TYPES.MEDIA, mediaEntity.metaData.ContentTypeAlias, mediaEntry, mediaEntity.name, mediaEntity.icon, mediaEntry.key);
+                });
+            }
+            function requestPasteFromClipboard(createIndex, pasteEntry, pasteType) {
+                if (pasteEntry === undefined) {
+                    return false;
+                }
+                pasteEntry = clipboardService.parseContentForPaste(pasteEntry, pasteType);
+                pasteEntry.key = String.CreateGuid();
+                updateMediaEntryData(pasteEntry);
+                vm.model.value.splice(createIndex, 0, pasteEntry);
+                return true;
+            }
+            function requestRemoveAllMedia() {
+                localizationService.localizeMany([
+                    'mediaPicker_confirmRemoveAllMediaEntryMessage',
+                    'general_remove'
+                ]).then(function (data) {
+                    overlayService.confirmDelete({
+                        title: data[1],
+                        content: data[0],
+                        close: function close() {
+                            overlayService.close();
+                        },
+                        submit: function submit() {
+                            deleteAllMedias();
+                            overlayService.close();
+                        }
+                    });
+                });
+            }
+            vm.sortableOptions = {
+                cursor: 'grabbing',
+                handle: 'umb-media-card',
+                cancel: 'input,textarea,select,option',
+                classes: '.umb-media-card--dragging',
+                distance: 5,
+                tolerance: 'pointer',
+                scroll: true,
+                update: function update(ev, ui) {
+                    setDirty();
+                }
+            };
+            function onAmountOfMediaChanged() {
+                // enable/disable property actions
+                if (copyAllMediasAction) {
+                    copyAllMediasAction.isDisabled = vm.model.value.length === 0;
+                }
+                if (removeAllMediasAction) {
+                    removeAllMediasAction.isDisabled = vm.model.value.length === 0;
+                }
+                // validate limits:
+                if (vm.propertyForm && vm.validationLimit) {
+                    var isMinRequirementGood = vm.validationLimit.min === null || vm.model.value.length >= vm.validationLimit.min;
+                    vm.propertyForm.minCount.$setValidity('minCount', isMinRequirementGood);
+                    var isMaxRequirementGood = vm.validationLimit.max === null || vm.model.value.length <= vm.validationLimit.max;
+                    vm.propertyForm.maxCount.$setValidity('maxCount', isMaxRequirementGood);
+                }
+            }
+            unsubscribe.push($scope.$watch(function () {
+                return vm.model.value.length;
+            }, onAmountOfMediaChanged));
+            $scope.$on('$destroy', function () {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+                try {
+                    for (var _iterator = unsubscribe[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var subscription = _step.value;
+                        subscription();
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return != null) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            });
         }
     }());
 }());

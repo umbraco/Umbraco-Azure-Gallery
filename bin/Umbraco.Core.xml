@@ -377,6 +377,26 @@
             MediaType alias for an image.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.Video">
+            <summary>
+            MediaType alias for a video.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.Audio">
+            <summary>
+            MediaType alias for an audio.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.Article">
+            <summary>
+            MediaType alias for an article.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.VectorGraphics">
+            <summary>
+            MediaType alias for vector graphics.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.AutoSelect">
             <summary>
             MediaType alias indicating allowing auto-selection.
@@ -569,6 +589,46 @@
         <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MultipleMediaPickerGuid">
             <summary>
             Guid for Multiple Media Picker
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3">
+            <summary>
+            Guid for Media Picker v3 as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3Guid">
+            <summary>
+            Guid for Media Picker v3
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3Multiple">
+            <summary>
+            Guid for Media Picker v3 multiple as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3MultipleGuid">
+            <summary>
+            Guid for Media Picker v3 multiple
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3SingleImage">
+            <summary>
+            Guid for Media Picker v3 single-image as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3SingleImageGuid">
+            <summary>
+            Guid for Media Picker v3 single-image
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3MultipleImages">
+            <summary>
+            Guid for Media Picker v3 multi-image as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.MediaPicker3MultipleImagesGuid">
+            <summary>
+            Guid for Media Picker v3 multi-image
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.DataTypes.Guids.RelatedLinks">
@@ -771,6 +831,46 @@
             Guid for Upload
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadVideo">
+            <summary>
+            Guid for UploadVideo as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadVideoGuid">
+            <summary>
+            Guid for UploadVideo
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadAudio">
+            <summary>
+            Guid for UploadAudio as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadAudioGuid">
+            <summary>
+            Guid for UploadAudio
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadArticle">
+            <summary>
+            Guid for UploadArticle as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadArticleGuid">
+            <summary>
+            Guid for UploadArticle
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadVectorGraphics">
+            <summary>
+            Guid for UploadVectorGraphics as string
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.DataTypes.Guids.UploadVectorGraphicsGuid">
+            <summary>
+            Guid for UploadVectorGraphics
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.DataTypes.Guids.LabelString">
             <summary>
             Guid for Label as string
@@ -894,6 +994,26 @@
         <member name="F:Umbraco.Core.Constants.Icons.MediaFile">
             <summary>
             System media file icon
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Icons.MediaVideo">
+            <summary>
+            System media video icon
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Icons.MediaAudio">
+            <summary>
+            System media audio icon
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Icons.MediaArticle">
+            <summary>
+            System media article icon
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Icons.MediaVectorGraphics">
+            <summary>
+            System media vector icon
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.Icons.MediaFolder">
@@ -1048,6 +1168,11 @@
             Media Picker.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.MediaPicker3">
+            <summary>
+            Media Picker v.3.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.PropertyEditors.Aliases.MultipleMediaPicker">
             <summary>
             Multiple Media Picker.
@@ -1171,7 +1296,7 @@
         </member>
         <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.Image">
             <summary>
-            Guid for a Image PropertyTypeGroup object.
+            Guid for an Image PropertyTypeGroup object.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.File">
@@ -1179,9 +1304,29 @@
             Guid for a File PropertyTypeGroup object.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.Video">
+            <summary>
+            Guid for a Video PropertyTypeGroup object.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.Audio">
+            <summary>
+            Guid for an Audio PropertyTypeGroup object.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.Article">
+            <summary>
+            Guid for an Article PropertyTypeGroup object.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.VectorGraphics">
+            <summary>
+            Guid for a VectorGraphics PropertyTypeGroup object.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.PropertyTypeGroups.Membership">
             <summary>
-            Guid for a Image PropertyTypeGroup object.
+            Guid for a Membership PropertyTypeGroup object.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.Security.SuperUserId">
@@ -5951,6 +6096,11 @@
         <member name="P:Umbraco.Core.Models.Identity.IIdentityUserLogin.UserId">
             <summary>
             User Id for the user who owns this login
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Models.MediaWithCrops">
+            <summary>
+            Model used in Razor Views for rendering
             </summary>
         </member>
         <member name="M:Umbraco.Core.Models.PublishedContent.PublishedContentTypeExtensions.TryGetKey(Umbraco.Core.Models.PublishedContent.IPublishedContentType,System.Guid@)">
@@ -14909,6 +15059,11 @@
             </summary>
             <param name="permission"></param>
         </member>
+        <member name="M:Umbraco.Core.Persistence.Repositories.IDocumentRepository.RecycleBinSmells">
+            <summary>
+            Returns true if there is any content in the recycle bin
+            </summary>
+        </member>
         <member name="M:Umbraco.Core.Persistence.Repositories.IContentTypeRepository.GetByQuery(Umbraco.Core.Persistence.Querying.IQuery{Umbraco.Core.Models.PropertyType})">
             <summary>
             Gets all entities of the specified <see cref="T:Umbraco.Core.Models.PropertyType"/> query
@@ -20175,6 +20330,8 @@
         <member name="M:Umbraco.Core.PropertyEditors.ValueConverters.JsonValueConverter.IsConverter(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
             <summary>
             It is a converter for any value type that is "JSON"
+            Unless it's in the Excluded Property Editors list
+            The new MediaPicker 3 stores JSON but we want to use its own ValueConvertor
             </summary>
             <param name="propertyType"></param>
             <returns></returns>
@@ -24622,20 +24779,6 @@
             <param name="contentService"></param>
             <param name="contentId"></param>
         </member>
-        <member name="M:Umbraco.Core.Services.ContentServiceExtensions.RecycleBinSmells(Umbraco.Core.Services.IContentService)">
-            <summary>
-            Returns true if there is any content in the recycle bin
-            </summary>
-            <param name="contentService"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Services.ContentServiceExtensions.RecycleBinSmells(Umbraco.Core.Services.IMediaService)">
-            <summary>
-            Returns true if there is any media in the recycle bin
-            </summary>
-            <param name="mediaService"></param>
-            <returns></returns>
-        </member>
         <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetAllElementTypes(Umbraco.Core.Services.IContentTypeService)">
             <summary>
             Gets all of the element types (e.g. content types that have been marked as an element type).
@@ -25028,6 +25171,11 @@
             Empties the Recycle Bin by deleting all <see cref="T:Umbraco.Core.Models.IContent"/> that resides in the bin
             </summary>
             <param name="userId">Optional Id of the User emptying the Recycle Bin</param>        
+        </member>
+        <member name="M:Umbraco.Core.Services.IContentService.RecycleBinSmells">
+            <summary>
+            Returns true if there is any content in the recycle bin
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Services.IContentService.Sort(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},System.Int32,System.Boolean)">
             <summary>
@@ -26361,6 +26509,11 @@
             Empties the Recycle Bin by deleting all <see cref="T:Umbraco.Core.Models.IMedia"/> that resides in the bin
             </summary>
             <param name="userId">Optional Id of the User emptying the Recycle Bin</param>        
+        </member>
+        <member name="M:Umbraco.Core.Services.IMediaService.RecycleBinSmells">
+            <summary>
+            Returns true if there is any media in the recycle bin
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Services.IMediaService.DeleteMediaOfType(System.Int32,System.Int32)">
             <summary>
@@ -31953,6 +32106,14 @@
             <param name="type">The type to remove.</param>
             <returns>The builder.</returns>
         </member>
+        <member name="M:Umbraco.Core.Composing.WeightedCollectionBuilderBase`3.SetWeight``1(System.Int32)">
+            <summary>
+            Changes the default weight of an item
+            </summary>
+            <typeparam name="T">The type of item</typeparam>
+            <param name="weight">The new weight</param>
+            <returns></returns>
+        </member>
         <member name="T:Umbraco.Core.CompositionExtensions">
             <summary>
             Provides extension methods to the <see cref="T:Umbraco.Core.Composing.Composition"/> class.
@@ -33236,6 +33397,13 @@
             using the Map{TTarget}(object source, ...) TSource is defined as source.GetType().</para>
             <para>In both cases, TTarget is explicit and not typeof(target).</para>
             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Mapping.UmbracoMapper.#ctor(Umbraco.Core.Mapping.MapDefinitionCollection,Umbraco.Core.Scoping.IScopeProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Mapping.UmbracoMapper"/> class.
+            </summary>
+            <param name="profiles"></param>
+            <param name="scopeProvider"></param>
         </member>
         <member name="M:Umbraco.Core.Mapping.UmbracoMapper.#ctor(Umbraco.Core.Mapping.MapDefinitionCollection)">
             <summary>

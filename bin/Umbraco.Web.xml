@@ -370,14 +370,6 @@
         <member name="M:Umbraco.Web.Composing.ModuleInjector`1.Dispose">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco.Web.Dashboards.DashboardCollectionBuilder.SetWeight``1(System.Int32)">
-            <summary>
-            Changes the default weight of a dashboard
-            </summary>
-            <typeparam name="T">The type of dashboard</typeparam>
-            <param name="weight">The new dashboard weight</param>
-            <returns></returns>
-        </member>
         <member name="T:Umbraco.Web.Editors.Filters.ContentSaveModelValidator">
             <summary>
             Validator for <see cref="T:Umbraco.Web.Models.ContentEditing.ContentItemSave"/>
@@ -10921,6 +10913,50 @@
             <param name="rawValue"></param>
             <returns></returns>
         </member>
+        <member name="T:Umbraco.Web.PropertyEditors.FileUploadConfiguration">
+            <summary>
+            Represents the configuration for the file upload address value editor.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.FileUploadConfigurationEditor">
+            <summary>
+            Represents the configuration editor for the file upload value editor.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.MediaPicker3Configuration">
+            <summary>
+            Represents the configuration for the media picker value editor.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.MediaPicker3ConfigurationEditor">
+            <summary>
+            Represents the configuration editor for the media picker value editor.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.MediaPicker3ConfigurationEditor.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.PropertyEditors.MediaPicker3ConfigurationEditor"/> class.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.MediaPicker3PropertyEditor">
+            <summary>
+            Represents a media picker property editor.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.MediaPicker3PropertyEditor.#ctor(Umbraco.Core.Logging.ILogger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Web.PropertyEditors.MediaPicker3PropertyEditor"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.MediaPicker3PropertyEditor.CreateConfigurationEditor">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.MediaPicker3PropertyEditor.MediaPicker3PropertyValueEditor.#ctor(Umbraco.Core.PropertyEditors.DataEditorAttribute)">
+            <remarks>
+             Note: no FromEditor() and ToEditor() methods
+             We do not want to transform the way the data is stored in the DB and would like to keep a raw JSON string
+             </remarks>
+        </member>
         <member name="T:Umbraco.Web.PropertyEditors.ParameterEditors.MultipleMediaPickerParameterEditor">
             <summary>
             Represents a multiple media picker macro parameter editor.
@@ -11069,6 +11105,29 @@
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.ConvertIntermediateToObject(Umbraco.Core.Models.PublishedContent.IPublishedElement,Umbraco.Core.Models.PublishedContent.IPublishedPropertyType,Umbraco.Core.PropertyEditors.PropertyCacheLevel,System.Object,System.Boolean)">
             <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.MediaPickerWithCropsValueConverter.IsConverter(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
+            <summary>
+            Enusre this property value convertor is for the New Media Picker with Crops aka MediaPicker 3
+            </summary>
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.MediaPickerWithCropsValueConverter.IsValue(System.Object,Umbraco.Core.PropertyEditors.PropertyValueLevel)">
+            <summary>
+            Check if the raw JSON value is not an empty array
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Umbraco.Web.PropertyEditors.ValueConverters.MediaPickerWithCropsValueConverter.GetPropertyValueType(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)" -->
+        <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.MediaPickerWithCropsValueConverter.IsMultipleDataType(Umbraco.Core.Models.PublishedContent.PublishedDataType)">
+            <summary>
+            Is the media picker configured to pick multiple media items
+            </summary>
+            <param name="dataType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Web.PropertyEditors.ValueConverters.MediaPickerWithCropsValueConverter.MediaWithCropsDto">
+            <summary>
+            Model/DTO that represents the JSON that the MediaPicker3 stores
+            </summary>
         </member>
         <member name="T:Umbraco.Web.PropertyEditors.ValueConverters.NestedContentManyValueConverter">
             <inheritdoc />
@@ -11225,6 +11284,7 @@
         <member name="T:Umbraco.Web.PropertyEditors.MediaPickerPropertyEditor">
             <summary>
             Represents a media picker property editor.
+            Marked as Deprecated as best to use the NEW Media Picker aka MediaPicker3
             </summary>
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.MediaPickerPropertyEditor.#ctor(Umbraco.Core.Logging.ILogger)">
@@ -11884,6 +11944,9 @@
             <inheritdoc />
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.ValueListConfigurationEditor.FromConfigurationEditor(System.Collections.Generic.IDictionary{System.String,System.Object},Umbraco.Core.PropertyEditors.ValueListConfiguration)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Web.PropertyEditors.FileUploadPropertyEditor.CreateConfigurationEditor">
             <inheritdoc />
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.FileUploadPropertyEditor.CreateValueEditor">
@@ -22591,6 +22654,11 @@
             Gets the URL helper.
             </summary>
             <remarks>This URL helper is created without any route data and an empty request context.</remarks>
+        </member>
+        <member name="T:Umbraco.Core.PropertyEditors.IFileExtensionsConfig">
+            <summary>
+            Marker interface for any editor configuration that supports defining file extensions
+            </summary>
         </member>
     </members>
 </doc>
