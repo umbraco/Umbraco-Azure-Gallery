@@ -1451,15 +1451,15 @@
                     scaffoldKeys = scaffoldKeys.filter(function (value, index, self) {
                         return self.indexOf(value) === index;
                     });
-                    scaffoldKeys.forEach(function (contentTypeKey) {
-                        tasks.push(contentResource.getScaffoldByKey(-20, contentTypeKey).then(function (scaffold) {
+                    tasks.push(contentResource.getScaffoldByKeys(-20, scaffoldKeys).then(function (scaffolds) {
+                        Object.values(scaffolds).forEach(function (scaffold) {
                             // self.scaffolds might not exists anymore, this happens if this instance has been destroyed before the load is complete.
                             if (self.scaffolds) {
                                 self.scaffolds.push(formatScaffoldData(scaffold));
                             }
-                        }).catch(function () {
-                        }));
-                    });
+                        });
+                    }).catch(function () {
+                    }));
                     return $q.all(tasks);
                 },
                 /**
@@ -3515,11 +3515,12 @@
                 for (var i = 0; i < preVals.length; i++) {
                     preValues.push({
                         hideLabel: preVals[i].hideLabel,
-                        alias: preVals[i].key,
+                        alias: preVals[i].key != undefined ? preVals[i].key : preVals[i].alias,
                         description: preVals[i].description,
                         label: preVals[i].label,
                         view: preVals[i].view,
-                        value: preVals[i].value
+                        value: preVals[i].value,
+                        config: preVals[i].config
                     });
                 }
                 return preValues;
@@ -6224,7 +6225,7 @@ When building a custom infinite editor view you can use the same components as a
             }
             var elt;
             // Initialize opt object
-            opt = angular.extend({}, defaultOpt, opt);
+            opt = Utilities.extend({}, defaultOpt, opt);
             label = label.toLowerCase();
             elt = opt.target;
             if (typeof opt.target === 'string') {
@@ -9159,7 +9160,7 @@ When building a custom infinite editor view you can use the same components as a
     function searchResultFormatter(umbRequestHelper) {
         function configureDefaultResult(content, treeAlias, appAlias) {
             content.editorPath = appAlias + '/' + treeAlias + '/edit/' + content.id;
-            angular.extend(content.metaData, { treeAlias: treeAlias });
+            Utilities.extend(content.metaData, { treeAlias: treeAlias });
         }
         function configureContentResult(content, treeAlias, appAlias) {
             content.menuUrl = umbRequestHelper.getApiUrl('contentTreeBaseUrl', 'GetMenu', [
@@ -9167,7 +9168,7 @@ When building a custom infinite editor view you can use the same components as a
                 { application: appAlias }
             ]);
             content.editorPath = appAlias + '/' + treeAlias + '/edit/' + content.id;
-            angular.extend(content.metaData, { treeAlias: treeAlias });
+            Utilities.extend(content.metaData, { treeAlias: treeAlias });
             content.subTitle = content.metaData.Url;
         }
         function configureMemberResult(member, treeAlias, appAlias) {
@@ -9176,7 +9177,7 @@ When building a custom infinite editor view you can use the same components as a
                 { application: appAlias }
             ]);
             member.editorPath = appAlias + '/' + treeAlias + '/edit/' + (member.key ? member.key : member.id);
-            angular.extend(member.metaData, { treeAlias: treeAlias });
+            Utilities.extend(member.metaData, { treeAlias: treeAlias });
             member.subTitle = member.metaData.Email;
         }
         function configureMediaResult(media, treeAlias, appAlias) {
@@ -9185,7 +9186,7 @@ When building a custom infinite editor view you can use the same components as a
                 { application: appAlias }
             ]);
             media.editorPath = appAlias + '/' + treeAlias + '/edit/' + media.id;
-            angular.extend(media.metaData, { treeAlias: treeAlias });
+            Utilities.extend(media.metaData, { treeAlias: treeAlias });
         }
         return {
             configureContentResult: configureContentResult,
@@ -10556,7 +10557,7 @@ When building a custom infinite editor view you can use the same components as a
     function tinyMceService($rootScope, $q, imageHelper, $locale, $http, $timeout, stylesheetResource, macroResource, macroService, $routeParams, umbRequestHelper, angularHelper, userService, editorService, entityResource, eventsService, localStorageService) {
         //These are absolutely required in order for the macros to render inline
         //we put these as extended elements because they get merged on top of the normal allowed elements by tiny mce
-        var extendedValidElements = '@[id|class|style],-div[id|dir|class|align|style],ins[datetime|cite],-ul[class|style],-li[class|style],-h1[id|dir|class|align|style],-h2[id|dir|class|align|style],-h3[id|dir|class|align|style],-h4[id|dir|class|align|style],-h5[id|dir|class|align|style],-h6[id|style|dir|class|align],span[id|class|style]';
+        var extendedValidElements = '@[id|class|style],-div[id|dir|class|align|style],ins[datetime|cite],-ul[class|style],-li[class|style],-h1[id|dir|class|align|style],-h2[id|dir|class|align|style],-h3[id|dir|class|align|style],-h4[id|dir|class|align|style],-h5[id|dir|class|align|style],-h6[id|style|dir|class|align],span[id|class|style|lang]';
         var fallbackStyles = [
             {
                 title: 'Page header',
@@ -10957,7 +10958,7 @@ When building a custom infinite editor view you can use the same components as a
                         //paste_word_valid_elements: validPasteElements,
                         paste_preprocess: cleanupPasteData
                     };
-                    angular.extend(config, pasteConfig);
+                    Utilities.extend(config, pasteConfig);
                     if (tinyMceConfig.customConfig) {
                         //if there is some custom config, we need to see if the string value of each item might actually be json and if so, we need to
                         // convert it to json instead of having it as a string since this is what tinymce requires
@@ -10972,7 +10973,7 @@ When building a custom infinite editor view you can use the same components as a
                                         //overwrite the baseline config item if it is an array, we want to concat the items in the array, otherwise
                                         //if it's an object it will overwrite the baseline
                                         if (Utilities.isArray(config[i]) && Utilities.isArray(tinyMceConfig.customConfig[i])) {
-                                            //concat it and below this concat'd array will overwrite the baseline in angular.extend
+                                            //concat it and below this concat'd array will overwrite the baseline in Utilities.extend
                                             tinyMceConfig.customConfig[i] = config[i].concat(tinyMceConfig.customConfig[i]);
                                         }
                                     } catch (e) {
@@ -10986,7 +10987,7 @@ When building a custom infinite editor view you can use the same components as a
                                 }
                             }
                         }
-                        angular.extend(config, tinyMceConfig.customConfig);
+                        Utilities.extend(config, tinyMceConfig.customConfig);
                     }
                     return config;
                 });
@@ -15046,10 +15047,9 @@ When building a custom infinite editor view you can use the same components as a
         /**
    * Facade to angular.extend
    * Use this with Angular objects, for vanilla JS objects, use Object.assign()
+   * This is an alias as it to allow passing an unknown number of arguments
    */
-        var extend = function extend(dst, src) {
-            return angular.extend(dst, src);
-        };
+        var extend = angular.extend;
         /**
    * Equivalent to angular.isFunction
    */

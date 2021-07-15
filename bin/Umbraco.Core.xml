@@ -379,20 +379,40 @@
         </member>
         <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.Video">
             <summary>
-            MediaType alias for a video.
+            MediaType name for a video.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.Audio">
             <summary>
-            MediaType alias for an audio.
+            MediaType name for an audio.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.Article">
             <summary>
-            MediaType alias for an article.
+            MediaType name for an article.
             </summary>
         </member>
         <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.VectorGraphics">
+            <summary>
+            MediaType name for vector graphics.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.VideoAlias">
+            <summary>
+            MediaType alias for a video.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.AudioAlias">
+            <summary>
+            MediaType alias for an audio.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.ArticleAlias">
+            <summary>
+            MediaType alias for an article.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Constants.Conventions.MediaTypes.VectorGraphicsAlias">
             <summary>
             MediaType alias for vector graphics.
             </summary>
@@ -1510,6 +1530,11 @@
             A true/false value indicating whether the content dashboard should be visible for all user groups.
             </summary>
         </member>
+        <member name="F:Umbraco.Core.Constants.AppSettings.ContentDashboardPath">
+            <summary>
+            The path to use when constructing the URL for retrieving data for the content dashboard.
+            </summary>
+        </member>
         <member name="F:Umbraco.Core.Constants.AppSettings.DisableElectionForSingleServer">
             <summary>
             TODO: FILL ME IN
@@ -1961,6 +1986,829 @@
             <param name="throwOnMissing">A value indicating whether to throw on missing dependency, or just ignore the dependency.</param>
             <param name="reverse">A value indicating whether to reverse the order.</param>
             <returns>The (topologically) sorted items.</returns>
+        </member>
+        <member name="T:Umbraco.Core.Events.UnattendedInstallEventArgs">
+            <summary>
+            Used to notify that an Unattended install has completed
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.CancellableEnumerableObjectEventArgs`1">
+            <summary>
+            Represents event data, for events that support cancellation, and expose impacted objects.
+            </summary>
+            <typeparam name="TEventObject">The type of the exposed, impacted objects.</typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Events.CancellableObjectEventArgs`1">
+            <summary>
+            Represent event data, for events that support cancellation, and expose an impacted object.
+            </summary>
+            <typeparam name="TEventObject">The type of the exposed, impacted object.</typeparam>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableObjectEventArgs`1.EventObject">
+            <summary>
+            Gets or sets the impacted object.
+            </summary>
+            <remarks>
+            This is protected so that inheritors can expose it with their own name
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Events.ContentPublishedEventArgs">
+            <summary>
+            Represents event data for the Published event.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentPublishedEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentPublishedEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentPublishedEventArgs.HasPublishedCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Determines whether a culture has been published, during a Published event.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentPublishedEventArgs.HasUnpublishedCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Determines whether a culture has been unpublished, during a Published event.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.ContentPublishingEventArgs">
+            <summary>
+            Represents event data for the Publishing event.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentPublishingEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentPublishingEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentPublishingEventArgs.IsPublishingCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Determines whether a culture is being published, during a Publishing event.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentPublishingEventArgs.IsUnpublishingCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Determines whether a culture is being unpublished, during a Publishing event.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.ContentSavedEventArgs">
+            <summary>
+            Represents event data for the Saved event.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavedEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},Umbraco.Core.Events.EventMessages,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentSavedEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavedEventArgs.HasSavedCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Determines whether a culture has been saved, during a Saved event.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.ContentSavingEventArgs">
+            <summary>
+            Represent event data for the Saving event.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.ToContentSavedEventArgs">
+            <summary>
+            Converts <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> to <see cref="T:Umbraco.Core.Events.ContentSavedEventArgs"/> while preserving all args state
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.ToContentPublishedEventArgs">
+            <summary>
+            Converts <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> to <see cref="T:Umbraco.Core.Events.ContentPublishedEventArgs"/> while preserving all args state
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.ToContentPublishingEventArgs">
+            <summary>
+            Converts <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> to <see cref="T:Umbraco.Core.Events.ContentPublishingEventArgs"/> while preserving all args state
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.#ctor(Umbraco.Core.Models.IContent,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.IsSavingCulture(Umbraco.Core.Models.IContent,System.String)">
+            <summary>
+            Determines whether a culture is being saved, during a Saving event.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.CancellableEventArgs">
+            <summary>
+            Represents event data for events that support cancellation.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableEventArgs.CanCancel">
+            <summary>
+            Flag to determine if this instance will support being cancellable
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableEventArgs.Cancel">
+            <summary>
+            If this instance supports cancellation, this gets/sets the cancel value
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.CancellableEventArgs.CancelOperation(Umbraco.Core.Events.EventMessage)">
+            <summary>
+            if this instance supports cancellation, this will set Cancel to true with an affiliated cancellation message
+            </summary>
+            <param name="cancelationMessage"></param>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableEventArgs.Messages">
+            <summary>
+            Returns the EventMessages object which is used to add messages to the message collection for this event
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableEventArgs.AdditionalData">
+            <summary>
+            In some cases raised evens might need to contain additional arbitrary readonly data which can be read by event subscribers
+            </summary>
+            <remarks>
+            This allows for a bit of flexibility in our event raising - it's not pretty but we need to maintain backwards compatibility
+            so we cannot change the strongly typed nature for some events.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableEventArgs.EventState">
+            <summary>
+            This can be used by event subscribers to store state in the event args so they easily deal with custom state data between a starting ("ing")
+            event and an ending ("ed") event
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.CancellableObjectEventArgs">
+            <summary>
+            Provides a base class for classes representing event data, for events that support cancellation, and expose an impacted object.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.CancellableObjectEventArgs.EventObject">
+            <summary>
+            Gets or sets the impacted object.
+            </summary>
+            <remarks>
+            This is protected so that inheritors can expose it with their own name
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Events.CopyEventArgs`1.Copy">
+            <summary>
+            The copied entity
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.CopyEventArgs`1.Original">
+            <summary>
+            The original entity
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.CopyEventArgs`1.ParentId">
+            <summary>
+            Gets or Sets the Id of the objects new parent.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting multiple entities that are used in the delete operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting multiple entities that are used in the delete operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean)">
+            <summary>
+            Constructor accepting multiple entities that are used in the delete operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Constructor accepting multiple entities that are used in the delete operation
+            </summary>
+            <param name="eventObject"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0,System.Boolean)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+        </member>
+        <member name="P:Umbraco.Core.Events.DeleteEventArgs`1.DeletedEntities">
+            <summary>
+            Returns all entities that were deleted during the operation
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.DeleteEventArgs`1.MediaFilesToDelete">
+            <summary>
+            A list of media files that can be added to during a deleted operation for which Umbraco will ensure are removed
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.DeleteEventArgs.Id">
+            <summary>
+            Gets the Id of the object being deleted.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.DeleteRevisionsEventArgs.IsDeletingSpecificRevision">
+            <summary>
+            Returns true if we are deleting a specific revision
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.EventDefinitionFilter">
+            <summary>
+            The filter used in the <see cref="T:Umbraco.Core.Events.IEventDispatcher"/> GetEvents method which determines
+            how the result list is filtered
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Events.EventDefinitionFilter.All">
+            <summary>
+            Returns all events tracked
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Events.EventDefinitionFilter.FirstIn">
+            <summary>
+            Deduplicates events and only returns the first duplicate instance tracked
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Events.EventDefinitionFilter.LastIn">
+            <summary>
+            Deduplicates events and only returns the last duplicate instance tracked
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.EventExtensions">
+            <summary>
+            Extension methods for cancellable event operations
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventExtensions.IsRaisedEventCancelled``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``1,``0)">
+            <summary>
+            Raises a cancelable event and returns a value indicating whether the event should be cancelled.
+            </summary>
+            <typeparam name="TSender">The type of the event source.</typeparam>
+            <typeparam name="TArgs">The type of the event data.</typeparam>
+            <param name="eventHandler">The event handler.</param>
+            <param name="args">The event source.</param>
+            <param name="sender">The event data.</param>
+            <returns>A value indicating whether the cancelable event should be cancelled</returns>
+            <remarks>A cancelable event is raised by a component when it is about to perform an action that can be canceled.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventExtensions.RaiseEvent``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``1,``0)">
+            <summary>
+            Raises an event.
+            </summary>
+            <typeparam name="TSender">The type of the event source.</typeparam>
+            <typeparam name="TArgs">The type of the event data.</typeparam>
+            <param name="eventHandler">The event handler.</param>
+            <param name="args">The event source.</param>
+            <param name="sender">The event data.</param>
+        </member>
+        <member name="T:Umbraco.Core.Events.EventMessage">
+            <summary>
+            An event message
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventMessage.#ctor(System.String,System.String,Umbraco.Core.Events.EventMessageType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.EventMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.EventMessage.IsDefaultEventMessage">
+            <summary>
+            This is used to track if this message should be used as a default message so that Umbraco doesn't also append it's own default messages
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.EventMessages">
+            <summary>
+            Event messages collection
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.EventMessageType">
+            <summary>
+            The type of event message
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.EventNameExtractor">
+             <summary>
+             There is actually no way to discover an event name in c# at the time of raising the event. It is possible
+             to get the event name from the handler that is being executed based on the event being raised, however that is not
+             what we want in this case. We need to find the event name before it is being raised - you would think that it's possible
+             with reflection or anything but that is not the case, the delegate that defines an event has no info attached to it, it
+             is literally just an event.
+            
+             So what this does is take the sender and event args objects, looks up all public/static events on the sender that have
+             a generic event handler with generic arguments (but only) one, then we match the type of event arguments with the ones
+             being passed in. As it turns out, in our services this will work for the majority of our events! In some cases it may not
+             work and we'll have to supply a string but hopefully this saves a bit of magic strings.
+            
+             We can also write tests to validate these are all working correctly for all services.
+             </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventNameExtractor.FindEvent(System.Type,System.Type,System.Func{System.String,System.Boolean})">
+            <summary>
+            Finds the event name on the sender that matches the args type
+            </summary>
+            <param name="senderType"></param>
+            <param name="argsType"></param>
+            <param name="exclude">
+            A filter to exclude matched event names, this filter should return true to exclude the event name from being matched
+            </param>
+            <returns>
+            null if not found or an ambiguous match
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventNameExtractor.FindEvent(System.Object,System.Object,System.Func{System.String,System.Boolean})">
+            <summary>
+            Finds the event name on the sender that matches the args type
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+            <param name="exclude">
+            A filter to exclude matched event names, this filter should return true to exclude the event name from being matched
+            </param>
+            <returns>
+            null if not found or an ambiguous match
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventNameExtractor.MatchIngNames(System.String)">
+            <summary>
+            Return true if the event is named with an ING name such as "Saving" or "RollingBack"
+            </summary>
+            <param name="eventName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Events.EventNameExtractor.MatchNonIngNames(System.String)">
+            <summary>
+            Return true if the event is not named with an ING name such as "Saving" or "RollingBack"
+            </summary>
+            <param name="eventName"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Umbraco.Core.Events.EventNameExtractor.CandidateEvents">
+            <summary>
+            Used to cache all candidate events for a given type so we don't re-look them up
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Events.EventNameExtractor.MatchedEventNames">
+            <summary>
+            Used to cache all matched event names by (sender type + arg type) so we don't re-look them up
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.IEventDispatcher">
+            <summary>
+            Dispatches events from within a scope.
+            </summary>
+            <remarks>
+            <para>The name of the event is auto-magically discovered by matching the sender type, args type, and
+            eventHandler type. If the match is not unique, then the name parameter must be used to specify the
+            name in an explicit way.</para>
+            <para>What happens when an event is dispatched depends on the scope settings. It can be anything from
+            "trigger immediately" to "just ignore". Refer to the scope documentation for more details.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.DispatchCancelable(System.EventHandler,System.Object,Umbraco.Core.Events.CancellableEventArgs,System.String)">
+            <summary>
+            Dispatches a cancelable event.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="sender">The object that raised the event.</param>
+            <param name="args">The event data.</param>
+            <param name="name">The optional name of the event.</param>
+            <returns>A value indicating whether the cancelable event was cancelled.</returns>
+            <remarks>See general remarks on the interface.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.DispatchCancelable``1(System.EventHandler{``0},System.Object,``0,System.String)">
+            <summary>
+            Dispatches a cancelable event.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="sender">The object that raised the event.</param>
+            <param name="args">The event data.</param>
+            <param name="name">The optional name of the event.</param>
+            <returns>A value indicating whether the cancelable event was cancelled.</returns>
+            <remarks>See general remarks on the interface.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.DispatchCancelable``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``0,``1,System.String)">
+            <summary>
+            Dispatches a cancelable event.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="sender">The object that raised the event.</param>
+            <param name="args">The event data.</param>
+            <param name="name">The optional name of the event.</param>
+            <returns>A value indicating whether the cancelable event was cancelled.</returns>
+            <remarks>See general remarks on the interface.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.Dispatch(System.EventHandler,System.Object,System.EventArgs,System.String)">
+            <summary>
+            Dispatches an event.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="sender">The object that raised the event.</param>
+            <param name="args">The event data.</param>
+            <param name="name">The optional name of the event.</param>
+            <remarks>See general remarks on the interface.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.Dispatch``1(System.EventHandler{``0},System.Object,``0,System.String)">
+            <summary>
+            Dispatches an event.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="sender">The object that raised the event.</param>
+            <param name="args">The event data.</param>
+            <param name="name">The optional name of the event.</param>
+            <remarks>See general remarks on the interface.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.Dispatch``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``0,``1,System.String)">
+            <summary>
+            Dispatches an event.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="sender">The object that raised the event.</param>
+            <param name="args">The event data.</param>
+            <param name="name">The optional name of the event.</param>
+            <remarks>See general remarks on the interface.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.ScopeExit(System.Boolean)">
+            <summary>
+            Notifies the dispatcher that the scope is exiting.
+            </summary>
+            <param name="completed">A value indicating whether the scope completed.</param>
+        </member>
+        <member name="M:Umbraco.Core.Events.IEventDispatcher.GetEvents(Umbraco.Core.Events.EventDefinitionFilter)">
+            <summary>
+            Gets the collected events.
+            </summary>
+            <returns>The collected events.</returns>
+        </member>
+        <member name="T:Umbraco.Core.Events.IEventMessagesFactory">
+            <summary>
+            Event messages factory
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Name">
+            <summary>
+            Name of the faulting macro.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Alias">
+            <summary>
+            Alias of the faulting macro.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.MacroSource">
+            <summary>
+            Filename, file path, fully qualified class name, or other key used by the macro engine to do it's processing of the faulting macro.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Exception">
+            <summary>
+            Exception raised.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Behaviour">
+            <summary>
+            Gets or sets the desired behaviour when a matching macro causes an error. See
+            <see cref="T:Umbraco.Core.Macros.MacroErrorBehaviour"/> for definitions. By setting this in your event
+            you can override the default behaviour defined in UmbracoSettings.config.
+            </summary>
+            <value>Macro error behaviour enum.</value>
+        </member>
+        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Html">
+            <summary>
+            The HTML code to display when Behavior is Content.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MigrationEventArgs.MigrationsTypes">
+            <summary>
+            Returns all migrations that were used in the migration runner
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MigrationEventArgs.ConfiguredSemVersion">
+            <summary>
+            Gets the origin version of the migration, i.e. the one that is currently installed.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MigrationEventArgs.TargetSemVersion">
+            <summary>
+            Gets the target version of the migration.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MigrationEventArgs.ProductName">
+            <summary>
+            Gets the product name.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.MigrationEventArgs.MigrationContext">
+            <summary>
+            Gets the migration context.
+            </summary>
+            <remarks>Is only available after migrations have run, for post-migrations.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(System.Boolean,Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.MoveEventInfo{`0}[])">
+            <summary>
+            Constructor accepting a collection of MoveEventInfo objects
+            </summary>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+            <param name="moveInfo">
+            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
+            </param>
+        </member>
+        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.MoveEventInfo{`0}[])">
+            <summary>
+            Constructor accepting a collection of MoveEventInfo objects
+            </summary>
+            <param name="eventMessages"></param>
+            <param name="moveInfo">
+            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
+            </param>
+        </member>
+        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(System.Boolean,Umbraco.Core.Events.MoveEventInfo{`0}[])">
+            <summary>
+            Constructor accepting a collection of MoveEventInfo objects
+            </summary>
+            <param name="canCancel"></param>
+            <param name="moveInfo">
+            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
+            </param>
+        </member>
+        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(Umbraco.Core.Events.MoveEventInfo{`0}[])">
+            <summary>
+            Constructor accepting a collection of MoveEventInfo objects
+            </summary>
+            <param name="moveInfo">
+            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
+            </param>
+        </member>
+        <member name="P:Umbraco.Core.Events.MoveEventArgs`1.MoveInfoCollection">
+            <summary>
+            Gets all MoveEventInfo objects used to create the object
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.NewEventArgs`1.Entity">
+            <summary>
+            The entity being created
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.NewEventArgs`1.Alias">
+            <summary>
+            Gets or Sets the Alias.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.NewEventArgs`1.ParentId">
+            <summary>
+            Gets or Sets the Id of the parent.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.NewEventArgs`1.Parent">
+            <summary>
+            Gets or Sets the parent IContent object.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.PassThroughEventDispatcher">
+            <summary>
+            An IEventDispatcher that immediately raise all events.
+            </summary>
+            <remarks>This means that events will be raised during the scope transaction,
+            whatever happens, and the transaction could roll back in the end.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting multiple entities that are used in the publish operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting multiple entities that are used in the publish operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,System.Boolean)">
+            <summary>
+            Constructor accepting multiple entities that are used in the publish operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="isAllPublished"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Constructor accepting multiple entities that are used in the publish operation
+            </summary>
+            <param name="eventObject"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0,System.Boolean,System.Boolean)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="isAllPublished"></param>
+        </member>
+        <member name="P:Umbraco.Core.Events.PublishEventArgs`1.PublishedEntities">
+            <summary>
+            Returns all entities that were published during the operation
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.QueuingEventDispatcher">
+            <summary>
+            An IEventDispatcher that queues events, and raise them when the scope
+            exits and has been completed.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.QueuingEventDispatcherBase">
+            <summary>
+            An IEventDispatcher that queues events.
+            </summary>
+            <remarks>
+            <para>Can raise, or ignore, cancelable events, depending on option.</para>
+            <para>Implementations must override ScopeExitCompleted to define what
+            to do with the events when the scope exits and has been completed.</para>
+            <para>If the scope exits without being completed, events are ignored.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.NodeObjectType">
+            <summary>
+            Gets the Id of the node object type of the items
+            being deleted from the Recycle Bin.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.RecycleBinEmptiedSuccessfully">
+            <summary>
+            Boolean indicating whether the Recycle Bin was emptied successfully
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.IsContentRecycleBin">
+            <summary>
+            Boolean indicating whether this event was fired for the Content's Recycle Bin.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.IsMediaRecycleBin">
+            <summary>
+            Boolean indicating whether this event was fired for the Media's Recycle Bin.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.RollbackEventArgs`1.Entity">
+            <summary>
+            The entity being rolledback
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Constructor accepting multiple entities that are used in the saving operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="messages"></param>
+            <param name="additionalData"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting multiple entities that are used in the saving operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting multiple entities that are used in the saving operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="messages"></param>
+            <param name="additionalData"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+            <param name="eventMessages"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean)">
+            <summary>
+            Constructor accepting multiple entities that are used in the saving operation
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Constructor accepting multiple entities that are used in the saving operation
+            </summary>
+            <param name="eventObject"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+        </member>
+        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,System.Boolean)">
+            <summary>
+            Constructor accepting a single entity instance
+            </summary>
+            <param name="eventObject"></param>
+            <param name="canCancel"></param>
+        </member>
+        <member name="P:Umbraco.Core.Events.SaveEventArgs`1.SavedEntities">
+            <summary>
+            Returns all entities that were saved during the operation
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Events.SendToPublishEventArgs`1.Entity">
+            <summary>
+            The entity being sent to publish
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.SupersedeEventAttribute">
+            <summary>
+            This is used to know if the event arg attributed should supersede another event arg type when
+            tracking events for the same entity. If one event args supersedes another then the event args that have been superseded
+            will mean that the event will not be dispatched or the args will be filtered to exclude the entity.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Events.TransientEventMessagesFactory">
+            <summary>
+            A simple/default transient messages factory
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Logging.ILogger2.Fatal``3(System.Type,System.Exception,System.String,``0,``1,``2)">
             <summary>
@@ -3151,6 +3999,12 @@
                 and the default access rules for that dashboard will be in use.
             </value>
         </member>
+        <member name="P:Umbraco.Core.Dashboards.ContentDashboardSettings.ContentDashboardPath">
+            <summary>
+            Gets the path to use when constructing the URL for retrieving data for the content dashboard.
+            </summary>
+            <value>The URL path.</value>
+        </member>
         <member name="P:Umbraco.Core.Dashboards.IContentDashboardSettings.AllowContentDashboardAccessToAllUsers">
             <summary>
             Gets a value indicating whether the content dashboard should be available to all users.
@@ -3159,6 +4013,12 @@
                 <c>true</c> if the dashboard is visible for all user groups; otherwise, <c>false</c>
                 and the default access rules for that dashboard will be in use.
             </value>
+        </member>
+        <member name="P:Umbraco.Core.Dashboards.IContentDashboardSettings.ContentDashboardPath">
+            <summary>
+            Gets the path to use when constructing the URL for retrieving data for the content dashboard.
+            </summary>
+            <value>The URL path.</value>
         </member>
         <member name="T:Umbraco.Core.Dashboards.AccessRule">
             <summary>
@@ -6098,10 +6958,138 @@
             User Id for the user who owns this login
             </summary>
         </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.Id">
+            <summary>
+            Gets the integer identifier of the entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.Key">
+            <summary>
+            Gets the Guid unique identifier of the entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.CreateDate">
+            <summary>
+            Gets the creation date.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.UpdateDate">
+            <summary>
+            Gets the last update date.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.Name">
+            <summary>
+            Gets the name of the entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.CreatorId">
+            <summary>
+            Gets the identifier of the user who created this entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.ParentId">
+            <summary>
+            Gets the identifier of the parent entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.Level">
+            <summary>
+            Gets the level of the entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.Path">
+            <summary>
+            Gets the path to the entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.SortOrder">
+            <summary>
+            Gets the sort order of the entity.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.ContentTypeId">
+            <summary>
+            Gets the content type id
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.WriterId">
+            <summary>
+            Gets the identifier of the writer.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.IReadOnlyContentBase.VersionId">
+            <summary>
+            Gets the version identifier.
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Models.MediaWithCrops">
             <summary>
-            Model used in Razor Views for rendering
+            Represents a media item with local crops.
             </summary>
+            <seealso cref="T:Umbraco.Core.Models.PublishedContent.PublishedContentWrapped" />
+        </member>
+        <member name="P:Umbraco.Core.Models.MediaWithCrops.MediaItem">
+            <summary>
+            Gets the media item.
+            </summary>
+            <value>
+            The media item.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Models.MediaWithCrops.Content">
+            <summary>
+            Gets the content/media item.
+            </summary>
+            <value>
+            The content/media item.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Models.MediaWithCrops.LocalCrops">
+            <summary>
+            Gets the local crops.
+            </summary>
+            <value>
+            The local crops.
+            </value>
+        </member>
+        <member name="M:Umbraco.Core.Models.MediaWithCrops.#ctor(Umbraco.Core.Models.PublishedContent.IPublishedContent,Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.MediaWithCrops" /> class.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="localCrops">The local crops.</param>
+        </member>
+        <member name="T:Umbraco.Core.Models.MediaWithCrops`1">
+            <summary>
+            Represents a media item with local crops.
+            </summary>
+            <typeparam name="T">The type of the media item.</typeparam>
+            <seealso cref="T:Umbraco.Core.Models.PublishedContent.PublishedContentWrapped" />
+        </member>
+        <member name="P:Umbraco.Core.Models.MediaWithCrops`1.Content">
+            <summary>
+            Gets the media item.
+            </summary>
+            <value>
+            The media item.
+            </value>
+        </member>
+        <member name="M:Umbraco.Core.Models.MediaWithCrops`1.#ctor(`0,Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.MediaWithCrops`1" /> class.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="localCrops">The local crops.</param>
+        </member>
+        <member name="M:Umbraco.Core.Models.MediaWithCrops`1.op_Implicit(Umbraco.Core.Models.MediaWithCrops{`0})~`0">
+            <summary>
+            Performs an implicit conversion from <see cref="T:Umbraco.Core.Models.MediaWithCrops`1" /> to <see cref="!:T" />.
+            </summary>
+            <param name="mediaWithCrops">The media with crops.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
         </member>
         <member name="M:Umbraco.Core.Models.PublishedContent.PublishedContentTypeExtensions.TryGetKey(Umbraco.Core.Models.PublishedContent.IPublishedContentType,System.Guid@)">
             <summary>
@@ -15661,6 +16649,14 @@
             A non cached <see cref="T:Umbraco.Core.Models.Membership.IUser"/> instance
             </returns>
         </member>
+        <member name="T:Umbraco.Core.Persistence.SqlCeImageMapper">
+            <summary>
+            Custom NPoco mapper for SqlCe
+            </summary>
+            <remarks>
+            Work arounds to handle special columns
+            </remarks>
+        </member>
         <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LoggedInUtc">
             <summary>
             Tracks when the session is created
@@ -16769,6 +17765,11 @@
         <member name="P:Umbraco.Core.Persistence.DatabaseAnnotations.IndexAttribute.ForColumns">
             <summary>
             Gets or sets the column name(s) for the current index
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.DatabaseAnnotations.IndexAttribute.IncludeColumns">
+            <summary>
+            Gets or sets the column name(s) for the columns to include in the index
             </summary>
         </member>
         <member name="T:Umbraco.Core.Persistence.DatabaseAnnotations.IndexTypes">
@@ -18229,6 +19230,23 @@
             <param name="records">The records.</param>
             <returns>The number of records that were inserted.</returns>
         </member>
+        <member name="M:Umbraco.Core.Persistence.NPocoDatabaseExtensions.QueryPaged``1(NPoco.IDatabase,System.Int64,NPoco.Sql,NPoco.Sql)">
+            <summary>
+            Iterates over the result of a paged data set with a db reader
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="database"></param>
+            <param name="pageSize">
+            The number of rows to load per page
+            </param>
+            <param name="sql"></param>
+            <param name="sqlCount">Specify a custom Sql command to get the total count, if null is specified than the auto-generated sql count will be used</param>
+            <returns></returns>
+            <remarks>
+            NPoco's normal Page returns a List{T} but sometimes we don't want all that in memory and instead want to
+            iterate over each row with a reader using Query vs Fetch.
+            </remarks>
+        </member>
         <member name="M:Umbraco.Core.Persistence.NPocoDatabaseExtensions.QueryPaged``1(NPoco.IDatabase,System.Int64,NPoco.Sql)">
             <summary>
             Iterates over the result of a paged data set with a db reader
@@ -19572,6 +20590,46 @@
         <member name="M:Umbraco.Core.Persistence.UmbracoDatabaseFactory.CreateDatabase">
             <inheritdoc />
         </member>
+        <member name="M:Umbraco.Core.PropertyEditors.IPropertyCacheCompressionOptions.IsCompressed(Umbraco.Core.Models.IReadOnlyContentBase,Umbraco.Core.Models.PropertyType,Umbraco.Core.PropertyEditors.IDataEditor,System.Boolean)">
+            <summary>
+            Whether a property on the content is/should be compressed
+            </summary>
+            <param name="content">The content</param>
+            <param name="propertyType">The property to compress or not</param>
+            <param name="dataEditor">The datatype of the property to compress or not</param>
+            <param name="published">Whether this content is the published version</param>
+        </member>
+        <member name="T:Umbraco.Core.PropertyEditors.NoopPropertyCacheCompressionOptions">
+            <summary>
+            Default implementation for <see cref="T:Umbraco.Core.PropertyEditors.IPropertyCacheCompressionOptions"/> which does not compress any property data
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.PropertyEditors.PropertyCacheCompression">
+            <summary>
+            Compresses property data based on config
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.PropertyEditors.IPropertyCacheCompression">
+             <summary>
+             Determines if a property type's value should be compressed in memory
+             </summary>
+             <remarks>
+            
+             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.PropertyEditors.IPropertyCacheCompression.IsCompressed(Umbraco.Core.Models.IReadOnlyContentBase,System.String,System.Boolean)">
+            <summary>
+            Whether a property on the content is/should be compressed
+            </summary>
+            <param name="content">The content</param>
+            <param name="propertyTypeAlias">The property to compress or not</param>
+            <param name="published">Whether this content is the published version</param>
+        </member>
+        <member name="T:Umbraco.Core.PropertyEditors.UnPublishedContentPropertyCacheCompressionOptions">
+            <summary>
+            Compress large, non published text properties
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.PropertyEditors.EyeDropperColorPickerConfiguration">
             <summary>
             Represents the configuration for the Eye Dropper picker value editor.
@@ -20050,6 +21108,12 @@
             Represents the configuration for the image cropper value editor.
             </summary>
         </member>
+        <member name="M:Umbraco.Core.PropertyEditors.ImageCropperConfigurationExtensions.ApplyConfiguration(Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue,Umbraco.Core.PropertyEditors.ImageCropperConfiguration)">
+            <summary>
+            Applies the configuration to ensure only valid crops are kept and have the correct width/height.
+            </summary>
+            <param name="configuration">The configuration.</param>
+        </member>
         <member name="T:Umbraco.Core.PropertyEditors.IManifestValueValidator">
             <summary>
             Defines a value validator that can be referenced in a manifest.
@@ -20256,12 +21320,6 @@
             <summary>
             Determines whether the value has a source image.
             </summary>
-        </member>
-        <member name="M:Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue.ApplyConfiguration(Umbraco.Core.PropertyEditors.ImageCropperConfiguration)">
-            <summary>
-            Applies a configuration.
-            </summary>
-            <remarks>Ensures that all crops defined in the configuration exists in the value.</remarks>
         </member>
         <member name="M:Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue.Equals(Umbraco.Core.PropertyEditors.ValueConverters.ImageCropperValue)">
             <inheritdoc />
@@ -21303,6 +22361,134 @@
             Gets the type of the dynamic configuration provider.
             </summary>
         </member>
+        <member name="T:Umbraco.Core.Serialization.AutoInterningStringConverter">
+            <summary>
+            When applied to a string or string collection field will ensure the deserialized strings are interned
+            </summary>
+            <remarks>
+            Borrowed from https://stackoverflow.com/a/34906004/694494
+            On the same page an interesting approach of using a local intern pool https://stackoverflow.com/a/39605620/694494 which re-uses .NET System.Xml.NameTable
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Serialization.AutoInterningStringKeyCaseInsensitiveDictionaryConverter`1">
+            <summary>
+            When applied to a dictionary with a string key, will ensure the deserialized string keys are interned 
+            </summary>
+            <typeparam name="TValue"></typeparam>
+            <remarks>
+            borrowed from https://stackoverflow.com/a/36116462/694494
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Serialization.AbstractSerializationService.Formatters">
+            <summary>
+              A sequence of <see cref="T:Umbraco.Core.Serialization.IFormatter" /> registered with this serialization service.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.AbstractSerializationService.FromStream(System.IO.Stream,System.Type,System.String)">
+            <summary>
+              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and deserializes the <see cref="T:System.IO.Stream" /> <paramref
+               name="input" /> to an object graph.
+            </summary>
+            <param name="input"> </param>
+            <param name="outputType"> </param>
+            <param name="intent"> </param>
+            <returns> </returns>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.AbstractSerializationService.ToStream(System.Object,System.String)">
+            <summary>
+              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and serializes the <paramref
+               name="input" /> object graph to an <see cref="T:Umbraco.Core.Serialization.IStreamedResult" /> .
+            </summary>
+            <param name="input"> </param>
+            <param name="intent"> </param>
+            <returns> </returns>
+        </member>
+        <member name="T:Umbraco.Core.Serialization.CaseInsensitiveDictionaryConverter`1">
+            <summary>
+            Marks dictionaries so they are deserialized as case-insensitive.
+            </summary>
+            <example>
+            [JsonConverter(typeof(CaseInsensitiveDictionaryConverter{PropertyData[]}))]
+            public Dictionary{string, PropertyData[]} PropertyData {{ get; set; }}
+            </example>
+        </member>
+        <member name="T:Umbraco.Core.Serialization.JsonReadConverter`1">
+            <summary>
+            Provides a base class for custom <see cref="T:Newtonsoft.Json.JsonConverter"/> implementations.
+            </summary>
+            <typeparam name="T">The type of the converted object.</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.Create(System.Type,System.String,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create an instance of objectType, based properties in the JSON object
+            </summary>
+            <param name="objectType">type of object expected</param>
+            <param name="path">The path of the current json token.</param>
+            <param name="jObject">contents of JSON object that will be deserialized</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.CanConvert(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Serialization.JsonNetSerializer.FromStream(System.IO.Stream,System.Type)">
+            <summary>
+            Deserialize input stream to object
+            </summary>
+            <param name="input"></param>
+            <param name="outputType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.JsonNetSerializer.ToStream(System.Object)">
+            <summary>
+            Serialize object to streamed result
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Serialization.JsonToStringConverter">
+            <summary>
+            This is used in order to deserialize a json object on a property into a json string since the property's type is 'string'
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Serialization.NoTypeConverterJsonConverter`1">
+             <summary>
+             This is required if we want to force JSON.Net to not use .Net TypeConverters during serialization/deserialization
+             </summary>
+             <typeparam name="T"></typeparam>
+             <remarks>
+             In some cases this is required if your model has an explicit type converter, see: http://stackoverflow.com/a/31328131/694494
+            
+             NOTE: I was going to use this for the ImageCropDataSetConverter to convert to String, which would have worked by putting this attribute:
+             [JsonConverter(typeof(NoTypeConverterJsonConverter{ImageCropDataSet}))] on top of the ImageCropDataSet class, however it turns out we
+             don't require this because to convert to string, we just override ToString().
+             I'll leave this class here for the future though.
+             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.SerializationService.FromStream(System.IO.Stream,System.Type,System.String)">
+            <summary>
+              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and deserializes the <see cref="T:System.IO.Stream" /> <paramref
+               name="input" /> to an object graph.
+            </summary>
+            <param name="input"> </param>
+            <param name="outputType"> </param>
+            <param name="intent"> </param>
+            <returns> </returns>
+        </member>
+        <member name="M:Umbraco.Core.Serialization.SerializationService.ToStream(System.Object,System.String)">
+            <summary>
+              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and serializes the <paramref
+               name="input" /> object graph to an <see cref="T:Umbraco.Core.Serialization.IStreamedResult" /> .
+            </summary>
+            <param name="input"> </param>
+            <param name="intent"> </param>
+            <returns> </returns>
+        </member>
         <member name="M:Umbraco.Core.Services.IIconService.GetIcon(System.String)">
             <summary>
             Gets the svg string for the icon name found at the global icons path
@@ -21434,6 +22620,20 @@
             <param name="name">The name of the content object.</param>
             <param name="parentId">The identifier of the parent, or -1.</param>
             <param name="contentTypeAlias">The alias of the content type.</param>
+            <param name="userId">The optional id of the user creating the content.</param>
+            <returns>The content object.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.Implement.ContentService.Create(System.String,System.Int32,Umbraco.Core.Models.IContentType,System.Int32)">
+            <summary>
+            Creates an <see cref="T:Umbraco.Core.Models.IContent"/> object of a specified content type.
+            </summary>
+            <remarks>This method simply returns a new, non-persisted, IContent without any identity. It
+            is intended as a shortcut to creating new content objects that does not invoke a save
+            operation against the database.
+            </remarks>
+            <param name="name">The name of the content object.</param>
+            <param name="parentId">The identifier of the parent, or -1.</param>
+            <param name="contentType">The content type of the content</param>
             <param name="userId">The optional id of the user creating the content.</param>
             <returns>The content object.</returns>
         </member>
@@ -21673,7 +22873,7 @@
             <remarks>
             <para>
             Business logic cases such: as unpublishing a mandatory culture, or unpublishing the last culture, checking for pending scheduled publishing, etc... is dealt with in this method.
-            There is quite a lot of cases to take into account along with logic that needs to deal with scheduled saving/publishing, branch saving/publishing, etc...       
+            There is quite a lot of cases to take into account along with logic that needs to deal with scheduled saving/publishing, branch saving/publishing, etc...
             </para>
             </remarks>
         </member>
@@ -25170,7 +26370,7 @@
             <summary>
             Empties the Recycle Bin by deleting all <see cref="T:Umbraco.Core.Models.IContent"/> that resides in the bin
             </summary>
-            <param name="userId">Optional Id of the User emptying the Recycle Bin</param>        
+            <param name="userId">Optional Id of the User emptying the Recycle Bin</param>
         </member>
         <member name="M:Umbraco.Core.Services.IContentService.RecycleBinSmells">
             <summary>
@@ -25306,6 +26506,11 @@
         <member name="M:Umbraco.Core.Services.IContentService.Create(System.String,System.Int32,System.String,System.Int32)">
             <summary>
             Creates a document.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Services.IContentService.Create(System.String,System.Int32,Umbraco.Core.Models.IContentType,System.Int32)">
+            <summary>
+            Creates a document
             </summary>
         </member>
         <member name="M:Umbraco.Core.Services.IContentService.Create(System.String,Umbraco.Core.Models.IContent,System.String,System.Int32)">
@@ -26292,6 +27497,22 @@
             Gets the full dictionary key map.
             </summary>
             <returns>The full dictionary key map.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.ILocalizedTextService2.Localize(System.String,System.String,System.Globalization.CultureInfo,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Localize a key with variables
+            </summary>
+            <param name="area"></param>
+            <param name="alias"></param>
+            <param name="culture"></param>
+            <param name="tokens">This can be null</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.ILocalizedTextService2.GetAllStoredValuesByAreaAndAlias(System.Globalization.CultureInfo)">
+            <summary>
+            Returns all key/values in storage for the given culture
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Umbraco.Core.Services.ILocalizedTextService">
             <summary>
@@ -28134,6 +29355,48 @@
             Extension methods for ILocalizedTextService
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String,System.String[])">
+            <summary>
+            Localize using the current thread culture
+            </summary>
+            <param name="manager"></param>
+            <param name="area"></param>
+            <param name="alias"></param>
+            <param name="tokens"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Localize using the current thread culture
+            </summary>
+            <param name="manager"></param>
+            <param name="area"></param>
+            <param name="alias"></param>
+            <param name="tokens"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String,System.Globalization.CultureInfo,System.String[])">
+            <summary>
+            Localize a key without any variables
+            </summary>
+            <param name="manager"></param>
+            <param name="area"></param>
+            <param name="alias"></param>
+            <param name="culture"></param>
+            <param name="tokens"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String,System.Globalization.CultureInfo,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Localize a key without any variables
+            </summary>
+            <param name="manager"></param>
+            <param name="area"></param>
+            <param name="alias"></param>
+            <param name="culture"></param>
+            <param name="tokens"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String[])">
             <summary>
             Localize using the current thread culture
@@ -28916,6 +30179,11 @@
             Gets the configurations.
             </summary>
         </member>
+        <member name="E:Umbraco.Core.Runtime.CoreRuntime.UnattendedInstalled">
+            <summary>
+            Event to be used to notify when the Unattended Install has finished
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Runtime.MainDom">
             <summary>
             Provides the full implementation of <see cref="T:Umbraco.Core.IMainDom"/>.
@@ -28951,6 +30219,501 @@
             <remarks>
             The lazy initializer call will only call the Acquire callback when it's not been initialized, else it will just return
             the value from _isMainDom which means when we set _isMainDom to false again after being signaled, this will return false;
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Sync.ISyncBootStateAccessor">
+            <summary>
+            Retrieve the state of the sync service
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.ISyncBootStateAccessor.GetSyncBootState">
+            <summary>
+            Get the boot state
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Sync.NonRuntimeLevelBootStateAccessor">
+            <summary>
+            Boot state implementation for when umbraco is not in the run state
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.SyncBootState.Unknown">
+            <summary>
+            Unknown state. Treat as WarmBoot
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.SyncBootState.ColdBoot">
+            <summary>
+            Cold boot. No Sync state
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.SyncBootState.WarmBoot">
+            <summary>
+            Warm boot. Sync state present
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.ApplicationUrlHelper">
+            <summary>
+            A helper used to determine the current server umbraco application URL.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.ApplicationUrlHelper.ApplicationUrlProvider">
+            <summary>
+            Gets or sets a custom provider for the umbraco application URL.
+            </summary>
+            <remarks>
+            <para>Receives the current request as a parameter, and it may be null. Must return a properly
+            formatted URL with scheme and umbraco dir and no trailing slash eg "http://www.mysite.com/umbraco",
+            or <c>null</c>. To be used in auto-load-balancing scenarios where the application URL is not
+            in config files but is determined programmatically.</para>
+            <para>Must be assigned before resolution is frozen.</para>
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Sync.DatabaseServerMessenger">
+            <summary>
+            An <see cref="T:Umbraco.Core.Sync.IServerMessenger"/> that works by storing messages in the database.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.Initialize(Umbraco.Core.Persistence.IUmbracoDatabase)">
+            <summary>
+            Initializes a server that has never synchronized before.
+            </summary>
+            <remarks>
+            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
+            Callers MUST ensure thread-safety.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.Sync">
+            <summary>
+            Synchronize the server (throttled).
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.ProcessDatabaseInstructions(Umbraco.Core.Persistence.IUmbracoDatabase)">
+            <summary>
+            Process instructions from the database.
+            </summary>
+            <remarks>
+            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
+            </remarks>
+            <returns>
+            Returns the number of processed instructions
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.ProcessDatabaseInstructions(System.Collections.Generic.IReadOnlyCollection{Umbraco.Core.Sync.RefreshInstruction},Umbraco.Core.Persistence.Dtos.CacheInstructionDto,System.Collections.Generic.HashSet{Umbraco.Core.Sync.RefreshInstruction},System.Int32@)">
+            <summary>
+            Processes the instruction batch and checks for errors
+            </summary>
+            <param name="instructionBatch"></param>
+            <param name="dto"></param>
+            <param name="processed">
+            Tracks which instructions have already been processed to avoid duplicates
+            </param>
+            <param name="lastId"></param>
+            <returns>
+            returns true if all instructions in the batch were processed, otherwise false if they could not be due to the app being shut down
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.PruneOldInstructions(Umbraco.Core.Persistence.IUmbracoDatabase)">
+            <summary>
+            Remove old instructions from the database
+            </summary>
+            <remarks>
+            Always leave the last (most recent) record in the db table, this is so that not all instructions are removed which would cause
+            the site to cold boot if there's been no instruction activity for more than DaysToRetainInstructions.
+            See: http://issues.umbraco.org/issue/U4-7643#comment=67-25085
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.EnsureInstructions(Umbraco.Core.Persistence.IUmbracoDatabase)">
+            <summary>
+            Ensure that the last instruction that was processed is still in the database.
+            </summary>
+            <remarks>
+            If the last instruction is not in the database anymore, then the messenger
+            should not try to process any instructions, because some instructions might be lost,
+            and it should instead cold-boot.
+            However, if the last synced instruction id is '0' and there are '0' records, then this indicates
+            that it's a fresh site and no user actions have taken place, in this circumstance we do not want to cold
+            boot. See: http://issues.umbraco.org/issue/U4-8627
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.ReadLastSynced">
+            <summary>
+            Reads the last-synced id from file into memory.
+            </summary>
+            <remarks>
+            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.SaveLastSynced(System.Int32)">
+            <summary>
+            Updates the in-memory last-synced id and persists it to file.
+            </summary>
+            <param name="id">The id.</param>
+            <remarks>
+            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
+            </remarks>
+        </member>
+        <member name="F:Umbraco.Core.Sync.DatabaseServerMessenger.LocalIdentity">
+            <summary>
+            Gets the unique local identity of the executing AppDomain.
+            </summary>
+            <remarks>
+            <para>It is not only about the "server" (machine name and appDomainappId), but also about
+            an AppDomain, within a Process, on that server - because two AppDomains running at the same
+            time on the same server (eg during a restart) are, practically, a LB setup.</para>
+            <para>Practically, all we really need is the guid, the other infos are here for information
+            and debugging purposes.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.GetAllInstructions(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JToken})">
+            <summary>
+            Parses out the individual instructions to be processed
+            </summary>
+            <param name="jsonArray"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.NotifyRefreshers(System.Collections.Generic.IEnumerable{Umbraco.Core.Sync.RefreshInstruction},System.Collections.Generic.HashSet{Umbraco.Core.Sync.RefreshInstruction})">
+            <summary>
+            executes the instructions against the cache refresher instances
+            </summary>
+            <param name="instructions"></param>
+            <param name="processed"></param>
+            <returns>
+            Returns true if all instructions were processed, otherwise false if the processing was interrupted (i.e. app shutdown)
+            </returns>
+        </member>
+        <member name="T:Umbraco.Core.Sync.DatabaseServerMessengerOptions">
+            <summary>
+            Provides options to the <see cref="T:Umbraco.Core.Sync.DatabaseServerMessenger"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerMessengerOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Sync.DatabaseServerMessengerOptions"/> with default values.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.MaxProcessingInstructionCount">
+            <summary>
+            The maximum number of instructions that can be processed at startup; otherwise the server cold-boots (rebuilds its caches).
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.DaysToRetainInstructions">
+            <summary>
+            The number of days to keep instructions in the database; records older than this number will be pruned.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.ThrottleSeconds">
+            <summary>
+            The number of seconds to wait between each sync operations.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.PruneThrottleSeconds">
+            <summary>
+            The number of seconds to wait between each prune operations.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.DatabaseServerRegistrar">
+            <summary>
+            A registrar that stores registered server nodes in the database.
+            </summary>
+            <remarks>
+            This is the default registrar which determines a server's role by using a master election process.
+            The master election process doesn't occur until just after startup so this election process doesn't really affect the primary startup phase.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrar.Options">
+            <summary>
+            Gets or sets the registrar options.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrar.#ctor(System.Lazy{Umbraco.Core.Services.IServerRegistrationService},Umbraco.Core.Sync.DatabaseServerRegistrarOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Sync.DatabaseServerRegistrar"/> class.
+            </summary>
+            <param name="registrationService">The registration service.</param>
+            <param name="options">Some options.</param>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrar.Registrations">
+            <summary>
+            Gets the registered servers.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrar.GetCurrentServerRole">
+            <summary>
+            Gets the role of the current server in the application environment.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrar.GetCurrentServerUmbracoApplicationUrl">
+            <summary>
+            Gets the current umbraco application URL.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.DatabaseServerRegistrarOptions">
+            <summary>
+            Provides options to the <see cref="T:Umbraco.Core.Sync.DatabaseServerRegistrar"/>.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrarOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Sync.DatabaseServerRegistrarOptions"/> class with default values.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrarOptions.RecurringSeconds">
+            <summary>
+            The amount of seconds to wait between calls to the database on the background thread
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrarOptions.StaleServerTimeout">
+            <summary>
+            The time span to wait before considering a server stale, after it has last been accessed.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.IServerAddress">
+            <summary>
+            Provides the address of a server.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.IServerAddress.ServerAddress">
+            <summary>
+            Gets the server address.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.IServerMessenger">
+            <summary>
+            Broadcasts distributed cache notifications to all servers of a load balanced environment.
+            </summary>
+            <remarks>Also ensures that the notification is processed on the local environment.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh``1(Umbraco.Core.Cache.ICacheRefresher,``0[])">
+            <summary>
+            Notifies the distributed cache, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="payload">The notification content.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh(Umbraco.Core.Cache.ICacheRefresher,System.String)">
+            <summary>
+            Notifies the distributed cache, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="jsonPayload">The notification content.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh``1(Umbraco.Core.Cache.ICacheRefresher,System.Func{``0,System.Int32},``0[])">
+            <summary>
+            Notifies the distributed cache of specified item invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <typeparam name="T">The type of the invalidated items.</typeparam>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="getNumericId">A function returning the unique identifier of items.</param>
+            <param name="instances">The invalidated items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh``1(Umbraco.Core.Cache.ICacheRefresher,System.Func{``0,System.Guid},``0[])">
+            <summary>
+            Notifies the distributed cache of specified item invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <typeparam name="T">The type of the invalidated items.</typeparam>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="getGuidId">A function returning the unique identifier of items.</param>
+            <param name="instances">The invalidated items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRemove``1(Umbraco.Core.Cache.ICacheRefresher,System.Func{``0,System.Int32},``0[])">
+            <summary>
+            Notifies all servers of specified items removal, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <typeparam name="T">The type of the removed items.</typeparam>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="getNumericId">A function returning the unique identifier of items.</param>
+            <param name="instances">The removed items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRemove(Umbraco.Core.Cache.ICacheRefresher,System.Int32[])">
+            <summary>
+            Notifies all servers of specified items removal, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="numericIds">The unique identifiers of the removed items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh(Umbraco.Core.Cache.ICacheRefresher,System.Int32[])">
+            <summary>
+            Notifies all servers of specified items invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="numericIds">The unique identifiers of the invalidated items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh(Umbraco.Core.Cache.ICacheRefresher,System.Guid[])">
+            <summary>
+            Notifies all servers of specified items invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <param name="refresher">The ICacheRefresher.</param>
+            <param name="guidIds">The unique identifiers of the invalidated items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefreshAll(Umbraco.Core.Cache.ICacheRefresher)">
+            <summary>
+            Notifies all servers of a global invalidation for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
+            </summary>
+            <param name="refresher">The ICacheRefresher.</param>
+        </member>
+        <member name="T:Umbraco.Core.Sync.IServerRegistrar">
+            <summary>
+            Provides server registrations to the distributed cache.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.IServerRegistrar.Registrations">
+            <summary>
+            Gets the server registrations.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerRegistrar.GetCurrentServerRole">
+            <summary>
+            Gets the role of the current server in the application environment.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.IServerRegistrar.GetCurrentServerUmbracoApplicationUrl">
+            <summary>
+            Gets the current umbraco application URL.
+            </summary>
+            <remarks>
+            <para>If the registrar does not provide the umbraco application URL, should return null.</para>
+            <para>Must return null, or a URL that ends with SystemDirectories.Umbraco, and contains a scheme, eg "http://www.mysite.com/umbraco".</para>
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Sync.MessageType">
+            <summary>
+            The message type to be used for syncing across servers.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.RefreshInstruction.#ctor(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.RefreshMethodType,System.String,System.Int32)">
+            <summary>
+            A private constructor to create a new instance
+            </summary>
+            <param name="refresher"></param>
+            <param name="refreshType"></param>
+            <param name="json"></param>
+            <param name="idCount">
+            When the refresh method is <see cref="F:Umbraco.Core.Sync.RefreshMethodType.RefreshByIds"/> we know how many Ids are being refreshed so we know the instruction
+            count which will be taken into account when we store this count in the database. 
+            </param>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.RefreshType">
+            <summary>
+            Gets or sets the refresh action type.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.RefresherId">
+            <summary>
+            Gets or sets the refresher unique identifier.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.GuidId">
+            <summary>
+            Gets or sets the Guid data value.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.IntId">
+            <summary>
+            Gets or sets the int data value.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonIds">
+            <summary>
+            Gets or sets the ids data value.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonIdCount">
+            <summary>
+            Gets or sets the number of Ids contained in the JsonIds json value
+            </summary>
+            <remarks>
+            This is used to determine the instruction count per row
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonPayload">
+            <summary>
+            Gets or sets the payload data value.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.RefreshInstructionEnvelope">
+            <summary>
+            Used for any 'Batched' <see cref="T:Umbraco.Core.Sync.IServerMessenger"/> instances which specifies a set of <see cref="T:Umbraco.Core.Sync.RefreshInstruction"/> targeting a collection of
+            <see cref="T:Umbraco.Core.Sync.IServerAddress"/>
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.RefreshMethodType">
+            <summary>
+            Describes <see cref="T:Umbraco.Core.Sync.RefreshInstruction"/> refresh action type.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.ServerMessengerBase">
+            <summary>
+            Provides a base class for all <see cref="T:Umbraco.Core.Sync.IServerMessenger"/> implementations.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Sync.ServerMessengerBase.RequiresDistributed(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.MessageType)">
+            <summary>
+            Determines whether to make distributed calls when messaging a cache refresher.
+            </summary>
+            <param name="servers">The registered servers.</param>
+            <param name="refresher">The cache refresher.</param>
+            <param name="messageType">The message type.</param>
+            <returns>true if distributed calls are required; otherwise, false, all we have is the local server.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Sync.ServerMessengerBase.DeliverLocal(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.MessageType,System.Collections.Generic.IEnumerable{System.Object},System.String)">
+            <summary>
+            Executes the non strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/> on the local/current server
+            </summary>
+            <param name="refresher"></param>
+            <param name="messageType"></param>
+            <param name="ids"></param>
+            <param name="json"></param>
+            <remarks>
+            Since this is only for non strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/> it will throw for message types that by instance
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Sync.ServerMessengerBase.DeliverLocal``1(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.MessageType,System.Func{``0,System.Object},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Executes the strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher`1"/> on the local/current server
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="refresher"></param>
+            <param name="messageType"></param>
+            <param name="getId"></param>
+            <param name="instances"></param>
+            <remarks>
+            Since this is only for strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher`1"/> it will throw for message types that are not by instance
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Sync.ServerRole">
+            <summary>
+            The role of a server in an application environment.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.ServerRole.Unknown">
+            <summary>
+            The server role is unknown.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.ServerRole.Single">
+            <summary>
+            The server is the single server of a single-server environment.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.ServerRole.Replica">
+            <summary>
+            In a multi-servers environment, the server is a replica server.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Sync.ServerRole.Master">
+            <summary>
+            In a multi-servers environment, the server is the master server.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Sync.SingleServerRegistrar">
+            <summary>
+            Can be used when Umbraco is definitely not operating in a Load Balanced scenario to micro-optimize some startup performance
+            </summary>
+            <remarks>
+            The micro optimization is specifically to avoid a DB query just after the app starts up to determine the <see cref="T:Umbraco.Core.Sync.ServerRole"/>
+            which by default is done with master election by a database query. The master election process doesn't occur until just after startup
+            so this micro optimization doesn't really affect the primary startup phase.
             </remarks>
         </member>
         <member name="T:Umbraco.Core.Attempt">
@@ -35032,824 +36795,6 @@
               <c>true</c> if any of the flags/bits are set within the enum value; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="T:Umbraco.Core.Events.CancellableEnumerableObjectEventArgs`1">
-            <summary>
-            Represents event data, for events that support cancellation, and expose impacted objects.
-            </summary>
-            <typeparam name="TEventObject">The type of the exposed, impacted objects.</typeparam>
-        </member>
-        <member name="T:Umbraco.Core.Events.CancellableObjectEventArgs`1">
-            <summary>
-            Represent event data, for events that support cancellation, and expose an impacted object.
-            </summary>
-            <typeparam name="TEventObject">The type of the exposed, impacted object.</typeparam>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableObjectEventArgs`1.EventObject">
-            <summary>
-            Gets or sets the impacted object.
-            </summary>
-            <remarks>
-            This is protected so that inheritors can expose it with their own name
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Events.ContentPublishedEventArgs">
-            <summary>
-            Represents event data for the Published event.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentPublishedEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentPublishedEventArgs"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentPublishedEventArgs.HasPublishedCulture(Umbraco.Core.Models.IContent,System.String)">
-            <summary>
-            Determines whether a culture has been published, during a Published event.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentPublishedEventArgs.HasUnpublishedCulture(Umbraco.Core.Models.IContent,System.String)">
-            <summary>
-            Determines whether a culture has been unpublished, during a Published event.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.ContentPublishingEventArgs">
-            <summary>
-            Represents event data for the Publishing event.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentPublishingEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentPublishingEventArgs"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentPublishingEventArgs.IsPublishingCulture(Umbraco.Core.Models.IContent,System.String)">
-            <summary>
-            Determines whether a culture is being published, during a Publishing event.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentPublishingEventArgs.IsUnpublishingCulture(Umbraco.Core.Models.IContent,System.String)">
-            <summary>
-            Determines whether a culture is being unpublished, during a Publishing event.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.ContentSavedEventArgs">
-            <summary>
-            Represents event data for the Saved event.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavedEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},Umbraco.Core.Events.EventMessages,System.Collections.Generic.IDictionary{System.String,System.Object})">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentSavedEventArgs"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavedEventArgs.HasSavedCulture(Umbraco.Core.Models.IContent,System.String)">
-            <summary>
-            Determines whether a culture has been saved, during a Saved event.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.ContentSavingEventArgs">
-            <summary>
-            Represent event data for the Saving event.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.ToContentSavedEventArgs">
-            <summary>
-            Converts <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> to <see cref="T:Umbraco.Core.Events.ContentSavedEventArgs"/> while preserving all args state
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.ToContentPublishedEventArgs">
-            <summary>
-            Converts <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> to <see cref="T:Umbraco.Core.Events.ContentPublishedEventArgs"/> while preserving all args state
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.ToContentPublishingEventArgs">
-            <summary>
-            Converts <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> to <see cref="T:Umbraco.Core.Events.ContentPublishingEventArgs"/> while preserving all args state
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.IContent},Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.#ctor(Umbraco.Core.Models.IContent,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.ContentSavingEventArgs"/> class.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.ContentSavingEventArgs.IsSavingCulture(Umbraco.Core.Models.IContent,System.String)">
-            <summary>
-            Determines whether a culture is being saved, during a Saving event.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.CancellableEventArgs">
-            <summary>
-            Represents event data for events that support cancellation.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableEventArgs.CanCancel">
-            <summary>
-            Flag to determine if this instance will support being cancellable
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableEventArgs.Cancel">
-            <summary>
-            If this instance supports cancellation, this gets/sets the cancel value
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.CancellableEventArgs.CancelOperation(Umbraco.Core.Events.EventMessage)">
-            <summary>
-            if this instance supports cancellation, this will set Cancel to true with an affiliated cancellation message
-            </summary>
-            <param name="cancelationMessage"></param>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableEventArgs.Messages">
-            <summary>
-            Returns the EventMessages object which is used to add messages to the message collection for this event
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableEventArgs.AdditionalData">
-            <summary>
-            In some cases raised evens might need to contain additional arbitrary readonly data which can be read by event subscribers
-            </summary>
-            <remarks>
-            This allows for a bit of flexibility in our event raising - it's not pretty but we need to maintain backwards compatibility
-            so we cannot change the strongly typed nature for some events.
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableEventArgs.EventState">
-            <summary>
-            This can be used by event subscribers to store state in the event args so they easily deal with custom state data between a starting ("ing")
-            event and an ending ("ed") event
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.CancellableObjectEventArgs">
-            <summary>
-            Provides a base class for classes representing event data, for events that support cancellation, and expose an impacted object.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.CancellableObjectEventArgs.EventObject">
-            <summary>
-            Gets or sets the impacted object.
-            </summary>
-            <remarks>
-            This is protected so that inheritors can expose it with their own name
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Events.CopyEventArgs`1.Copy">
-            <summary>
-            The copied entity
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.CopyEventArgs`1.Original">
-            <summary>
-            The original entity
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.CopyEventArgs`1.ParentId">
-            <summary>
-            Gets or Sets the Id of the objects new parent.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting multiple entities that are used in the delete operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting multiple entities that are used in the delete operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean)">
-            <summary>
-            Constructor accepting multiple entities that are used in the delete operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Constructor accepting multiple entities that are used in the delete operation
-            </summary>
-            <param name="eventObject"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.DeleteEventArgs`1.#ctor(`0,System.Boolean)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-        </member>
-        <member name="P:Umbraco.Core.Events.DeleteEventArgs`1.DeletedEntities">
-            <summary>
-            Returns all entities that were deleted during the operation
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.DeleteEventArgs`1.MediaFilesToDelete">
-            <summary>
-            A list of media files that can be added to during a deleted operation for which Umbraco will ensure are removed
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.DeleteEventArgs.Id">
-            <summary>
-            Gets the Id of the object being deleted.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.DeleteRevisionsEventArgs.IsDeletingSpecificRevision">
-            <summary>
-            Returns true if we are deleting a specific revision
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.EventDefinitionFilter">
-            <summary>
-            The filter used in the <see cref="T:Umbraco.Core.Events.IEventDispatcher"/> GetEvents method which determines
-            how the result list is filtered
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Events.EventDefinitionFilter.All">
-            <summary>
-            Returns all events tracked
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Events.EventDefinitionFilter.FirstIn">
-            <summary>
-            Deduplicates events and only returns the first duplicate instance tracked
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Events.EventDefinitionFilter.LastIn">
-            <summary>
-            Deduplicates events and only returns the last duplicate instance tracked
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.EventExtensions">
-            <summary>
-            Extension methods for cancellable event operations
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventExtensions.IsRaisedEventCancelled``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``1,``0)">
-            <summary>
-            Raises a cancelable event and returns a value indicating whether the event should be cancelled.
-            </summary>
-            <typeparam name="TSender">The type of the event source.</typeparam>
-            <typeparam name="TArgs">The type of the event data.</typeparam>
-            <param name="eventHandler">The event handler.</param>
-            <param name="args">The event source.</param>
-            <param name="sender">The event data.</param>
-            <returns>A value indicating whether the cancelable event should be cancelled</returns>
-            <remarks>A cancelable event is raised by a component when it is about to perform an action that can be canceled.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventExtensions.RaiseEvent``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``1,``0)">
-            <summary>
-            Raises an event.
-            </summary>
-            <typeparam name="TSender">The type of the event source.</typeparam>
-            <typeparam name="TArgs">The type of the event data.</typeparam>
-            <param name="eventHandler">The event handler.</param>
-            <param name="args">The event source.</param>
-            <param name="sender">The event data.</param>
-        </member>
-        <member name="T:Umbraco.Core.Events.EventMessage">
-            <summary>
-            An event message
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventMessage.#ctor(System.String,System.String,Umbraco.Core.Events.EventMessageType)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Events.EventMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.EventMessage.IsDefaultEventMessage">
-            <summary>
-            This is used to track if this message should be used as a default message so that Umbraco doesn't also append it's own default messages
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.EventMessages">
-            <summary>
-            Event messages collection
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.EventMessageType">
-            <summary>
-            The type of event message
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.EventNameExtractor">
-             <summary>
-             There is actually no way to discover an event name in c# at the time of raising the event. It is possible
-             to get the event name from the handler that is being executed based on the event being raised, however that is not
-             what we want in this case. We need to find the event name before it is being raised - you would think that it's possible
-             with reflection or anything but that is not the case, the delegate that defines an event has no info attached to it, it
-             is literally just an event.
-            
-             So what this does is take the sender and event args objects, looks up all public/static events on the sender that have
-             a generic event handler with generic arguments (but only) one, then we match the type of event arguments with the ones
-             being passed in. As it turns out, in our services this will work for the majority of our events! In some cases it may not
-             work and we'll have to supply a string but hopefully this saves a bit of magic strings.
-            
-             We can also write tests to validate these are all working correctly for all services.
-             </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventNameExtractor.FindEvent(System.Type,System.Type,System.Func{System.String,System.Boolean})">
-            <summary>
-            Finds the event name on the sender that matches the args type
-            </summary>
-            <param name="senderType"></param>
-            <param name="argsType"></param>
-            <param name="exclude">
-            A filter to exclude matched event names, this filter should return true to exclude the event name from being matched
-            </param>
-            <returns>
-            null if not found or an ambiguous match
-            </returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventNameExtractor.FindEvent(System.Object,System.Object,System.Func{System.String,System.Boolean})">
-            <summary>
-            Finds the event name on the sender that matches the args type
-            </summary>
-            <param name="sender"></param>
-            <param name="args"></param>
-            <param name="exclude">
-            A filter to exclude matched event names, this filter should return true to exclude the event name from being matched
-            </param>
-            <returns>
-            null if not found or an ambiguous match
-            </returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventNameExtractor.MatchIngNames(System.String)">
-            <summary>
-            Return true if the event is named with an ING name such as "Saving" or "RollingBack"
-            </summary>
-            <param name="eventName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Events.EventNameExtractor.MatchNonIngNames(System.String)">
-            <summary>
-            Return true if the event is not named with an ING name such as "Saving" or "RollingBack"
-            </summary>
-            <param name="eventName"></param>
-            <returns></returns>
-        </member>
-        <member name="F:Umbraco.Core.Events.EventNameExtractor.CandidateEvents">
-            <summary>
-            Used to cache all candidate events for a given type so we don't re-look them up
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Events.EventNameExtractor.MatchedEventNames">
-            <summary>
-            Used to cache all matched event names by (sender type + arg type) so we don't re-look them up
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.IEventDispatcher">
-            <summary>
-            Dispatches events from within a scope.
-            </summary>
-            <remarks>
-            <para>The name of the event is auto-magically discovered by matching the sender type, args type, and
-            eventHandler type. If the match is not unique, then the name parameter must be used to specify the
-            name in an explicit way.</para>
-            <para>What happens when an event is dispatched depends on the scope settings. It can be anything from
-            "trigger immediately" to "just ignore". Refer to the scope documentation for more details.</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.DispatchCancelable(System.EventHandler,System.Object,Umbraco.Core.Events.CancellableEventArgs,System.String)">
-            <summary>
-            Dispatches a cancelable event.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <param name="sender">The object that raised the event.</param>
-            <param name="args">The event data.</param>
-            <param name="name">The optional name of the event.</param>
-            <returns>A value indicating whether the cancelable event was cancelled.</returns>
-            <remarks>See general remarks on the interface.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.DispatchCancelable``1(System.EventHandler{``0},System.Object,``0,System.String)">
-            <summary>
-            Dispatches a cancelable event.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <param name="sender">The object that raised the event.</param>
-            <param name="args">The event data.</param>
-            <param name="name">The optional name of the event.</param>
-            <returns>A value indicating whether the cancelable event was cancelled.</returns>
-            <remarks>See general remarks on the interface.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.DispatchCancelable``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``0,``1,System.String)">
-            <summary>
-            Dispatches a cancelable event.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <param name="sender">The object that raised the event.</param>
-            <param name="args">The event data.</param>
-            <param name="name">The optional name of the event.</param>
-            <returns>A value indicating whether the cancelable event was cancelled.</returns>
-            <remarks>See general remarks on the interface.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.Dispatch(System.EventHandler,System.Object,System.EventArgs,System.String)">
-            <summary>
-            Dispatches an event.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <param name="sender">The object that raised the event.</param>
-            <param name="args">The event data.</param>
-            <param name="name">The optional name of the event.</param>
-            <remarks>See general remarks on the interface.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.Dispatch``1(System.EventHandler{``0},System.Object,``0,System.String)">
-            <summary>
-            Dispatches an event.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <param name="sender">The object that raised the event.</param>
-            <param name="args">The event data.</param>
-            <param name="name">The optional name of the event.</param>
-            <remarks>See general remarks on the interface.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.Dispatch``2(Umbraco.Core.Events.TypedEventHandler{``0,``1},``0,``1,System.String)">
-            <summary>
-            Dispatches an event.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <param name="sender">The object that raised the event.</param>
-            <param name="args">The event data.</param>
-            <param name="name">The optional name of the event.</param>
-            <remarks>See general remarks on the interface.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.ScopeExit(System.Boolean)">
-            <summary>
-            Notifies the dispatcher that the scope is exiting.
-            </summary>
-            <param name="completed">A value indicating whether the scope completed.</param>
-        </member>
-        <member name="M:Umbraco.Core.Events.IEventDispatcher.GetEvents(Umbraco.Core.Events.EventDefinitionFilter)">
-            <summary>
-            Gets the collected events.
-            </summary>
-            <returns>The collected events.</returns>
-        </member>
-        <member name="T:Umbraco.Core.Events.IEventMessagesFactory">
-            <summary>
-            Event messages factory
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Name">
-            <summary>
-            Name of the faulting macro.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Alias">
-            <summary>
-            Alias of the faulting macro.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.MacroSource">
-            <summary>
-            Filename, file path, fully qualified class name, or other key used by the macro engine to do it's processing of the faulting macro.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Exception">
-            <summary>
-            Exception raised.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Behaviour">
-            <summary>
-            Gets or sets the desired behaviour when a matching macro causes an error. See
-            <see cref="T:Umbraco.Core.Macros.MacroErrorBehaviour"/> for definitions. By setting this in your event
-            you can override the default behaviour defined in UmbracoSettings.config.
-            </summary>
-            <value>Macro error behaviour enum.</value>
-        </member>
-        <member name="P:Umbraco.Core.Events.MacroErrorEventArgs.Html">
-            <summary>
-            The HTML code to display when Behavior is Content.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MigrationEventArgs.MigrationsTypes">
-            <summary>
-            Returns all migrations that were used in the migration runner
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MigrationEventArgs.ConfiguredSemVersion">
-            <summary>
-            Gets the origin version of the migration, i.e. the one that is currently installed.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MigrationEventArgs.TargetSemVersion">
-            <summary>
-            Gets the target version of the migration.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MigrationEventArgs.ProductName">
-            <summary>
-            Gets the product name.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.MigrationEventArgs.MigrationContext">
-            <summary>
-            Gets the migration context.
-            </summary>
-            <remarks>Is only available after migrations have run, for post-migrations.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(System.Boolean,Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.MoveEventInfo{`0}[])">
-            <summary>
-            Constructor accepting a collection of MoveEventInfo objects
-            </summary>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-            <param name="moveInfo">
-            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
-            </param>
-        </member>
-        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(Umbraco.Core.Events.EventMessages,Umbraco.Core.Events.MoveEventInfo{`0}[])">
-            <summary>
-            Constructor accepting a collection of MoveEventInfo objects
-            </summary>
-            <param name="eventMessages"></param>
-            <param name="moveInfo">
-            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
-            </param>
-        </member>
-        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(System.Boolean,Umbraco.Core.Events.MoveEventInfo{`0}[])">
-            <summary>
-            Constructor accepting a collection of MoveEventInfo objects
-            </summary>
-            <param name="canCancel"></param>
-            <param name="moveInfo">
-            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
-            </param>
-        </member>
-        <member name="M:Umbraco.Core.Events.MoveEventArgs`1.#ctor(Umbraco.Core.Events.MoveEventInfo{`0}[])">
-            <summary>
-            Constructor accepting a collection of MoveEventInfo objects
-            </summary>
-            <param name="moveInfo">
-            A collection of MoveEventInfo objects that exposes all entities that have been moved during a single move operation
-            </param>
-        </member>
-        <member name="P:Umbraco.Core.Events.MoveEventArgs`1.MoveInfoCollection">
-            <summary>
-            Gets all MoveEventInfo objects used to create the object
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.NewEventArgs`1.Entity">
-            <summary>
-            The entity being created
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.NewEventArgs`1.Alias">
-            <summary>
-            Gets or Sets the Alias.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.NewEventArgs`1.ParentId">
-            <summary>
-            Gets or Sets the Id of the parent.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.NewEventArgs`1.Parent">
-            <summary>
-            Gets or Sets the parent IContent object.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.PassThroughEventDispatcher">
-            <summary>
-            An IEventDispatcher that immediately raise all events.
-            </summary>
-            <remarks>This means that events will be raised during the scope transaction,
-            whatever happens, and the transaction could roll back in the end.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting multiple entities that are used in the publish operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting multiple entities that are used in the publish operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,System.Boolean)">
-            <summary>
-            Constructor accepting multiple entities that are used in the publish operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="isAllPublished"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Constructor accepting multiple entities that are used in the publish operation
-            </summary>
-            <param name="eventObject"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.PublishEventArgs`1.#ctor(`0,System.Boolean,System.Boolean)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="isAllPublished"></param>
-        </member>
-        <member name="P:Umbraco.Core.Events.PublishEventArgs`1.PublishedEntities">
-            <summary>
-            Returns all entities that were published during the operation
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.QueuingEventDispatcher">
-            <summary>
-            An IEventDispatcher that queues events, and raise them when the scope
-            exits and has been completed.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.QueuingEventDispatcherBase">
-            <summary>
-            An IEventDispatcher that queues events.
-            </summary>
-            <remarks>
-            <para>Can raise, or ignore, cancelable events, depending on option.</para>
-            <para>Implementations must override ScopeExitCompleted to define what
-            to do with the events when the scope exits and has been completed.</para>
-            <para>If the scope exits without being completed, events are ignored.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.NodeObjectType">
-            <summary>
-            Gets the Id of the node object type of the items
-            being deleted from the Recycle Bin.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.RecycleBinEmptiedSuccessfully">
-            <summary>
-            Boolean indicating whether the Recycle Bin was emptied successfully
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.IsContentRecycleBin">
-            <summary>
-            Boolean indicating whether this event was fired for the Content's Recycle Bin.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.RecycleBinEventArgs.IsMediaRecycleBin">
-            <summary>
-            Boolean indicating whether this event was fired for the Media's Recycle Bin.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.RollbackEventArgs`1.Entity">
-            <summary>
-            The entity being rolledback
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages,System.Collections.Generic.IDictionary{System.String,System.Object})">
-            <summary>
-            Constructor accepting multiple entities that are used in the saving operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="messages"></param>
-            <param name="additionalData"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting multiple entities that are used in the saving operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting multiple entities that are used in the saving operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages,System.Collections.Generic.IDictionary{System.String,System.Object})">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="messages"></param>
-            <param name="additionalData"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,System.Boolean,Umbraco.Core.Events.EventMessages)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-            <param name="eventMessages"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Boolean)">
-            <summary>
-            Constructor accepting multiple entities that are used in the saving operation
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Constructor accepting multiple entities that are used in the saving operation
-            </summary>
-            <param name="eventObject"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-        </member>
-        <member name="M:Umbraco.Core.Events.SaveEventArgs`1.#ctor(`0,System.Boolean)">
-            <summary>
-            Constructor accepting a single entity instance
-            </summary>
-            <param name="eventObject"></param>
-            <param name="canCancel"></param>
-        </member>
-        <member name="P:Umbraco.Core.Events.SaveEventArgs`1.SavedEntities">
-            <summary>
-            Returns all entities that were saved during the operation
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Events.SendToPublishEventArgs`1.Entity">
-            <summary>
-            The entity being sent to publish
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.SupersedeEventAttribute">
-            <summary>
-            This is used to know if the event arg attributed should supersede another event arg type when
-            tracking events for the same entity. If one event args supersedes another then the event args that have been superseded
-            will mean that the event will not be dispatched or the args will be filtered to exclude the entity.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Events.TransientEventMessagesFactory">
-            <summary>
-            A simple/default transient messages factory
-            </summary>
-        </member>
         <member name="T:Umbraco.Core.IMainDom">
             <summary>
             Represents the main AppDomain running for a given application.
@@ -39354,116 +40299,6 @@
             The default password hasher that is User aware so that it can process the hashing based on the user's settings
             </summary>
         </member>
-        <member name="P:Umbraco.Core.Serialization.AbstractSerializationService.Formatters">
-            <summary>
-              A sequence of <see cref="T:Umbraco.Core.Serialization.IFormatter" /> registered with this serialization service.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.AbstractSerializationService.FromStream(System.IO.Stream,System.Type,System.String)">
-            <summary>
-              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and deserializes the <see cref="T:System.IO.Stream" /> <paramref
-               name="input" /> to an object graph.
-            </summary>
-            <param name="input"> </param>
-            <param name="outputType"> </param>
-            <param name="intent"> </param>
-            <returns> </returns>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.AbstractSerializationService.ToStream(System.Object,System.String)">
-            <summary>
-              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and serializes the <paramref
-               name="input" /> object graph to an <see cref="T:Umbraco.Core.Serialization.IStreamedResult" /> .
-            </summary>
-            <param name="input"> </param>
-            <param name="intent"> </param>
-            <returns> </returns>
-        </member>
-        <member name="T:Umbraco.Core.Serialization.CaseInsensitiveDictionaryConverter`1">
-            <summary>
-            Marks dictionaries so they are deserialized as case-insensitive.
-            </summary>
-            <example>
-            [JsonConverter(typeof(CaseInsensitiveDictionaryConverter{PropertyData[]}))]
-            public Dictionary{string, PropertyData[]} PropertyData {{ get; set; }}
-            </example>
-        </member>
-        <member name="T:Umbraco.Core.Serialization.JsonReadConverter`1">
-            <summary>
-            Provides a base class for custom <see cref="T:Newtonsoft.Json.JsonConverter"/> implementations.
-            </summary>
-            <typeparam name="T">The type of the converted object.</typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.Create(System.Type,System.String,Newtonsoft.Json.Linq.JObject)">
-            <summary>
-            Create an instance of objectType, based properties in the JSON object
-            </summary>
-            <param name="objectType">type of object expected</param>
-            <param name="path">The path of the current json token.</param>
-            <param name="jObject">contents of JSON object that will be deserialized</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.CanConvert(System.Type)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco.Core.Serialization.JsonReadConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <inheritdoc />
-        </member>
-        <member name="M:Umbraco.Core.Serialization.JsonNetSerializer.FromStream(System.IO.Stream,System.Type)">
-            <summary>
-            Deserialize input stream to object
-            </summary>
-            <param name="input"></param>
-            <param name="outputType"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.JsonNetSerializer.ToStream(System.Object)">
-            <summary>
-            Serialize object to streamed result
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Umbraco.Core.Serialization.JsonToStringConverter">
-            <summary>
-            This is used in order to deserialize a json object on a property into a json string since the property's type is 'string'
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Serialization.NoTypeConverterJsonConverter`1">
-             <summary>
-             This is required if we want to force JSON.Net to not use .Net TypeConverters during serialization/deserialization
-             </summary>
-             <typeparam name="T"></typeparam>
-             <remarks>
-             In some cases this is required if your model has an explicit type converter, see: http://stackoverflow.com/a/31328131/694494
-            
-             NOTE: I was going to use this for the ImageCropDataSetConverter to convert to String, which would have worked by putting this attribute:
-             [JsonConverter(typeof(NoTypeConverterJsonConverter{ImageCropDataSet}))] on top of the ImageCropDataSet class, however it turns out we
-             don't require this because to convert to string, we just override ToString().
-             I'll leave this class here for the future though.
-             </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.SerializationService.FromStream(System.IO.Stream,System.Type,System.String)">
-            <summary>
-              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and deserializes the <see cref="T:System.IO.Stream" /> <paramref
-               name="input" /> to an object graph.
-            </summary>
-            <param name="input"> </param>
-            <param name="outputType"> </param>
-            <param name="intent"> </param>
-            <returns> </returns>
-        </member>
-        <member name="M:Umbraco.Core.Serialization.SerializationService.ToStream(System.Object,System.String)">
-            <summary>
-              Finds an <see cref="T:Umbraco.Core.Serialization.IFormatter" /> with a matching <paramref name="intent" /> , and serializes the <paramref
-               name="input" /> object graph to an <see cref="T:Umbraco.Core.Serialization.IStreamedResult" /> .
-            </summary>
-            <param name="input"> </param>
-            <param name="intent"> </param>
-            <returns> </returns>
-        </member>
         <member name="T:Umbraco.Core.Settable`1">
             <summary>
             Represents a value that can be assigned a value.
@@ -40700,488 +41535,6 @@
         </member>
         <member name="P:Umbraco.Core.StringUdi.IsRoot">
             <inheritdoc/>
-        </member>
-        <member name="T:Umbraco.Core.Sync.ApplicationUrlHelper">
-            <summary>
-            A helper used to determine the current server umbraco application URL.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.ApplicationUrlHelper.ApplicationUrlProvider">
-            <summary>
-            Gets or sets a custom provider for the umbraco application URL.
-            </summary>
-            <remarks>
-            <para>Receives the current request as a parameter, and it may be null. Must return a properly
-            formatted URL with scheme and umbraco dir and no trailing slash eg "http://www.mysite.com/umbraco",
-            or <c>null</c>. To be used in auto-load-balancing scenarios where the application URL is not
-            in config files but is determined programmatically.</para>
-            <para>Must be assigned before resolution is frozen.</para>
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Sync.DatabaseServerMessenger">
-            <summary>
-            An <see cref="T:Umbraco.Core.Sync.IServerMessenger"/> that works by storing messages in the database.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.Boot">
-            <summary>
-            Boots the messenger.
-            </summary>
-            <remarks>
-            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
-            Callers MUST ensure thread-safety.
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.Initialize(Umbraco.Core.Persistence.IUmbracoDatabase)">
-            <summary>
-            Initializes a server that has never synchronized before.
-            </summary>
-            <remarks>
-            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
-            Callers MUST ensure thread-safety.
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.Sync">
-            <summary>
-            Synchronize the server (throttled).
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.ProcessDatabaseInstructions(Umbraco.Core.Persistence.IUmbracoDatabase)">
-            <summary>
-            Process instructions from the database.
-            </summary>
-            <remarks>
-            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
-            </remarks>
-            <returns>
-            Returns the number of processed instructions
-            </returns>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.ProcessDatabaseInstructions(System.Collections.Generic.IReadOnlyCollection{Umbraco.Core.Sync.RefreshInstruction},Umbraco.Core.Persistence.Dtos.CacheInstructionDto,System.Collections.Generic.HashSet{Umbraco.Core.Sync.RefreshInstruction},System.Int32@)">
-            <summary>
-            Processes the instruction batch and checks for errors
-            </summary>
-            <param name="instructionBatch"></param>
-            <param name="dto"></param>
-            <param name="processed">
-            Tracks which instructions have already been processed to avoid duplicates
-            </param>
-            <param name="lastId"></param>
-            <returns>
-            returns true if all instructions in the batch were processed, otherwise false if they could not be due to the app being shut down
-            </returns>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.PruneOldInstructions(Umbraco.Core.Persistence.IUmbracoDatabase)">
-            <summary>
-            Remove old instructions from the database
-            </summary>
-            <remarks>
-            Always leave the last (most recent) record in the db table, this is so that not all instructions are removed which would cause
-            the site to cold boot if there's been no instruction activity for more than DaysToRetainInstructions.
-            See: http://issues.umbraco.org/issue/U4-7643#comment=67-25085
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.EnsureInstructions(Umbraco.Core.Persistence.IUmbracoDatabase)">
-            <summary>
-            Ensure that the last instruction that was processed is still in the database.
-            </summary>
-            <remarks>
-            If the last instruction is not in the database anymore, then the messenger
-            should not try to process any instructions, because some instructions might be lost,
-            and it should instead cold-boot.
-            However, if the last synced instruction id is '0' and there are '0' records, then this indicates
-            that it's a fresh site and no user actions have taken place, in this circumstance we do not want to cold
-            boot. See: http://issues.umbraco.org/issue/U4-8627
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.ReadLastSynced">
-            <summary>
-            Reads the last-synced id from file into memory.
-            </summary>
-            <remarks>
-            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.SaveLastSynced(System.Int32)">
-            <summary>
-            Updates the in-memory last-synced id and persists it to file.
-            </summary>
-            <param name="id">The id.</param>
-            <remarks>
-            Thread safety: this is NOT thread safe. Because it is NOT meant to run multi-threaded.
-            </remarks>
-        </member>
-        <member name="F:Umbraco.Core.Sync.DatabaseServerMessenger.LocalIdentity">
-            <summary>
-            Gets the unique local identity of the executing AppDomain.
-            </summary>
-            <remarks>
-            <para>It is not only about the "server" (machine name and appDomainappId), but also about
-            an AppDomain, within a Process, on that server - because two AppDomains running at the same
-            time on the same server (eg during a restart) are, practically, a LB setup.</para>
-            <para>Practically, all we really need is the guid, the other infos are here for information
-            and debugging purposes.</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.GetAllInstructions(System.Collections.Generic.IEnumerable{Newtonsoft.Json.Linq.JToken})">
-            <summary>
-            Parses out the individual instructions to be processed
-            </summary>
-            <param name="jsonArray"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessenger.NotifyRefreshers(System.Collections.Generic.IEnumerable{Umbraco.Core.Sync.RefreshInstruction},System.Collections.Generic.HashSet{Umbraco.Core.Sync.RefreshInstruction})">
-            <summary>
-            executes the instructions against the cache refresher instances
-            </summary>
-            <param name="instructions"></param>
-            <param name="processed"></param>
-            <returns>
-            Returns true if all instructions were processed, otherwise false if the processing was interrupted (i.e. app shutdown)
-            </returns>
-        </member>
-        <member name="T:Umbraco.Core.Sync.DatabaseServerMessengerOptions">
-            <summary>
-            Provides options to the <see cref="T:Umbraco.Core.Sync.DatabaseServerMessenger"/>.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerMessengerOptions.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Sync.DatabaseServerMessengerOptions"/> with default values.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.MaxProcessingInstructionCount">
-            <summary>
-            The maximum number of instructions that can be processed at startup; otherwise the server cold-boots (rebuilds its caches).
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.InitializingCallbacks">
-            <summary>
-            A list of callbacks that will be invoked if the lastsynced.txt file does not exist.
-            </summary>
-            <remarks>
-            These callbacks will typically be for eg rebuilding the xml cache file, or examine indexes, based on
-            the data in the database to get this particular server node up to date.
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.DaysToRetainInstructions">
-            <summary>
-            The number of days to keep instructions in the database; records older than this number will be pruned.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.ThrottleSeconds">
-            <summary>
-            The number of seconds to wait between each sync operations.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerMessengerOptions.PruneThrottleSeconds">
-            <summary>
-            The number of seconds to wait between each prune operations.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.DatabaseServerRegistrar">
-            <summary>
-            A registrar that stores registered server nodes in the database.
-            </summary>
-            <remarks>
-            This is the default registrar which determines a server's role by using a master election process.
-            The master election process doesn't occur until just after startup so this election process doesn't really affect the primary startup phase.
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrar.Options">
-            <summary>
-            Gets or sets the registrar options.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrar.#ctor(System.Lazy{Umbraco.Core.Services.IServerRegistrationService},Umbraco.Core.Sync.DatabaseServerRegistrarOptions)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Sync.DatabaseServerRegistrar"/> class.
-            </summary>
-            <param name="registrationService">The registration service.</param>
-            <param name="options">Some options.</param>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrar.Registrations">
-            <summary>
-            Gets the registered servers.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrar.GetCurrentServerRole">
-            <summary>
-            Gets the role of the current server in the application environment.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrar.GetCurrentServerUmbracoApplicationUrl">
-            <summary>
-            Gets the current umbraco application URL.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.DatabaseServerRegistrarOptions">
-            <summary>
-            Provides options to the <see cref="T:Umbraco.Core.Sync.DatabaseServerRegistrar"/>.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.DatabaseServerRegistrarOptions.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Sync.DatabaseServerRegistrarOptions"/> class with default values.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrarOptions.RecurringSeconds">
-            <summary>
-            The amount of seconds to wait between calls to the database on the background thread
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.DatabaseServerRegistrarOptions.StaleServerTimeout">
-            <summary>
-            The time span to wait before considering a server stale, after it has last been accessed.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.IServerAddress">
-            <summary>
-            Provides the address of a server.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.IServerAddress.ServerAddress">
-            <summary>
-            Gets the server address.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.IServerMessenger">
-            <summary>
-            Broadcasts distributed cache notifications to all servers of a load balanced environment.
-            </summary>
-            <remarks>Also ensures that the notification is processed on the local environment.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh``1(Umbraco.Core.Cache.ICacheRefresher,``0[])">
-            <summary>
-            Notifies the distributed cache, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="payload">The notification content.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh(Umbraco.Core.Cache.ICacheRefresher,System.String)">
-            <summary>
-            Notifies the distributed cache, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="jsonPayload">The notification content.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh``1(Umbraco.Core.Cache.ICacheRefresher,System.Func{``0,System.Int32},``0[])">
-            <summary>
-            Notifies the distributed cache of specified item invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <typeparam name="T">The type of the invalidated items.</typeparam>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="getNumericId">A function returning the unique identifier of items.</param>
-            <param name="instances">The invalidated items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh``1(Umbraco.Core.Cache.ICacheRefresher,System.Func{``0,System.Guid},``0[])">
-            <summary>
-            Notifies the distributed cache of specified item invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <typeparam name="T">The type of the invalidated items.</typeparam>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="getGuidId">A function returning the unique identifier of items.</param>
-            <param name="instances">The invalidated items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRemove``1(Umbraco.Core.Cache.ICacheRefresher,System.Func{``0,System.Int32},``0[])">
-            <summary>
-            Notifies all servers of specified items removal, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <typeparam name="T">The type of the removed items.</typeparam>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="getNumericId">A function returning the unique identifier of items.</param>
-            <param name="instances">The removed items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRemove(Umbraco.Core.Cache.ICacheRefresher,System.Int32[])">
-            <summary>
-            Notifies all servers of specified items removal, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="numericIds">The unique identifiers of the removed items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh(Umbraco.Core.Cache.ICacheRefresher,System.Int32[])">
-            <summary>
-            Notifies all servers of specified items invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="numericIds">The unique identifiers of the invalidated items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefresh(Umbraco.Core.Cache.ICacheRefresher,System.Guid[])">
-            <summary>
-            Notifies all servers of specified items invalidation, for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <param name="refresher">The ICacheRefresher.</param>
-            <param name="guidIds">The unique identifiers of the invalidated items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerMessenger.PerformRefreshAll(Umbraco.Core.Cache.ICacheRefresher)">
-            <summary>
-            Notifies all servers of a global invalidation for a specified <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/>.
-            </summary>
-            <param name="refresher">The ICacheRefresher.</param>
-        </member>
-        <member name="T:Umbraco.Core.Sync.IServerRegistrar">
-            <summary>
-            Provides server registrations to the distributed cache.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.IServerRegistrar.Registrations">
-            <summary>
-            Gets the server registrations.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerRegistrar.GetCurrentServerRole">
-            <summary>
-            Gets the role of the current server in the application environment.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.IServerRegistrar.GetCurrentServerUmbracoApplicationUrl">
-            <summary>
-            Gets the current umbraco application URL.
-            </summary>
-            <remarks>
-            <para>If the registrar does not provide the umbraco application URL, should return null.</para>
-            <para>Must return null, or a URL that ends with SystemDirectories.Umbraco, and contains a scheme, eg "http://www.mysite.com/umbraco".</para>
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Sync.MessageType">
-            <summary>
-            The message type to be used for syncing across servers.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.RefreshInstruction.#ctor(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.RefreshMethodType,System.String,System.Int32)">
-            <summary>
-            A private constructor to create a new instance
-            </summary>
-            <param name="refresher"></param>
-            <param name="refreshType"></param>
-            <param name="json"></param>
-            <param name="idCount">
-            When the refresh method is <see cref="F:Umbraco.Core.Sync.RefreshMethodType.RefreshByIds"/> we know how many Ids are being refreshed so we know the instruction
-            count which will be taken into account when we store this count in the database. 
-            </param>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.RefreshType">
-            <summary>
-            Gets or sets the refresh action type.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.RefresherId">
-            <summary>
-            Gets or sets the refresher unique identifier.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.GuidId">
-            <summary>
-            Gets or sets the Guid data value.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.IntId">
-            <summary>
-            Gets or sets the int data value.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonIds">
-            <summary>
-            Gets or sets the ids data value.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonIdCount">
-            <summary>
-            Gets or sets the number of Ids contained in the JsonIds json value
-            </summary>
-            <remarks>
-            This is used to determine the instruction count per row
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Sync.RefreshInstruction.JsonPayload">
-            <summary>
-            Gets or sets the payload data value.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.RefreshInstructionEnvelope">
-            <summary>
-            Used for any 'Batched' <see cref="T:Umbraco.Core.Sync.IServerMessenger"/> instances which specifies a set of <see cref="T:Umbraco.Core.Sync.RefreshInstruction"/> targeting a collection of
-            <see cref="T:Umbraco.Core.Sync.IServerAddress"/>
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.RefreshMethodType">
-            <summary>
-            Describes <see cref="T:Umbraco.Core.Sync.RefreshInstruction"/> refresh action type.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.ServerMessengerBase">
-            <summary>
-            Provides a base class for all <see cref="T:Umbraco.Core.Sync.IServerMessenger"/> implementations.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Sync.ServerMessengerBase.RequiresDistributed(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.MessageType)">
-            <summary>
-            Determines whether to make distributed calls when messaging a cache refresher.
-            </summary>
-            <param name="servers">The registered servers.</param>
-            <param name="refresher">The cache refresher.</param>
-            <param name="messageType">The message type.</param>
-            <returns>true if distributed calls are required; otherwise, false, all we have is the local server.</returns>
-        </member>
-        <member name="M:Umbraco.Core.Sync.ServerMessengerBase.DeliverLocal(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.MessageType,System.Collections.Generic.IEnumerable{System.Object},System.String)">
-            <summary>
-            Executes the non strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/> on the local/current server
-            </summary>
-            <param name="refresher"></param>
-            <param name="messageType"></param>
-            <param name="ids"></param>
-            <param name="json"></param>
-            <remarks>
-            Since this is only for non strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher"/> it will throw for message types that by instance
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Sync.ServerMessengerBase.DeliverLocal``1(Umbraco.Core.Cache.ICacheRefresher,Umbraco.Core.Sync.MessageType,System.Func{``0,System.Object},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Executes the strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher`1"/> on the local/current server
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="refresher"></param>
-            <param name="messageType"></param>
-            <param name="getId"></param>
-            <param name="instances"></param>
-            <remarks>
-            Since this is only for strongly typed <see cref="T:Umbraco.Core.Cache.ICacheRefresher`1"/> it will throw for message types that are not by instance
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Sync.ServerRole">
-            <summary>
-            The role of a server in an application environment.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Sync.ServerRole.Unknown">
-            <summary>
-            The server role is unknown.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Sync.ServerRole.Single">
-            <summary>
-            The server is the single server of a single-server environment.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Sync.ServerRole.Replica">
-            <summary>
-            In a multi-servers environment, the server is a replica server.
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Sync.ServerRole.Master">
-            <summary>
-            In a multi-servers environment, the server is the master server.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Sync.SingleServerRegistrar">
-            <summary>
-            Can be used when Umbraco is definitely not operating in a Load Balanced scenario to micro-optimize some startup performance
-            </summary>
-            <remarks>
-            The micro optimization is specifically to avoid a DB query just after the app starts up to determine the <see cref="T:Umbraco.Core.Sync.ServerRole"/>
-            which by default is done with master election by a database query. The master election process doesn't occur until just after startup
-            so this micro optimization doesn't really affect the primary startup phase.
-            </remarks>
         </member>
         <member name="T:Umbraco.Core.SystemUtilities">
             <summary>

@@ -716,30 +716,48 @@
  * Controls the dashboards of the application
  * 
  */
-    function DashboardController($scope, $routeParams, dashboardResource, localizationService) {
+    function DashboardController($scope, $q, $routeParams, $location, dashboardResource, localizationService) {
+        var DASHBOARD_QUERY_PARAM = 'dashboard';
         $scope.page = {};
         $scope.page.nameLocked = true;
         $scope.page.loading = true;
         $scope.dashboard = {};
-        localizationService.localize('sections_' + $routeParams.section).then(function (name) {
+        var promises = [];
+        promises.push(localizationService.localize('sections_' + $routeParams.section).then(function (name) {
             $scope.dashboard.name = name;
-        });
-        dashboardResource.getDashboard($routeParams.section).then(function (tabs) {
+        }));
+        promises.push(dashboardResource.getDashboard($routeParams.section).then(function (tabs) {
             $scope.dashboard.tabs = tabs;
-            // set first tab to active
             if ($scope.dashboard.tabs && $scope.dashboard.tabs.length > 0) {
-                $scope.dashboard.tabs[0].active = true;
+                initActiveTab();
             }
+        }));
+        $q.all(promises).then(function () {
             $scope.page.loading = false;
         });
         $scope.changeTab = function (tab) {
-            $scope.dashboard.tabs.forEach(function (tab) {
-                tab.active = false;
-            });
+            if ($scope.dashboard.tabs && $scope.dashboard.tabs.length > 0) {
+                $scope.dashboard.tabs.forEach(function (tab) {
+                    tab.active = false;
+                });
+            }
             tab.active = true;
+            $location.search(DASHBOARD_QUERY_PARAM, tab.alias);
         };
+        function initActiveTab() {
+            // Check the query parameter for a dashboard alias
+            var dashboardAlias = $location.search()[DASHBOARD_QUERY_PARAM];
+            var dashboardIndex = $scope.dashboard.tabs.findIndex(function (tab) {
+                return tab.alias === dashboardAlias;
+            });
+            // Set the first dashboard to active if there is no query parameter or we can't find a matching dashboard for the alias
+            var activeIndex = dashboardIndex !== -1 ? dashboardIndex : 0;
+            var tab = $scope.dashboard.tabs[activeIndex];
+            tab.active = true;
+            $location.search(DASHBOARD_QUERY_PARAM, tab.alias);
+        }
     }
-    //register it
+    // Register it
     angular.module('umbraco').controller('Umbraco.DashboardController', DashboardController);
     'use strict';
     (function () {
@@ -1563,7 +1581,7 @@
                     newDataType.name = nameArray.join(' - ');
                     // get pre values
                     dataTypeResource.getPreValues(newDataType.selectedEditor).then(function (preValues) {
-                        newDataType.preValues = preValues;
+                        newDataType.preValues = dataTypeHelper.createPreValueProps(preValues);
                         vm.dataType = newDataType;
                         vm.loadingDataType = false;
                     });
@@ -1572,6 +1590,7 @@
             function getDataType() {
                 vm.loadingDataType = true;
                 dataTypeResource.getById($scope.model.id).then(function (dataType) {
+                    dataType.preValues = dataTypeHelper.createPreValueProps(dataType.preValues);
                     vm.dataType = dataType;
                     vm.loadingDataType = false;
                 });
@@ -3196,8 +3215,10 @@
             entityResource.getPagedDescendants($scope.filterOptions.excludeSubFolders ? $scope.currentFolder.id : $scope.startNodeId, 'Media', vm.searchOptions).then(function (data) {
                 // update image data to work with image grid
                 if (data.items) {
+                    var allowedTypes = dialogOptions.filter ? dialogOptions.filter.split(',') : null;
                     data.items.forEach(function (mediaItem) {
-                        return setMediaMetaData(mediaItem);
+                        setMediaMetaData(mediaItem);
+                        mediaItem.filtered = allowedTypes && allowedTypes.indexOf(mediaItem.metaData.ContentTypeAlias) < 0;
                     });
                 }
                 // update images
@@ -4063,31 +4084,47 @@
                 // find diff in name
                 vm.diff.name = JsDiff.diffWords(currentVersion.name, previousVersion.name);
                 // extract all properties from the tabs and create new object for the diff
-                currentVersion.tabs.forEach(function (tab, tabIndex) {
-                    tab.properties.forEach(function (property, propertyIndex) {
-                        var oldProperty = previousVersion.tabs[tabIndex].properties[propertyIndex];
-                        // copy existing properties, so it doesn't manipulate existing properties on page
-                        oldProperty = Utilities.copy(oldProperty);
-                        property = Utilities.copy(property);
-                        // we have to make properties storing values as object into strings (Grid, nested content, etc.)
-                        if (property.value instanceof Object) {
-                            property.value = JSON.stringify(property.value, null, 1);
-                            property.isObject = true;
+                currentVersion.tabs.forEach(function (tab) {
+                    tab.properties.forEach(function (property) {
+                        var oldTabIndex = -1;
+                        var oldTabPropertyIndex = -1;
+                        var previousVersionTabs = previousVersion.tabs;
+                        // find the property by alias, but only search until we find it
+                        for (var oti = 0, length = previousVersionTabs.length; oti < length; oti++) {
+                            var opi = previousVersionTabs[oti].properties.findIndex(function (p) {
+                                return p.alias === property.alias;
+                            });
+                            if (opi !== -1) {
+                                oldTabIndex = oti;
+                                oldTabPropertyIndex = opi;
+                                break;
+                            }
                         }
-                        if (oldProperty.value instanceof Object) {
-                            oldProperty.value = JSON.stringify(oldProperty.value, null, 1);
-                            oldProperty.isObject = true;
+                        if (oldTabIndex !== -1 && oldTabPropertyIndex !== -1) {
+                            var oldProperty = previousVersion.tabs[oldTabIndex].properties[oldTabPropertyIndex];
+                            // copy existing properties, so it doesn't manipulate existing properties on page
+                            oldProperty = Utilities.copy(oldProperty);
+                            property = Utilities.copy(property);
+                            // we have to make properties storing values as object into strings (Grid, nested content, etc.)
+                            if (property.value instanceof Object) {
+                                property.value = JSON.stringify(property.value, null, 1);
+                                property.isObject = true;
+                            }
+                            if (oldProperty.value instanceof Object) {
+                                oldProperty.value = JSON.stringify(oldProperty.value, null, 1);
+                                oldProperty.isObject = true;
+                            }
+                            // diff requires a string
+                            property.value = property.value ? property.value + '' : '';
+                            oldProperty.value = oldProperty.value ? oldProperty.value + '' : '';
+                            var diffProperty = {
+                                'alias': property.alias,
+                                'label': property.label,
+                                'diff': property.isObject ? JsDiff.diffJson(property.value, oldProperty.value) : JsDiff.diffWords(property.value, oldProperty.value),
+                                'isObject': property.isObject || oldProperty.isObject
+                            };
+                            vm.diff.properties.push(diffProperty);
                         }
-                        // diff requires a string
-                        property.value = property.value ? property.value + '' : '';
-                        oldProperty.value = oldProperty.value ? oldProperty.value + '' : '';
-                        var diffProperty = {
-                            'alias': property.alias,
-                            'label': property.label,
-                            'diff': property.isObject ? JsDiff.diffJson(property.value, oldProperty.value) : JsDiff.diffWords(property.value, oldProperty.value),
-                            'isObject': property.isObject || oldProperty.isObject ? true : false
-                        };
-                        vm.diff.properties.push(diffProperty);
                     });
                 });
             }
@@ -8399,7 +8436,7 @@
     'use strict';
     (function () {
         'use strict';
-        function HealthCheckController($scope, healthCheckResource) {
+        function HealthCheckController(healthCheckResource) {
             var SUCCESS = 0;
             var WARNING = 1;
             var ERROR = 2;
@@ -8414,6 +8451,7 @@
             vm.checkAllInGroup = checkAllInGroup;
             vm.openGroup = openGroup;
             vm.setViewState = setViewState;
+            vm.parseRegex = parseRegex;
             // Get a (grouped) list of all health checks
             healthCheckResource.getAllChecks().then(function (response) {
                 vm.groups = response;
@@ -8504,6 +8542,9 @@
                         setGroupGlobalResultType(group);
                     }
                 }
+            }
+            function parseRegex(regexAsString) {
+                return new RegExp(regexAsString);
             }
         }
         angular.module('umbraco').controller('Umbraco.Dashboard.HealthCheckController', HealthCheckController);
@@ -8816,18 +8857,7 @@
         vm.preValues = [];
         //method used to configure the pre-values when we retrieve them from the server
         function createPreValueProps(preVals) {
-            vm.preValues = [];
-            for (var i = 0; i < preVals.length; i++) {
-                vm.preValues.push({
-                    hideLabel: preVals[i].hideLabel,
-                    alias: preVals[i].key,
-                    description: preVals[i].description,
-                    label: preVals[i].label,
-                    view: preVals[i].view,
-                    value: preVals[i].value,
-                    config: preVals[i].config
-                });
-            }
+            vm.preValues = dataTypeHelper.createPreValueProps(preVals);
         }
         function setHeaderNameState(content) {
             if (content.isSystem == 1) {
@@ -14901,7 +14931,7 @@
     'use strict';
     (function () {
         'use strict';
-        function PackagesRepoController($scope, $route, $location, $timeout, ourPackageRepositoryResource, $q, packageResource, localStorageService, localizationService) {
+        function PackagesRepoController($scope, $timeout, ourPackageRepositoryResource, $q, packageResource, localStorageService, localizationService) {
             var vm = this;
             vm.packageViewState = 'packageList';
             vm.categories = [];
@@ -14963,7 +14993,9 @@
                 });
                 $q.all([
                     ourPackageRepositoryResource.getCategories().then(function (cats) {
-                        vm.categories = cats;
+                        vm.categories = cats.filter(function (cat) {
+                            return cat.name !== 'Umbraco Pro';
+                        });
                     }),
                     ourPackageRepositoryResource.getPopular(8).then(function (pack) {
                         vm.popular = pack.packages;
@@ -16126,7 +16158,7 @@
         //setup the default config
         var config = { useLabel: false };
         //map the user config
-        angular.extend(config, $scope.model.config);
+        Utilities.extend(config, $scope.model.config);
         //map back to the model
         $scope.model.config = config;
         $scope.isConfigured = $scope.model.prevalues && _.keys($scope.model.prevalues).length > 0;
@@ -16250,7 +16282,7 @@
         };
         //combine the dialogOptions with any values returned from the server
         if ($scope.model.config) {
-            angular.extend(dialogOptions, $scope.model.config);
+            Utilities.extend(dialogOptions, $scope.model.config);
         }
         $scope.openTreePicker = function () {
             var treePicker = dialogOptions;
@@ -16425,7 +16457,7 @@
         };
         //combine the config with any values returned from the server
         if ($scope.model.config) {
-            angular.extend(config, $scope.model.config);
+            Utilities.extend(config, $scope.model.config);
         }
         if ($scope.model.value) {
             if (Array.isArray($scope.model.value)) {
@@ -17812,7 +17844,7 @@
                 delete $scope.model.config.startNode;
             }
             //merge the server config on top of the default config, then set the server config to use the result
-            $scope.model.config = angular.extend(defaultConfig, $scope.model.config);
+            $scope.model.config = Utilities.extend(defaultConfig, $scope.model.config);
             // if the property is mandatory, set the minCount config to 1 (unless of course it is set to something already),
             // that way the minCount/maxCount validation handles the mandatory as well
             if ($scope.model.validation && $scope.model.validation.mandatory && !$scope.model.config.minNumber) {
@@ -17857,7 +17889,7 @@
         };
         //since most of the pre-value config's are used in the dialog options (i.e. maxNumber, minNumber, etc...) we'll merge the
         // pre-value config on to the dialog options
-        angular.extend(dialogOptions, $scope.model.config);
+        Utilities.extend(dialogOptions, $scope.model.config);
         dialogOptions.dataTypeKey = $scope.model.dataTypeKey;
         // if we can't pick more than one item, explicitly disable multiPicker in the dialog options
         if ($scope.model.config.maxNumber && parseInt($scope.model.config.maxNumber) === 1) {
@@ -18217,7 +18249,8 @@
                 }
             };
             // map the user config
-            $scope.model.config = angular.extend(config, $scope.model.config);
+            $scope.model.config = Utilities.extend(config, $scope.model.config);
+            ;
             // ensure the format doesn't get overwritten with an empty string
             if ($scope.model.config.format === '' || $scope.model.config.format === undefined || $scope.model.config.format === null) {
                 $scope.model.config.format = $scope.model.config.pickTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD';
@@ -18375,7 +18408,7 @@
             multiple: false
         };
         //map the user config
-        angular.extend(config, $scope.model.config);
+        Utilities.extend(config, $scope.model.config);
         //map back to the model
         $scope.model.config = config;
         //ensure this is a bool, old data could store zeros/ones or string versions
@@ -18978,6 +19011,7 @@
     'use strict';
     angular.module('umbraco').controller('Umbraco.PropertyEditors.Grid.EmbedController', function ($scope, $timeout, $sce, editorService) {
         function onInit() {
+            $scope.control.icon = $scope.control.icon || 'icon-movie-alt';
             var embedPreview = Utilities.isObject($scope.control.value) && $scope.control.value.preview ? $scope.control.value.preview : $scope.control.value;
             $scope.trustedValue = embedPreview ? $sce.trustAsHtml(embedPreview) : null;
             if (!$scope.control.value) {
@@ -19015,6 +19049,7 @@
     });
     'use strict';
     angular.module('umbraco').controller('Umbraco.PropertyEditors.Grid.MacroController', function ($scope, $timeout, editorService, macroResource, macroService, localizationService, $routeParams) {
+        $scope.control.icon = $scope.control.icon || 'icon-settings-alt';
         localizationService.localize('grid_clickToInsertMacro').then(function (label) {
             $scope.title = label;
         });
@@ -19059,6 +19094,7 @@
     });
     'use strict';
     angular.module('umbraco').controller('Umbraco.PropertyEditors.Grid.MediaController', function ($scope, userService, editorService, localizationService) {
+        $scope.control.icon = $scope.control.icon || 'icon-picture';
         $scope.thumbnailUrl = getThumbnailUrl();
         if (!$scope.model.config.startNodeId) {
             if ($scope.model.config.ignoreUserStartNodes === true) {
@@ -19783,7 +19819,7 @@
                         // merge this template data on to our current value (as if it was new) so that we can preserve what is and isn't
                         // allowed for this template based on the current config.
                         _.each(found.sections, function (templateSection, index) {
-                            angular.extend($scope.model.value.sections[index], Utilities.copy(templateSection));
+                            Utilities.extend($scope.model.value.sections[index], Utilities.copy(templateSection));
                         });
                     }
                 }
@@ -20308,7 +20344,7 @@
         function setModelValueWithSrc(src) {
             if (!$scope.model.value || !$scope.model.value.src) {
                 //we are copying to not overwrite the original config
-                $scope.model.value = angular.extend(Utilities.copy($scope.model.config), { src: src });
+                $scope.model.value = Utilities.extend(Utilities.copy($scope.model.config), { src: src });
             }
         }
         /**
@@ -22176,7 +22212,7 @@
                 if (updatedMediaNodes.indexOf(media.udi) !== -1) {
                     media.loading = true;
                     entityResource.getById(media.udi, 'Media').then(function (mediaEntity) {
-                        angular.extend(media, mediaEntity);
+                        Utilities.extend(media, mediaEntity);
                         media.thumbnail = mediaHelper.resolveFileFromEntity(media, true);
                         media.loading = false;
                     });
@@ -22266,7 +22302,7 @@
                             // we need to update all the media items
                             vm.mediaItems.forEach(function (media) {
                                 if (media.id === model.mediaNode.id) {
-                                    angular.extend(media, mediaEntity);
+                                    Utilities.extend(media, mediaEntity);
                                     media.thumbnail = mediaHelper.resolveFileFromEntity(media, true);
                                 }
                             });
@@ -22446,6 +22482,9 @@
                 crop.editMode = false;
                 window.dispatchEvent(new Event('resize.umbImageGravity'));
             }
+        };
+        $scope.isEmpty = function (crop) {
+            return !crop.label && !crop.alias && !crop.width && !crop.height;
         };
         $scope.useForAlias = function (crop) {
             if (crop.alias == null || crop.alias === '') {
@@ -22704,7 +22743,7 @@
         //since most of the pre-value config's are used in the dialog options (i.e. maxNumber, minNumber, etc...) we'll merge the
         // pre-value config on to the dialog options
         if ($scope.model.config) {
-            angular.extend(dialogOptions, $scope.model.config);
+            Utilities.extend(dialogOptions, $scope.model.config);
         }
         $scope.openMemberPicker = function () {
             var memberPicker = dialogOptions;
@@ -23088,7 +23127,7 @@
             }
         ]);
         angular.module('umbraco').component('nestedContentPropertyEditor', {
-            template: ' <div id="umb-nested-content--{{model.id}}" class="umb-nested-content" ng-class="{\'umb-nested-content--narrow\':!vm.wideMode, \'umb-nested-content--wide\':vm.wideMode}"> <umb-load-indicator class="mt2" ng-if="!vm.inited"></umb-load-indicator> <ng-form name="nestedContentForm" ng-show="vm.inited"> <div class="umb-nested-content__items" ng-hide="vm.nodes.length === 0" ui-sortable="vm.sortableOptions" ng-model="vm.nodes"> <div ng-repeat="node in vm.nodes"> <ng-form name="ncRowForm" val-server-match="{ \'contains\' : node.key }"> <div class="umb-nested-content__item" ng-class="{ \'umb-nested-content__item--active\' : vm.currentNode.key === node.key, \'umb-nested-content__item--single\' : vm.singleMode, \'--error\': ncRowForm.$invalid }"> <div class="umb-nested-content__header-bar" ng-click="vm.editNode($index)" ng-hide="vm.singleMode" umb-auto-focus="{{vm.focusOnNode && vm.currentNode.key === node.key ? \'true\' : \'false\'}}"> <div class="umb-nested-content__heading"><i ng-if="vm.showIcons" class="icon umb-nested-content__item-icon" ng-class="vm.getIcon($index)"></i><span class="umb-nested-content__item-name" ng-class="{\'--has-icon\': vm.showIcons}" ng-bind="vm.getName($index)"></span></div> <div class="umb-nested-content__icons"> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--copy" title="{{vm.labels.copy_icon_title}}" ng-click="vm.clickCopy($event, node);" ng-if="vm.showCopy"> <i class="icon icon-documents" aria-hidden="true"></i> <span class="sr-only">{{vm.labels.copy_icon_title}}</span> </button> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--delete" localize="title" title="general_delete" ng-class="{ \'umb-nested-content__icon--disabled\': !vm.canDeleteNode($index) }" ng-click="vm.requestDeleteNode($index); $event.stopPropagation();"> <i class="icon icon-trash" aria-hidden="true"></i> <span class="sr-only"> <localize key="general_delete">Delete</localize> </span> </button> </div> </div> <div class="umb-nested-content__content" ng-if="vm.currentNode.key === node.key && !vm.sorting"> <umb-nested-content-editor ng-model="node" tab-alias="ncTabAlias"> </umb-nested-content-editor></div> </div> </ng-form> </div> </div> <div ng-hide="vm.hasContentTypes"> <div class="umb-nested-content__help-text"> <localize key="content_nestedContentNoContentTypes">No content types are configured for this property.</localize> </div> </div> <div class="umb-nested-content__footer-bar" ng-hide="!vm.inited || vm.hasContentTypes === false || vm.singleMode === true"> <button type="button" class="btn-reset umb-nested-content__add-content umb-focus" ng-class="{ \'--disabled\': (!vm.scaffolds.length || vm.nodes.length >= vm.maxItems) }" ng-click="vm.openNodeTypePicker($event)" aria-disabled="{{!vm.scaffolds.length || vm.nodes.length >= vm.maxItems}}"> <localize key="grid_addElement">Add element</localize> </button> </div>  <input type="hidden" name="minCount" ng-model="vm.nodes"> <input type="hidden" name="maxCount" ng-model="vm.nodes"> <div ng-messages="nestedContentForm.minCount.$error" show-validation-on-submit> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.minItems, vm.minItems - vm.nodes.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> </div> <div ng-if="nestedContentForm.minCount.$error === true || vm.nodes.length > vm.maxItems"> <div class="help text-error"> <localize key="validation_entriesExceed" tokens="[vm.maxItems, vm.nodes.length - vm.maxItems]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> </div> </ng-form> </div> ',
+            template: ' <div id="umb-nested-content--{{model.id}}" class="umb-nested-content" ng-class="{\'umb-nested-content--narrow\':!vm.wideMode, \'umb-nested-content--wide\':vm.wideMode}"> <umb-load-indicator class="mt2" ng-if="!vm.inited"></umb-load-indicator> <ng-form name="nestedContentForm" ng-show="vm.inited"> <div class="umb-nested-content__items" ng-hide="vm.nodes.length === 0" ui-sortable="vm.sortableOptions" ng-model="vm.nodes"> <div ng-repeat="node in vm.nodes" ng-init="node.icon = vm.getIcon($index)"> <ng-form name="ncRowForm" val-server-match="{ \'contains\': node.key }"> <div class="umb-nested-content__item" ng-class="{ \'umb-nested-content__item--active\' : vm.currentNode.key === node.key, \'umb-nested-content__item--single\' : vm.singleMode, \'--error\': ncRowForm.$invalid }"> <div class="umb-nested-content__header-bar" ng-click="vm.editNode($index)" ng-hide="vm.singleMode" umb-auto-focus="{{vm.focusOnNode && vm.currentNode.key === node.key ? \'true\' : \'false\'}}"> <div class="umb-nested-content__heading"> <umb-icon icon="{{node.icon}}" class="{{node.icon}} icon umb-nested-content__item-icon"> </umb-icon> <span class="umb-nested-content__item-name" ng-class="{\'--has-icon\': vm.showIcons}" ng-bind="vm.getName($index)"></span> </div> <div class="umb-nested-content__icons"> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--copy" title="{{vm.labels.copy_icon_title}}" ng-click="vm.clickCopy($event, node);" ng-if="vm.showCopy"> <i class="icon icon-documents" aria-hidden="true"></i> <span class="sr-only">{{vm.labels.copy_icon_title}}</span> </button> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--delete" localize="title" title="general_delete" ng-class="{ \'umb-nested-content__icon--disabled\': !vm.canDeleteNode($index) }" ng-click="vm.requestDeleteNode($index); $event.stopPropagation();"> <i class="icon icon-trash" aria-hidden="true"></i> <span class="sr-only"> <localize key="general_delete">Delete</localize> </span> </button> </div> </div> <div class="umb-nested-content__content" ng-if="vm.currentNode.key === node.key && !vm.sorting"> <umb-nested-content-editor ng-model="node" tab-alias="ncTabAlias"> </umb-nested-content-editor></div> </div> </ng-form> </div> </div> <div ng-hide="vm.hasContentTypes"> <div class="umb-nested-content__help-text"> <localize key="content_nestedContentNoContentTypes">No content types are configured for this property.</localize> </div> </div> <div class="umb-nested-content__footer-bar" ng-hide="!vm.inited || vm.hasContentTypes === false || vm.singleMode === true"> <button type="button" class="btn-reset umb-nested-content__add-content umb-focus" ng-class="{ \'--disabled\': (!vm.scaffolds.length || vm.nodes.length >= vm.maxItems) }" ng-click="vm.openNodeTypePicker($event)" aria-disabled="{{!vm.scaffolds.length || vm.nodes.length >= vm.maxItems}}"> <localize key="grid_addElement">Add element</localize> </button> </div>  <input type="hidden" name="minCount" ng-model="vm.nodes"> <input type="hidden" name="maxCount" ng-model="vm.nodes"> <div ng-messages="nestedContentForm.minCount.$error" show-validation-on-submit> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.minItems, vm.minItems - vm.nodes.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> </div> <div ng-if="nestedContentForm.minCount.$error === true || vm.nodes.length > vm.maxItems"> <div class="help text-error"> <localize key="validation_entriesExceed" tokens="[vm.maxItems, vm.nodes.length - vm.maxItems]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> </div> </ng-form> </div> ',
             controller: NestedContentController,
             controllerAs: 'vm',
             require: {
@@ -23510,6 +23549,8 @@
                                 }
                             });
                         }
+                        // Ensure Culture Data for Complex Validation.
+                        ensureCultureData(scaffold);
                         // Store the scaffold object
                         vm.scaffolds.push(scaffold);
                     }
@@ -23520,6 +23561,27 @@
                     initIfAllScaffoldsHaveLoaded();
                 });
             });
+            /**
+     * Ensure that the containing content variant language and current property culture is transferred along
+     * to the scaffolded content object representing this block.
+     * This is required for validation along with ensuring that the umb-property inheritance is constantly maintained.
+     * @param {any} content
+     */
+            function ensureCultureData(content) {
+                if (!content || !vm.umbVariantContent || !vm.umbProperty)
+                    return;
+                if (vm.umbVariantContent.editor.content.language) {
+                    // set the scaffolded content's language to the language of the current editor
+                    content.language = vm.umbVariantContent.editor.content.language;
+                }
+                // currently we only ever deal with invariant content for blocks so there's only one
+                content.variants[0].tabs.forEach(function (tab) {
+                    tab.properties.forEach(function (prop) {
+                        // set the scaffolded property to the culture of the containing property
+                        prop.culture = vm.umbProperty.property.culture;
+                    });
+                });
+            }
             var initIfAllScaffoldsHaveLoaded = function initIfAllScaffoldsHaveLoaded() {
                 // Initialize when all scaffolds have loaded
                 if (model.config.contentTypes.length === scaffoldsLoaded) {
@@ -24193,7 +24255,7 @@
                     currentFormInput: $scope.rteForm.modelValue
                 });
             };
-            angular.extend(baseLineConfigObj, standardConfig);
+            Utilities.extend(baseLineConfigObj, standardConfig);
             // We need to wait for DOM to have rendered before we can find the element by ID.
             $timeout(function () {
                 tinymce.init(baseLineConfigObj);
@@ -27435,6 +27497,7 @@
                     $location.search('create', 'true');
                     $location.search('invite', null);
                 } else if (state === 'inviteUser') {
+                    clearAddUserForm();
                     $location.search('create', null);
                     $location.search('invite', 'true');
                 } else if (state === 'overview') {
