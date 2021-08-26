@@ -1664,6 +1664,16 @@
             <param name="contentTypeKeys"></param>
             <param name="parentId"></param>
         </member>
+        <member name="M:Umbraco.Web.Editors.ContentController.GetEmptyByKeys(Umbraco.Web.Models.ContentEditing.ContentTypesByKeys)">
+            <summary>
+            Gets a collection of empty content items for all document types.
+            </summary>
+            <remarks>
+            This is a post request in order to support a large amount of GUIDs without hitting the URL length limit.
+            </remarks>
+            <param name="contentTypeByKeys"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.ContentController.GetNiceUrl(System.Int32)">
             <summary>
             Gets the Url for a given node ID
@@ -6527,6 +6537,21 @@
         <member name="T:Umbraco.Web.Migrations.PostMigrations.ClearCsrfCookies">
             <summary>
             Clears Csrf tokens.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Web.Models.ContentEditing.ContentTypesByKeys">
+            <summary>
+            A model for retrieving multiple content types based on their keys.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.Models.ContentEditing.ContentTypesByKeys.ParentId">
+            <summary>
+            ID of the parent of the content type.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.Models.ContentEditing.ContentTypesByKeys.ContentTypeKeys">
+            <summary>
+            The id of every content type to get.
             </summary>
         </member>
         <member name="T:Umbraco.Web.Models.ContentEditing.MacroDisplay">
@@ -13643,7 +13668,7 @@
             <param name="domainService"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Web.Routing.NotFoundHandlerHelper.GetContentIdFromErrorPageConfig(Umbraco.Core.Configuration.UmbracoSettings.IContentErrorPage,Umbraco.Core.Services.IEntityService,Umbraco.Web.IPublishedContentQuery)">
+        <member name="M:Umbraco.Web.Routing.NotFoundHandlerHelper.GetContentIdFromErrorPageConfig(Umbraco.Core.Configuration.UmbracoSettings.IContentErrorPage,Umbraco.Core.Services.IEntityService,Umbraco.Web.IPublishedContentQuery,System.Nullable{System.Int32})">
             <summary>
             Returns the content id based on the configured IContentErrorPage section
             </summary>
@@ -13867,18 +13892,6 @@
             <summary>
             Provides utilities to handle site domains.
             </summary>
-        </member>
-        <member name="P:Umbraco.Web.Routing.SiteDomainHelper.ConfigWriteLock">
-            <summary>
-            Returns a disposable object that represents safe write access to config.
-            </summary>
-            <remarks>Should be used in a <c>using(SiteDomainHelper.ConfigWriteLock) { ... }</c>  mode.</remarks>
-        </member>
-        <member name="P:Umbraco.Web.Routing.SiteDomainHelper.ConfigReadLock">
-            <summary>
-            Returns a disposable object that represents safe read access to config.
-            </summary>
-            <remarks>Should be used in a <c>using(SiteDomainHelper.ConfigWriteLock) { ... }</c>  mode.</remarks>
         </member>
         <member name="M:Umbraco.Web.Routing.SiteDomainHelper.Clear">
             <summary>

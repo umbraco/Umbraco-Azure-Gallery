@@ -2925,6 +2925,7 @@
                 var originalTarget = $scope.target;
                 var id = $scope.target.udi ? $scope.target.udi : $scope.target.id;
                 var altText = $scope.target.altText;
+                var caption = $scope.target.caption;
                 // ID of a UDI or legacy int ID still could be null/undefinied here
                 // As user may dragged in an image that has not been saved to media section yet
                 if (id) {
@@ -2936,6 +2937,7 @@
                             $scope.target.url = mediaHelper.resolveFileFromEntity(node);
                             $scope.target.thumbnail = mediaHelper.resolveFileFromEntity(node, true);
                             $scope.target.altText = altText;
+                            $scope.target.caption = caption;
                             $scope.target.focalPoint = originalTarget.focalPoint;
                             $scope.target.coordinates = originalTarget.coordinates;
                             openDetailsDialog();
@@ -4748,6 +4750,8 @@
                                 return i.parentId === child.id;
                             });
                             listViewResults.forEach(function (item) {
+                                if (!child.children)
+                                    return;
                                 var childExists = child.children.find(function (c) {
                                     return c.id === item.id;
                                 });
@@ -6822,6 +6826,7 @@
                             currentForm.$dirty = false;
                         }
                     });
+                    $scope.dialog.confirmDiscardChanges = false;
                     vm.saveState = 'success';
                     vm.saveSuccces = true;
                 }, function (error) {
@@ -7374,10 +7379,20 @@
      * @param {any} type publish or unpublish
      */
             function datePickerShow(variant, type) {
+                var activeDatePickerInstance;
                 if (type === 'publish') {
                     variant.releaseDatePickerOpen = true;
+                    activeDatePickerInstance = variant.releaseDatePickerInstance;
                 } else if (type === 'unpublish') {
                     variant.expireDatePickerOpen = true;
+                    activeDatePickerInstance = variant.expireDatePickerInstance;
+                }
+                // Prevent enter key in time fields from submitting the overlay before the associated input gets the updated time
+                if (activeDatePickerInstance && !activeDatePickerInstance.hourElement.hasAttribute('overlay-submit-on-enter')) {
+                    activeDatePickerInstance.hourElement.setAttribute('overlay-submit-on-enter', 'false');
+                }
+                if (activeDatePickerInstance && !activeDatePickerInstance.minuteElement.hasAttribute('overlay-submit-on-enter')) {
+                    activeDatePickerInstance.minuteElement.setAttribute('overlay-submit-on-enter', 'false');
                 }
                 checkForBackdropClick();
                 $scope.model.disableSubmitButton = !canSchedule();
@@ -8092,8 +8107,8 @@
         };
         evts.push(eventsService.on('appState.tour.complete', function (name, completedTour) {
             $timeout(function () {
-                angular.forEach(vm.tours, function (tourGroup) {
-                    angular.forEach(tourGroup, function (tour) {
+                Utilities.forEach(vm.tours, function (tourGroup) {
+                    Utilities.forEach(tourGroup, function (tour) {
                         if (tour.alias === completedTour.alias) {
                             tour.completed = true;
                         }
@@ -8223,7 +8238,7 @@
     }
     angular.module('umbraco').controller('Umbraco.Dashboard.MediaFolderBrowserDashboardController', MediaFolderBrowserDashboardController);
     'use strict';
-    function ExamineManagementController($scope, $http, $q, $timeout, $location, umbRequestHelper, localizationService, overlayService, editorService) {
+    function ExamineManagementController($http, $q, $timeout, umbRequestHelper, localizationService, overlayService, editorService) {
         var vm = this;
         vm.indexerDetails = [];
         vm.searcherDetails = [];
@@ -8358,17 +8373,17 @@
                 vm.searchResults.totalPages = Math.ceil(vm.searchResults.totalRecords / 20);
                 // add URLs to edit well known entities
                 _.each(vm.searchResults.results, function (result) {
-                    var section = result.values['__IndexType'];
+                    var section = result.values['__IndexType'][0];
                     switch (section) {
                     case 'content':
                     case 'media':
-                        result.editUrl = '/' + section + '/' + section + '/edit/' + result.values['__NodeId'];
-                        result.editId = result.values['__NodeId'];
+                        result.editUrl = '/' + section + '/' + section + '/edit/' + result.values['__NodeId'][0];
+                        result.editId = result.values['__NodeId'][0];
                         result.editSection = section;
                         break;
                     case 'member':
-                        result.editUrl = '/member/member/edit/' + result.values['__Key'];
-                        result.editId = result.values['__Key'];
+                        result.editUrl = '/member/member/edit/' + result.values['__Key'][0];
+                        result.editId = result.values['__Key'][0];
                         result.editSection = section;
                         break;
                     }
@@ -16460,7 +16475,7 @@
             Utilities.extend(config, $scope.model.config);
         }
         if ($scope.model.value) {
-            if (Array.isArray($scope.model.value)) {
+            if (!Array.isArray($scope.model.value)) {
                 $scope.ids = $scope.model.value.split(',');
             } else {
                 $scope.ids.push($scope.model.value);
@@ -16483,7 +16498,7 @@
                 });
             });
         }
-        $scope.openContentPicker = function () {
+        $scope.openTreePicker = function () {
             var treePicker = config;
             treePicker.section = config.type;
             treePicker.submit = function (model) {
@@ -17271,8 +17286,8 @@
             falsevalue: '0',
             showLabels: false
         };
-        if ($scope.model.config && $scope.model.config.showLabels && Object.toBoolean($scope.model.config.showLabels)) {
-            config.showLabels = true;
+        if ($scope.model.config) {
+            $scope.model.config.showLabels = $scope.model.config.showLabels ? Object.toBoolean($scope.model.config.showLabels) : config.showLabels;
         }
         // Map the user config
         Utilities.extend(config, $scope.model.config);
@@ -22580,6 +22595,10 @@
     //this controller simply tells the dialogs service to open a memberPicker window
     //with a specified callback, this callback will receive an object with a selection on it
     function memberGroupPicker($scope, editorService, memberGroupResource) {
+        var vm = this;
+        vm.openMemberGroupPicker = openMemberGroupPicker;
+        vm.remove = remove;
+        vm.clear = clear;
         function trim(str, chr) {
             var rgxtrim = !chr ? new RegExp('^\\s+|\\s+$', 'g') : new RegExp('^' + chr + '+|' + chr + '+$', 'g');
             return str.replace(rgxtrim, '');
@@ -22598,7 +22617,7 @@
                 $scope.modelValueForm.modelValue.$setDirty();
             }
         }
-        $scope.openMemberGroupPicker = function () {
+        function openMemberGroupPicker() {
             var memberGroupPicker = {
                 multiPicker: true,
                 submit: function submit(model) {
@@ -22623,31 +22642,15 @@
                 }
             };
             editorService.memberGroupPicker(memberGroupPicker);
-        };
-        // TODO: I don't believe this is used
-        $scope.remove = function (index) {
+        }
+        function remove(index) {
             $scope.renderModel.splice(index, 1);
             setDirty();
-        };
-        // TODO: I don't believe this is used
-        $scope.add = function (item) {
-            var currIds = _.map($scope.renderModel, function (i) {
-                return i.id;
-            });
-            if (currIds.indexOf(item) < 0) {
-                $scope.renderModel.push({
-                    name: item,
-                    id: item,
-                    icon: 'icon-users'
-                });
-                setDirty();
-            }
-        };
-        // TODO: I don't believe this is used
-        $scope.clear = function () {
+        }
+        function clear() {
             $scope.renderModel = [];
             setDirty();
-        };
+        }
         function renderModelIds() {
             return _.map($scope.renderModel, function (i) {
                 return i.id;
@@ -22664,6 +22667,9 @@
     angular.module('umbraco').controller('Umbraco.PropertyEditors.MemberGroupPickerController', memberGroupPicker);
     'use strict';
     function memberGroupController($scope, editorService, memberGroupResource) {
+        var vm = this;
+        vm.pickGroup = pickGroup;
+        vm.removeGroup = removeGroup;
         //set the selected to the keys of the dictionary who's value is true
         $scope.getSelected = function () {
             var selected = [];
@@ -22679,7 +22685,7 @@
                 $scope.modelValueForm.modelValue.$setDirty();
             }
         }
-        $scope.pickGroup = function () {
+        function pickGroup() {
             editorService.memberGroupPicker({
                 multiPicker: true,
                 submit: function submit(model) {
@@ -22698,11 +22704,11 @@
                     editorService.close();
                 }
             });
-        };
-        $scope.removeGroup = function (group) {
+        }
+        function removeGroup(group) {
             $scope.model.value[group] = false;
             setDirty();
-        };
+        }
     }
     angular.module('umbraco').controller('Umbraco.PropertyEditors.MemberGroupController', memberGroupController);
     'use strict';
@@ -24558,6 +24564,9 @@
                 $scope.charsCount = $scope.model.value.length;
                 checkLengthVadility();
                 $scope.nearMaxLimit = $scope.validLength && $scope.charsCount > Math.max($scope.maxChars * 0.8, $scope.maxChars - 25);
+            } else {
+                $scope.charsCount = 0;
+                checkLengthVadility();
             }
         };
         $scope.model.onValueChanged = $scope.change;

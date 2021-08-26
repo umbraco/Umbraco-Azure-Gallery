@@ -883,7 +883,11 @@
      * 
     */
             function close() {
-                args.opacity = null, args.element = null, args.elementPreventClick = false, args.disableEventsOnClick = false, args.show = false;
+                args.opacity = null;
+                args.element = null;
+                args.elementPreventClick = false;
+                args.disableEventsOnClick = false;
+                args.show = false;
                 eventsService.emit('appState.backdrop', args);
             }
             /**
@@ -1511,7 +1515,7 @@
                 getScaffoldFromKey: function getScaffoldFromKey(contentTypeKey) {
                     return this.scaffolds.find(function (o) {
                         return o.contentTypeKey === contentTypeKey;
-                    });
+                    }) || null;
                 },
                 /**
        * @ngdoc method
@@ -1524,7 +1528,7 @@
                 getScaffoldFromAlias: function getScaffoldFromAlias(contentTypeAlias) {
                     return this.scaffolds.find(function (o) {
                         return o.contentTypeAlias === contentTypeAlias;
-                    });
+                    }) || null;
                 },
                 /**
        * @ngdoc method
@@ -1615,9 +1619,14 @@
                             }
                             blockObject.settingsData = settingsData;
                             // make basics from scaffold
-                            blockObject.settings = Utilities.copy(settingsScaffold);
-                            ensureUdiAndKey(blockObject.settings, settingsUdi);
-                            mapToElementModel(blockObject.settings, settingsData);
+                            if (settingsScaffold !== null) {
+                                // We might not have settingsScaffold
+                                blockObject.settings = Utilities.copy(settingsScaffold);
+                                ensureUdiAndKey(blockObject.settings, settingsUdi);
+                                mapToElementModel(blockObject.settings, settingsData);
+                            } else {
+                                blockObject.settings = null;
+                            }
                             // add settings content-app
                             appendSettingsContentApp(blockObject.content, this.__labels.settingsName);
                         }
@@ -6887,7 +6896,7 @@ When building a custom infinite editor view you can use the same components as a
  *    });
  * </pre>
  */
-    angular.module('umbraco.services').factory('localizationService', function ($http, $q, eventsService, $window, $filter, userService) {
+    angular.module('umbraco.services').factory('localizationService', function ($http, $q, eventsService) {
         // TODO: This should be injected as server vars
         var url = 'LocalizedText';
         var resourceFileLoadStatus = 'none';
@@ -6921,7 +6930,7 @@ When building a custom infinite editor view you can use the same components as a
         var service = {
             // loads the language resource file from the server
             initLocalizedResources: function initLocalizedResources() {
-                // TODO: This promise handling is super ugly, we should just be returnning the promise from $http and returning inner values. 
+                // TODO: This promise handling is super ugly, we should just be returnning the promise from $http and returning inner values.
                 var deferred = $q.defer();
                 if (resourceFileLoadStatus === 'loaded') {
                     deferred.resolve(innerDictionary);
@@ -6967,7 +6976,7 @@ When building a custom infinite editor view you can use the same components as a
      * @description
      * Helper to tokenize and compile a localization string
      * @param {String} value the value to tokenize
-     * @param {Object} scope the $scope object 
+     * @param {Object} scope the $scope object
      * @returns {String} tokenized resource string
      */
             tokenize: function tokenize(value, scope) {
@@ -6995,13 +7004,13 @@ When building a custom infinite editor view you can use the same components as a
      * @description
      * Helper to replace tokens
      * @param {String} value the text-string to manipulate
-     * @param {Array} tekens An array of tokens values 
+     * @param {Array} tekens An array of tokens values
      * @returns {String} Replaced test-string
      */
             tokenReplace: function tokenReplace(text, tokens) {
                 if (tokens) {
                     for (var i = 0; i < tokens.length; i++) {
-                        text = text.replace('%' + i + '%', tokens[i]);
+                        text = text.replace('%' + i + '%', _.escape(tokens[i]));
                     }
                 }
                 return text;
@@ -7013,16 +7022,16 @@ When building a custom infinite editor view you can use the same components as a
      *
      * @description
      * Checks the dictionary for a localized resource string
-     * @param {String} value the area/key to localize in the format of 'section_key' 
+     * @param {String} value the area/key to localize in the format of 'section_key'
      * alternatively if no section is set such as 'key' then we assume the key is to be looked in
      * the 'general' section
-     * 
+     *
      * @param {Array} tokens if specified this array will be sent as parameter values
      * This replaces %0% and %1% etc in the dictionary key value with the passed in strings
-     * 
-     * @param {String} fallbackValue if specified this string will be returned if no matching 
+     *
+     * @param {String} fallbackValue if specified this string will be returned if no matching
      * entry was found in the dictionary
-     * 
+     *
      * @returns {String} localized resource string
      */
             localize: function localize(value, tokens, fallbackValue) {
@@ -7038,7 +7047,7 @@ When building a custom infinite editor view you can use the same components as a
      * @description
      * Checks the dictionary for multipe localized resource strings at once, preventing the need for nested promises
      * with localizationService.localize
-     * 
+     *
      * ##Usage
      * <pre>
      * localizationService.localizeMany(["speechBubbles_templateErrorHeader", "speechBubbles_templateErrorText"]).then(function(data){
@@ -7047,11 +7056,11 @@ When building a custom infinite editor view you can use the same components as a
      *      notificationService.error(header, message);
      * });
      * </pre>
-     * 
-     * @param {Array} keys is an array of strings of the area/key to localize in the format of 'section_key' 
+     *
+     * @param {Array} keys is an array of strings of the area/key to localize in the format of 'section_key'
      * alternatively if no section is set such as 'key' then we assume the key is to be looked in
      * the 'general' section
-     * 
+     *
      * @returns {Array} An array of localized resource string in the same order
      */
             localizeMany: function localizeMany(keys) {
@@ -7074,18 +7083,18 @@ When building a custom infinite editor view you can use the same components as a
      * @description
      * Checks the dictionary for multipe localized resource strings at once & concats them to a single string
      * Which was not possible with localizationSerivce.localize() due to returning a promise
-     * 
+     *
      * ##Usage
      * <pre>
      * localizationService.concat(["speechBubbles_templateErrorHeader", "speechBubbles_templateErrorText"]).then(function(data){
      *      var combinedText = data;
      * });
      * </pre>
-     * 
-     * @param {Array} keys is an array of strings of the area/key to localize in the format of 'section_key' 
+     *
+     * @param {Array} keys is an array of strings of the area/key to localize in the format of 'section_key'
      * alternatively if no section is set such as 'key' then we assume the key is to be looked in
      * the 'general' section
-     * 
+     *
      * @returns {String} An concatenated string of localized resource string passed into the function in the same order
      */
             concat: function concat(keys) {
@@ -7113,7 +7122,7 @@ When building a custom infinite editor view you can use the same components as a
      * @description
      * Checks the dictionary for multipe localized resource strings at once & formats a tokenized message
      * Which was not possible with localizationSerivce.localize() due to returning a promise
-     * 
+     *
      * ##Usage
      * <pre>
      * localizationService.format(["template_insert", "template_insertSections"], "%0% %1%").then(function(data){
@@ -7121,14 +7130,14 @@ When building a custom infinite editor view you can use the same components as a
      *      var formattedResult = data;
      * });
      * </pre>
-     * 
-     * @param {Array} keys is an array of strings of the area/key to localize in the format of 'section_key' 
+     *
+     * @param {Array} keys is an array of strings of the area/key to localize in the format of 'section_key'
      * alternatively if no section is set such as 'key' then we assume the key is to be looked in
      * the 'general' section
-     * 
+     *
      * @param {String} message is the string you wish to replace containing tokens in the format of %0% and %1%
      * with the localized resource strings
-     * 
+     *
      * @returns {String} An concatenated string of localized resource string passed into the function in the same order
      */
             format: function format(keys, message) {
@@ -7960,16 +7969,22 @@ When building a custom infinite editor view you can use the same components as a
             }
         }
         function closeBackdrop() {
+            var tourIsOpen = document.body.classList.contains('umb-tour-is-visible');
+            if (tourIsOpen) {
+                return;
+            }
             var aboveClass = 'above-backdrop';
-            var leftColumn = $('#leftcolumn');
-            var isLeftColumnOnTop = leftColumn.hasClass(aboveClass);
-            if (isLeftColumnOnTop) {
-                backdropService.close();
-                leftColumn.removeClass(aboveClass);
+            var leftColumn = document.getElementById('leftcolumn');
+            if (leftColumn) {
+                var isLeftColumnOnTop = leftColumn.classList.contains(aboveClass);
+                if (isLeftColumnOnTop) {
+                    backdropService.close();
+                    leftColumn.classList.remove(aboveClass);
+                }
             }
         }
         function showBackdrop() {
-            var backDropOptions = { 'element': $('#leftcolumn')[0] };
+            var backDropOptions = { 'element': document.getElementById('leftcolumn') };
             backdropService.open(backDropOptions);
         }
         var service = {
@@ -8140,7 +8155,7 @@ When building a custom infinite editor view you can use the same components as a
             hideTray: function hideTray() {
                 appState.setGlobalState('showTray', false);
             },
-            /**     
+            /**
      * @ngdoc method
      * @name umbraco.services.navigationService#syncTree
      * @methodOf umbraco.services.navigationService
@@ -8171,14 +8186,14 @@ When building a custom infinite editor view you can use the same components as a
                     return mainTreeApi.syncTree(args);
                 });
             },
-            /**     
+            /**
      * @ngdoc method
      * @name umbraco.services.navigationService#hasTree
      * @methodOf umbraco.services.navigationService
      *
      * @description
      * Checks if a tree with the given alias exists.
-     * 
+     *
      * @param {String} treeAlias the tree alias to check
      */
             hasTree: function hasTree(treeAlias) {
@@ -8822,7 +8837,10 @@ When building a custom infinite editor view you can use the same components as a
             }
             function _close() {
                 focusLockService.removeInertAttribute();
-                backdropService.close();
+                var tourIsOpen = document.body.classList.contains('umb-tour-is-visible');
+                if (!tourIsOpen) {
+                    backdropService.close();
+                }
                 currentOverlay = null;
                 eventsService.emit('appState.overlay', null);
             }
@@ -8945,7 +8963,7 @@ When building a custom infinite editor view you can use the same components as a
                 push: function push(retryItem) {
                     retryQueue.push(retryItem);
                     // Call all the onItemAdded callbacks
-                    angular.forEach(service.onItemAddedCallbacks, function (cb) {
+                    Utilities.forEach(service.onItemAddedCallbacks, function (cb) {
                         try {
                             cb(retryItem);
                         } catch (e) {
@@ -10870,15 +10888,19 @@ When building a custom infinite editor view you can use the same components as a
                     var plugins = _.map(tinyMceConfig.plugins, function (plugin) {
                         return plugin.name;
                     });
-                    //plugins that must always be active
+                    // Plugins that must always be active
                     plugins.push('autoresize');
                     plugins.push('noneditable');
+                    // Table plugin use color picker plugin in table properties
+                    if (plugins.includes('table')) {
+                        plugins.push('colorpicker');
+                    }
                     var modeTheme = '';
                     var modeInline = false;
-                    //Based on mode set
-                    //classic = Theme: modern, inline: false
-                    //inline = Theme: modern, inline: true,
-                    //distraction-free = Theme: inlite, inline: true
+                    // Based on mode set
+                    // classic = Theme: modern, inline: false
+                    // inline = Theme: modern, inline: true,
+                    // distraction-free = Theme: inlite, inline: true
                     switch (args.mode) {
                     case 'classic':
                         modeTheme = 'modern';
@@ -14623,7 +14645,7 @@ When building a custom infinite editor view you can use the same components as a
  *
  */
     function windowResizeListener($rootScope) {
-        var WinReszier = function () {
+        var WinResizer = function () {
             var registered = [];
             var inited = false;
             var resize = _.debounce(function (ev) {
@@ -14664,14 +14686,14 @@ When building a custom infinite editor view you can use the same components as a
      * @param {Function} cb 
      */
             register: function register(cb) {
-                WinReszier.register(cb);
+                WinResizer.register(cb);
             },
             /**
      * Removes a registered callback
      * @param {Function} cb 
      */
             unregister: function unregister(cb) {
-                WinReszier.unregister(cb);
+                WinResizer.unregister(cb);
             }
         };
     }
@@ -15129,7 +15151,7 @@ When building a custom infinite editor view you can use the same components as a
    * Not equivalent to angular.forEach. But like the angularJS method this does not fail on null or undefined.
    */
         var forEach = function forEach(obj, iterator) {
-            if (obj) {
+            if (obj && isArray(obj)) {
                 return obj.forEach(iterator);
             }
             return obj;

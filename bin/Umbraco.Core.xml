@@ -29365,16 +29365,6 @@
             <param name="tokens"></param>
             <returns></returns>
         </member>
-        <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
-            <summary>
-            Localize using the current thread culture
-            </summary>
-            <param name="manager"></param>
-            <param name="area"></param>
-            <param name="alias"></param>
-            <param name="tokens"></param>
-            <returns></returns>
-        </member>
         <member name="M:Umbraco.Core.Services.LocalizedTextServiceExtensions.Localize(Umbraco.Core.Services.ILocalizedTextService,System.String,System.String,System.Globalization.CultureInfo,System.String[])">
             <summary>
             Localize a key without any variables
@@ -33897,6 +33887,12 @@
             </summary>
             <param name="composition">The composition.</param>
         </member>
+        <member name="M:Umbraco.Core.CompositionExtensions.MapDefinitions(Umbraco.Core.Composing.Composition)">
+            <summary>
+            Gets the map definitions collection builder.
+            </summary>
+            <param name="composition">The composition.</param>
+        </member>
         <member name="M:Umbraco.Core.CompositionExtensions.Mappers(Umbraco.Core.Composing.Composition)">
             <summary>
             Gets the mappers collection builder.
@@ -37226,17 +37222,6 @@
         </member>
         <member name="M:Umbraco.Core.Packaging.PackageInstallation.UninstallPackage(Umbraco.Core.Models.Packaging.PackageDefinition,System.Int32)">
             <inheritdoc />
-        </member>
-        <member name="T:Umbraco.Core.ReadLock">
-            <summary>
-            Provides a convenience methodology for implementing locked access to resources.
-            </summary>
-            <remarks>
-            <para>Intended as an infrastructure class.</para>
-            <para>This is a very inefficient way to lock as it allocates one object each time we lock,
-            so it's OK to use this class for things that happen once, where it is convenient, but not
-            for performance-critical code!</para>
-            </remarks>
         </member>
         <member name="M:Umbraco.Core.ReadLock.#ctor(System.Threading.ReaderWriterLockSlim)">
             <summary>
@@ -41966,14 +41951,6 @@
             Primarily this is used so that WebApi can auto-bind a string parameter to a UDI instance
             </remarks>
         </member>
-        <member name="T:Umbraco.Core.UpgradeableReadLock">
-            <summary>
-            Provides a convenience methodology for implementing locked access to resources.
-            </summary>
-            <remarks>
-            Intended as an infrastructure class.
-            </remarks>
-        </member>
         <member name="M:Umbraco.Core.UpgradeableReadLock.#ctor(System.Threading.ReaderWriterLockSlim)">
             <summary>
             Initializes a new instance of the <see cref="T:Umbraco.Core.ReadLock"/> class.
@@ -42119,17 +42096,6 @@
             <param name="uri">The uri.</param>
             <param name="host">A replacement host.</param>
             <returns>The same uri, with its host replaced.</returns>
-        </member>
-        <member name="T:Umbraco.Core.WriteLock">
-            <summary>
-            Provides a convenience methodology for implementing locked access to resources.
-            </summary>
-            <remarks>
-            <para>Intended as an infrastructure class.</para>
-            <para>This is a very inefficient way to lock as it allocates one object each time we lock,
-            so it's OK to use this class for things that happen once, where it is convenient, but not
-            for performance-critical code!</para>
-            </remarks>
         </member>
         <member name="M:Umbraco.Core.WriteLock.#ctor(System.Threading.ReaderWriterLockSlim)">
             <summary>
