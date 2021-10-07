@@ -6009,6 +6009,10 @@
                 if (err.status && err.status >= 500) {
                     // TODO: All YSOD handling should be done with an interceptor
                     overlayService.ysod(err);
+                    navigationService.hideDialog();
+                }
+                if (err.data && err.data.notifications && err.data.notifications.length > 0) {
+                    navigationService.hideDialog();
                 }
             });
         };
@@ -8787,7 +8791,6 @@
  */
     function DataTypeDeleteController($scope, dataTypeResource, treeService, navigationService, localizationService) {
         var vm = this;
-        vm.propertyJoinSeparator = ', <i class="icon-alert red"></i>';
         vm.hasReferences = false;
         vm.references = [];
         vm.performDelete = function () {
@@ -9635,6 +9638,7 @@
                 'treeHeaders_templates',
                 'main_sections',
                 'shortcuts_navigateSections',
+                'shortcuts_addTab',
                 'shortcuts_addGroup',
                 'shortcuts_addProperty',
                 'defaultdialogs_selectEditor',
@@ -9669,15 +9673,16 @@
                 // keyboard shortcuts
                 vm.labels.sections = values[4];
                 vm.labels.navigateSections = values[5];
-                vm.labels.addGroup = values[6];
-                vm.labels.addProperty = values[7];
-                vm.labels.addEditor = values[8];
-                vm.labels.editDataType = values[9];
-                vm.labels.toggleListView = values[10];
-                vm.labels.allowAsRoot = values[11];
-                vm.labels.addChildNode = values[12];
-                vm.labels.addTemplate = values[13];
-                vm.labels.allowCultureVariants = values[14];
+                vm.labels.addTab = values[6];
+                vm.labels.addGroup = values[7];
+                vm.labels.addProperty = values[8];
+                vm.labels.addEditor = values[9];
+                vm.labels.editDataType = values[10];
+                vm.labels.toggleListView = values[11];
+                vm.labels.allowAsRoot = values[12];
+                vm.labels.addChildNode = values[13];
+                vm.labels.addTemplate = values[14];
+                vm.labels.allowCultureVariants = values[15];
                 vm.page.keyboardShortcutsOverview = [
                     {
                         'name': vm.labels.sections,
@@ -9693,6 +9698,14 @@
                     {
                         'name': vm.labels.design,
                         'shortcuts': [
+                            {
+                                'description': vm.labels.addTab,
+                                'keys': [
+                                    { 'key': 'alt' },
+                                    { 'key': 'shift' },
+                                    { 'key': 'a' }
+                                ]
+                            },
                             {
                                 'description': vm.labels.addGroup,
                                 'keys': [
@@ -9906,40 +9919,13 @@
                         scope: $scope,
                         content: vm.contentType,
                         infiniteMode: infiniteMode,
-                        // we need to rebind... the IDs that have been created!
-                        rebindCallback: function rebindCallback(origContentType, savedContentType) {
-                            vm.contentType.id = savedContentType.id;
-                            vm.contentType.groups.forEach(function (group) {
-                                if (!group.name)
-                                    return;
-                                var k = 0;
-                                while (k < savedContentType.groups.length && savedContentType.groups[k].name != group.name) {
-                                    k++;
-                                }
-                                if (k == savedContentType.groups.length) {
-                                    group.id = 0;
-                                    return;
-                                }
-                                var savedGroup = savedContentType.groups[k];
-                                if (!group.id)
-                                    group.id = savedGroup.id;
-                                group.properties.forEach(function (property) {
-                                    if (property.id || !property.alias)
-                                        return;
-                                    k = 0;
-                                    while (k < savedGroup.properties.length && savedGroup.properties[k].alias != property.alias) {
-                                        k++;
-                                    }
-                                    if (k == savedGroup.properties.length) {
-                                        property.id = 0;
-                                        return;
-                                    }
-                                    var savedProperty = savedGroup.properties[k];
-                                    property.id = savedProperty.id;
-                                });
-                            });
+                        rebindCallback: function rebindCallback(_, savedContentType) {
+                            // we need to rebind... the IDs that have been created!
+                            contentTypeHelper.rebindSavedContentType(vm.contentType, savedContentType);
                         }
                     }).then(function (data) {
+                        // allow UI to access server validation state
+                        vm.contentType.ModelState = data.ModelState;
                         //success
                         // we don't need to sync the tree in infinite mode
                         if (!infiniteMode) {
@@ -9961,6 +9947,8 @@
                     }, function (err) {
                         //error
                         if (err) {
+                            // allow UI to access server validation state
+                            vm.contentType.ModelState = err.data.ModelState;
                             editorState.set($scope.content);
                         } else {
                             localizationService.localize('speechBubbles_validationFailedHeader').then(function (headerValue) {
@@ -11124,6 +11112,8 @@
             vm.search = search;
             vm.getFilterName = getFilterName;
             vm.setLogLevelFilter = setLogLevelFilter;
+            vm.selectAllLogLevelFilters = selectAllLogLevelFilters;
+            vm.deselectAllLogLevelFilters = deselectAllLogLevelFilters;
             vm.toggleOrderBy = toggleOrderBy;
             vm.selectSearch = selectSearch;
             vm.resetSearch = resetSearch;
@@ -11245,6 +11235,23 @@
                     var index = vm.logOptions.logLevels.indexOf(logLevel.name);
                     vm.logOptions.logLevels.splice(index, 1);
                 }
+                getLogs();
+            }
+            function updateAllLogLevelFilterCheckboxes(bool) {
+                vm.logLevels.forEach(function (logLevel) {
+                    return logLevel.selected = bool;
+                });
+            }
+            function selectAllLogLevelFilters() {
+                vm.logOptions.logLevels = vm.logLevels.map(function (logLevel) {
+                    return logLevel.name;
+                });
+                updateAllLogLevelFilterCheckboxes(true);
+                getLogs();
+            }
+            function deselectAllLogLevelFilters() {
+                vm.logOptions.logLevels = [];
+                updateAllLogLevelFilterCheckboxes(false);
                 getLogs();
             }
             function toggleOrderBy() {
@@ -11756,8 +11763,30 @@
     'use strict';
     (function () {
         'use strict';
-        function MediaAppContentController($scope) {
+        function MediaAppContentController($scope, $filter, contentEditingHelper, contentTypeHelper) {
             var vm = this;
+            vm.tabs = [];
+            vm.activeTabAlias = null;
+            vm.setActiveTab = setActiveTab;
+            $scope.$watchCollection('content.tabs', function (newValue) {
+                contentTypeHelper.defineParentAliasOnGroups(newValue);
+                contentTypeHelper.relocateDisorientedGroups(newValue);
+                vm.tabs = $filter('filter')(newValue, function (tab) {
+                    return tab.type === 1;
+                });
+                if (vm.tabs.length > 0) {
+                    // if we have tabs and some groups that doesn't belong to a tab we need to render those on an "Other" tab.
+                    contentEditingHelper.registerGenericTab(newValue);
+                    setActiveTab(vm.tabs[0]);
+                }
+            });
+            function setActiveTab(tab) {
+                vm.activeTabAlias = tab.alias;
+                vm.tabs.forEach(function (tab) {
+                    return tab.active = false;
+                });
+                tab.active = true;
+            }
         }
         angular.module('umbraco').controller('Umbraco.Editors.Media.Apps.ContentController', MediaAppContentController);
     }());
@@ -12974,38 +13003,9 @@
                         saveMethod: mediaTypeResource.save,
                         scope: $scope,
                         content: vm.contentType,
-                        // we need to rebind... the IDs that have been created!
-                        rebindCallback: function rebindCallback(origContentType, savedContentType) {
-                            vm.contentType.id = savedContentType.id;
-                            vm.contentType.groups.forEach(function (group) {
-                                if (!group.name)
-                                    return;
-                                var k = 0;
-                                while (k < savedContentType.groups.length && savedContentType.groups[k].name != group.name) {
-                                    k++;
-                                }
-                                if (k == savedContentType.groups.length) {
-                                    group.id = 0;
-                                    return;
-                                }
-                                var savedGroup = savedContentType.groups[k];
-                                if (!group.id)
-                                    group.id = savedGroup.id;
-                                group.properties.forEach(function (property) {
-                                    if (property.id || !property.alias)
-                                        return;
-                                    k = 0;
-                                    while (k < savedGroup.properties.length && savedGroup.properties[k].alias != property.alias) {
-                                        k++;
-                                    }
-                                    if (k == savedGroup.properties.length) {
-                                        property.id = 0;
-                                        return;
-                                    }
-                                    var savedProperty = savedGroup.properties[k];
-                                    property.id = savedProperty.id;
-                                });
-                            });
+                        rebindCallback: function rebindCallback(_, savedContentType) {
+                            // we need to rebind... the IDs that have been created!
+                            contentTypeHelper.rebindSavedContentType(vm.contentType, savedContentType);
                         }
                     }).then(function (data) {
                         //success
@@ -13234,16 +13234,39 @@
     'use strict';
     (function () {
         'use strict';
-        function MemberAppContentController($scope) {
+        function MemberAppContentController($scope, $filter, contentEditingHelper, contentTypeHelper) {
             var vm = this;
-            vm.hideSystemProperties = function (property) {
+            vm.tabs = [];
+            vm.activeTabAlias = null;
+            vm.setActiveTab = setActiveTab;
+            vm.hideSystemProperties = hideSystemProperties;
+            $scope.$watchCollection('content.tabs', function (newValue) {
+                contentTypeHelper.defineParentAliasOnGroups(newValue);
+                contentTypeHelper.relocateDisorientedGroups(newValue);
+                vm.tabs = $filter('filter')(newValue, function (tab) {
+                    return tab.type === 1;
+                });
+                if (vm.tabs.length > 0) {
+                    // if we have tabs and some groups that doesn't belong to a tab we need to render those on an "Other" tab.
+                    contentEditingHelper.registerGenericTab(newValue);
+                    setActiveTab(vm.tabs[0]);
+                }
+            });
+            function setActiveTab(tab) {
+                vm.activeTabAlias = tab.alias;
+                vm.tabs.forEach(function (tab) {
+                    return tab.active = false;
+                });
+                tab.active = true;
+            }
+            function hideSystemProperties(property) {
                 // hide some specific, known properties by alias
                 if (property.alias === '_umb_id' || property.alias === '_umb_doctype') {
                     return false;
                 }
                 // hide all label properties with the alias prefix "umbracoMember" (e.g. "umbracoMemberFailedPasswordAttempts")
                 return property.view !== 'readonlyvalue' || property.alias.startsWith('umbracoMember') === false;
-            };
+            }
         }
         angular.module('umbraco').controller('Umbraco.Editors.Member.Apps.ContentController', MemberAppContentController);
     }());
@@ -14060,38 +14083,9 @@
                         saveMethod: memberTypeResource.save,
                         scope: $scope,
                         content: vm.contentType,
-                        // we need to rebind... the IDs that have been created!
-                        rebindCallback: function rebindCallback(origContentType, savedContentType) {
-                            vm.contentType.id = savedContentType.id;
-                            vm.contentType.groups.forEach(function (group) {
-                                if (!group.name)
-                                    return;
-                                var k = 0;
-                                while (k < savedContentType.groups.length && savedContentType.groups[k].name != group.name) {
-                                    k++;
-                                }
-                                if (k == savedContentType.groups.length) {
-                                    group.id = 0;
-                                    return;
-                                }
-                                var savedGroup = savedContentType.groups[k];
-                                if (!group.id)
-                                    group.id = savedGroup.id;
-                                group.properties.forEach(function (property) {
-                                    if (property.id || !property.alias)
-                                        return;
-                                    k = 0;
-                                    while (k < savedGroup.properties.length && savedGroup.properties[k].alias != property.alias) {
-                                        k++;
-                                    }
-                                    if (k == savedGroup.properties.length) {
-                                        property.id = 0;
-                                        return;
-                                    }
-                                    var savedProperty = savedGroup.properties[k];
-                                    property.id = savedProperty.id;
-                                });
-                            });
+                        rebindCallback: function rebindCallback(_, savedContentType) {
+                            // we need to rebind... the IDs that have been created!
+                            contentTypeHelper.rebindSavedContentType(vm.contentType, savedContentType);
                         }
                     }).then(function (data) {
                         //success
@@ -16455,6 +16449,12 @@
         }
     });
     'use strict';
+    angular.module('umbraco').controller('Umbraco.PrevalueEditors.OverlaySizeController', function ($scope) {
+        if (!$scope.model.value) {
+            $scope.model.value = 'small';
+        }
+    });
+    'use strict';
     //this controller simply tells the dialogs service to open a mediaPicker window
     //with a specified callback, this callback will receive an object with a selection on it
     angular.module('umbraco').controller('Umbraco.PrevalueEditors.TreePickerController', function ($scope, entityResource, iconHelper, editorService) {
@@ -17277,7 +17277,7 @@
     'use strict';
     function booleanEditorController($scope) {
         // Setup the default config
-        // This allow to overwrite the configuration when property editor is re-used 
+        // This allow to overwrite the configuration when property editor is re-used
         // in e.g. third party packages, dashboard or content app. For example when using umb-property-editor.
         // At the moment this use "1/0" as default for "truevalue" and "falsevalue", but allow "True/False" as well.
         // Maybe sometime later we can make it support "Yes/No" or "On/Off" as well similar to ng-true-value and ng-false-value in Angular.
@@ -17317,6 +17317,12 @@
             //update the display val again if it has changed from the server
             setupViewModel();
         };
+        // If another property editor changes the model.value we want to pick that up and reflect the value in this one.
+        var unsubscribe = $scope.$watch('model.value', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                setupViewModel();
+            }
+        });
         // Update the value when the toggle is clicked
         $scope.toggle = function () {
             setDirty();
@@ -17328,6 +17334,9 @@
             $scope.model.value = $scope.model.config.truevalue;
             setupViewModel();
         };
+        $scope.$on('$destroy', function () {
+            unsubscribe();
+        });
     }
     angular.module('umbraco').controller('Umbraco.PropertyEditors.BooleanController', booleanEditorController);
     'use strict';
@@ -22070,6 +22079,7 @@
         function openLinkPicker(callback) {
             var linkPicker = {
                 hideTarget: true,
+                size: $scope.model.config.overlaySize,
                 submit: function submit(model) {
                     callback(model.target.url, model.target.name);
                     editorService.close();
@@ -22987,6 +22997,8 @@
                 $scope.multiUrlPickerForm.maxCount.$setValidity('maxCount', true);
             }
             $scope.sortableOptions.disabled = $scope.renderModel.length === 1;
+            //Update value
+            $scope.model.value = $scope.renderModel;
         });
         $scope.remove = function ($index) {
             $scope.renderModel.splice($index, 1);
@@ -23005,6 +23017,7 @@
                 dataTypeKey: $scope.model.dataTypeKey,
                 ignoreUserStartNodes: $scope.model.config && $scope.model.config.ignoreUserStartNodes ? $scope.model.config.ignoreUserStartNodes : '0',
                 hideAnchor: $scope.model.config && $scope.model.config.hideAnchor ? true : false,
+                size: $scope.model.config.overlaySize,
                 submit: function submit(model) {
                     if (model.target.url || model.target.anchor) {
                         // if an anchor exists, check that it is appropriately prefixed
@@ -23133,7 +23146,7 @@
             }
         ]);
         angular.module('umbraco').component('nestedContentPropertyEditor', {
-            template: ' <div id="umb-nested-content--{{model.id}}" class="umb-nested-content" ng-class="{\'umb-nested-content--narrow\':!vm.wideMode, \'umb-nested-content--wide\':vm.wideMode}"> <umb-load-indicator class="mt2" ng-if="!vm.inited"></umb-load-indicator> <ng-form name="nestedContentForm" ng-show="vm.inited"> <div class="umb-nested-content__items" ng-hide="vm.nodes.length === 0" ui-sortable="vm.sortableOptions" ng-model="vm.nodes"> <div ng-repeat="node in vm.nodes" ng-init="node.icon = vm.getIcon($index)"> <ng-form name="ncRowForm" val-server-match="{ \'contains\': node.key }"> <div class="umb-nested-content__item" ng-class="{ \'umb-nested-content__item--active\' : vm.currentNode.key === node.key, \'umb-nested-content__item--single\' : vm.singleMode, \'--error\': ncRowForm.$invalid }"> <div class="umb-nested-content__header-bar" ng-click="vm.editNode($index)" ng-hide="vm.singleMode" umb-auto-focus="{{vm.focusOnNode && vm.currentNode.key === node.key ? \'true\' : \'false\'}}"> <div class="umb-nested-content__heading"> <umb-icon icon="{{node.icon}}" class="{{node.icon}} icon umb-nested-content__item-icon"> </umb-icon> <span class="umb-nested-content__item-name" ng-class="{\'--has-icon\': vm.showIcons}" ng-bind="vm.getName($index)"></span> </div> <div class="umb-nested-content__icons"> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--copy" title="{{vm.labels.copy_icon_title}}" ng-click="vm.clickCopy($event, node);" ng-if="vm.showCopy"> <i class="icon icon-documents" aria-hidden="true"></i> <span class="sr-only">{{vm.labels.copy_icon_title}}</span> </button> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--delete" localize="title" title="general_delete" ng-class="{ \'umb-nested-content__icon--disabled\': !vm.canDeleteNode($index) }" ng-click="vm.requestDeleteNode($index); $event.stopPropagation();"> <i class="icon icon-trash" aria-hidden="true"></i> <span class="sr-only"> <localize key="general_delete">Delete</localize> </span> </button> </div> </div> <div class="umb-nested-content__content" ng-if="vm.currentNode.key === node.key && !vm.sorting"> <umb-nested-content-editor ng-model="node" tab-alias="ncTabAlias"> </umb-nested-content-editor></div> </div> </ng-form> </div> </div> <div ng-hide="vm.hasContentTypes"> <div class="umb-nested-content__help-text"> <localize key="content_nestedContentNoContentTypes">No content types are configured for this property.</localize> </div> </div> <div class="umb-nested-content__footer-bar" ng-hide="!vm.inited || vm.hasContentTypes === false || vm.singleMode === true"> <button type="button" class="btn-reset umb-nested-content__add-content umb-focus" ng-class="{ \'--disabled\': (!vm.scaffolds.length || vm.nodes.length >= vm.maxItems) }" ng-click="vm.openNodeTypePicker($event)" aria-disabled="{{!vm.scaffolds.length || vm.nodes.length >= vm.maxItems}}"> <localize key="grid_addElement">Add element</localize> </button> </div>  <input type="hidden" name="minCount" ng-model="vm.nodes"> <input type="hidden" name="maxCount" ng-model="vm.nodes"> <div ng-messages="nestedContentForm.minCount.$error" show-validation-on-submit> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.minItems, vm.minItems - vm.nodes.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> </div> <div ng-if="nestedContentForm.minCount.$error === true || vm.nodes.length > vm.maxItems"> <div class="help text-error"> <localize key="validation_entriesExceed" tokens="[vm.maxItems, vm.nodes.length - vm.maxItems]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> </div> </ng-form> </div> ',
+            template: ' <div id="umb-nested-content--{{model.id}}" class="umb-nested-content" ng-class="{\'umb-nested-content--narrow\':!vm.wideMode, \'umb-nested-content--wide\':vm.wideMode}"> <umb-load-indicator class="mt2" ng-if="!vm.inited"></umb-load-indicator> <ng-form name="nestedContentForm" ng-show="vm.inited"> <div class="umb-nested-content__items" ng-hide="vm.nodes.length === 0" ui-sortable="vm.sortableOptions" ng-model="vm.nodes"> <div ng-repeat="node in vm.nodes" ng-init="node.icon = vm.getIcon($index)"> <ng-form name="ncRowForm" val-server-match="{ \'contains\': node.key }"> <div class="umb-nested-content__item" ng-class="{ \'umb-nested-content__item--active\' : vm.currentNode.key === node.key, \'umb-nested-content__item--single\' : vm.singleMode, \'--error\': ncRowForm.$invalid }"> <div class="umb-nested-content__header-bar" ng-click="vm.editNode($index)" ng-hide="vm.singleMode" umb-auto-focus="{{vm.focusOnNode && vm.currentNode.key === node.key ? \'true\' : \'false\'}}"> <div class="umb-nested-content__heading"> <umb-icon icon="{{node.icon}}" class="icon umb-nested-content__item-icon"></umb-icon> <span class="umb-nested-content__item-name" ng-class="{\'--has-icon\': vm.showIcons}" ng-bind="vm.getName($index)"></span> </div> <div class="umb-nested-content__icons"> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--copy" title="{{vm.labels.copy_icon_title}}" ng-click="vm.clickCopy($event, node);" ng-if="vm.showCopy"> <umb-icon icon="icon-documents" class="icon"></umb-icon> <span class="sr-only">{{vm.labels.copy_icon_title}}</span> </button> <button type="button" class="umb-nested-content__icon umb-nested-content__icon--delete" localize="title" title="general_delete" ng-class="{ \'umb-nested-content__icon--disabled\': !vm.canDeleteNode($index) }" ng-click="vm.requestDeleteNode($index); $event.stopPropagation();"> <umb-icon icon="icon-trash" class="icon"></umb-icon> <span class="sr-only"> <localize key="general_delete">Delete</localize> </span> </button> </div> </div> <div class="umb-nested-content__content" ng-if="vm.currentNode.key === node.key && !vm.sorting"> <umb-nested-content-editor ng-model="node" tab-alias="ncTabAlias"></umb-nested-content-editor> </div> </div> </ng-form> </div> </div> <div ng-hide="vm.hasContentTypes"> <div class="umb-nested-content__help-text"> <localize key="content_nestedContentNoContentTypes">No content types are configured for this property.</localize> </div> </div> <div class="umb-nested-content__footer-bar" ng-hide="!vm.inited || vm.hasContentTypes === false || vm.singleMode === true"> <button type="button" class="btn-reset umb-nested-content__add-content umb-focus" ng-class="{ \'--disabled\': (!vm.scaffolds.length || vm.nodes.length >= vm.maxItems) }" ng-click="vm.openNodeTypePicker($event)" aria-disabled="{{!vm.scaffolds.length || vm.nodes.length >= vm.maxItems}}"> <localize key="grid_addElement">Add element</localize> </button> </div>  <input type="hidden" name="minCount" ng-model="vm.nodes"> <input type="hidden" name="maxCount" ng-model="vm.nodes"> <div ng-messages="nestedContentForm.minCount.$error" show-validation-on-submit> <div class="help text-error" ng-message="minCount"> <localize key="validation_entriesShort" tokens="[vm.minItems, vm.minItems - vm.nodes.length]" watch-tokens="true">Minimum %0% entries, needs <strong>%1%</strong> more.</localize> </div> </div> <div ng-if="nestedContentForm.minCount.$error === true || vm.nodes.length > vm.maxItems"> <div class="help text-error"> <localize key="validation_entriesExceed" tokens="[vm.maxItems, vm.nodes.length - vm.maxItems]" watch-tokens="true">Maximum %0% entries, <strong>%1%</strong> too many.</localize> </div> </div> </ng-form> </div> ',
             controller: NestedContentController,
             controllerAs: 'vm',
             require: {
@@ -23531,16 +23544,18 @@
                 'Umbraco.BlockList'
             ];
             // Initialize
-            var scaffoldsLoaded = 0;
             vm.scaffolds = [];
-            _.each(model.config.contentTypes, function (contentType) {
-                contentResource.getScaffold(-20, contentType.ncAlias).then(function (scaffold) {
+            contentResource.getScaffolds(-20, contentTypeAliases).then(function (scaffolds) {
+                // Loop through all the content types
+                _.each(model.config.contentTypes, function (contentType) {
+                    // Get the scaffold from the result
+                    var scaffold = scaffolds[contentType.ncAlias];
                     // make sure it's an element type before allowing the user to create new ones
                     if (scaffold.isElement) {
                         // remove all tabs except the specified tab
                         var tabs = scaffold.variants[0].tabs;
                         var tab = _.find(tabs, function (tab) {
-                            return tab.id !== 0 && (tab.alias.toLowerCase() === contentType.ncTabAlias.toLowerCase() || contentType.ncTabAlias === '');
+                            return tab.id !== 0 && (tab.label.toLowerCase() === contentType.ncTabAlias.toLowerCase() || contentType.ncTabAlias === '');
                         });
                         scaffold.variants[0].tabs = [];
                         if (tab) {
@@ -23560,12 +23575,9 @@
                         // Store the scaffold object
                         vm.scaffolds.push(scaffold);
                     }
-                    scaffoldsLoaded++;
-                    initIfAllScaffoldsHaveLoaded();
-                }, function (error) {
-                    scaffoldsLoaded++;
-                    initIfAllScaffoldsHaveLoaded();
                 });
+                // Initialize once all scaffolds have been loaded
+                initNestedContent();
             });
             /**
      * Ensure that the containing content variant language and current property culture is transferred along
@@ -23588,50 +23600,43 @@
                     });
                 });
             }
-            var initIfAllScaffoldsHaveLoaded = function initIfAllScaffoldsHaveLoaded() {
+            var initNestedContent = function initNestedContent() {
                 // Initialize when all scaffolds have loaded
-                if (model.config.contentTypes.length === scaffoldsLoaded) {
-                    // Because we're loading the scaffolds async one at a time, we need to
-                    // sort them explicitly according to the sort order defined by the data type.
-                    contentTypeAliases = [];
-                    _.each(model.config.contentTypes, function (contentType) {
-                        contentTypeAliases.push(contentType.ncAlias);
-                    });
-                    vm.scaffolds = $filter('orderBy')(vm.scaffolds, function (s) {
-                        return contentTypeAliases.indexOf(s.contentTypeAlias);
-                    });
-                    // Convert stored nodes
-                    if (model.value) {
-                        for (var i = 0; i < model.value.length; i++) {
-                            var item = model.value[i];
-                            var scaffold = getScaffold(item.ncContentTypeAlias);
-                            if (scaffold == null) {
-                                // No such scaffold - the content type might have been deleted. We need to skip it.
-                                continue;
-                            }
-                            createNode(scaffold, item);
+                // Sort the scaffold explicitly according to the sort order defined by the data type.
+                vm.scaffolds = $filter('orderBy')(vm.scaffolds, function (s) {
+                    return contentTypeAliases.indexOf(s.contentTypeAlias);
+                });
+                // Convert stored nodes
+                if (model.value) {
+                    for (var i = 0; i < model.value.length; i++) {
+                        var item = model.value[i];
+                        var scaffold = getScaffold(item.ncContentTypeAlias);
+                        if (scaffold == null) {
+                            // No such scaffold - the content type might have been deleted. We need to skip it.
+                            continue;
                         }
+                        createNode(scaffold, item);
                     }
-                    // Enforce min items if we only have one scaffold type
-                    var modelWasChanged = false;
-                    if (vm.nodes.length < vm.minItems && vm.scaffolds.length === 1) {
-                        for (var i = vm.nodes.length; i < model.config.minItems; i++) {
-                            addNode(vm.scaffolds[0].contentTypeAlias);
-                        }
-                        modelWasChanged = true;
-                    }
-                    // If there is only one item, set it as current node
-                    if (vm.singleMode || vm.nodes.length === 1 && vm.maxItems === 1) {
-                        setCurrentNode(vm.nodes[0], false);
-                    }
-                    validate();
-                    vm.inited = true;
-                    if (modelWasChanged) {
-                        updateModel();
-                    }
-                    updatePropertyActionStates();
-                    checkAbilityToPasteContent();
                 }
+                // Enforce min items if we only have one scaffold type
+                var modelWasChanged = false;
+                if (vm.nodes.length < vm.minItems && vm.scaffolds.length === 1) {
+                    for (var i = vm.nodes.length; i < model.config.minItems; i++) {
+                        addNode(vm.scaffolds[0].contentTypeAlias);
+                    }
+                    modelWasChanged = true;
+                }
+                // If there is only one item, set it as current node
+                if (vm.singleMode || vm.nodes.length === 1 && vm.maxItems === 1) {
+                    setCurrentNode(vm.nodes[0], false);
+                }
+                validate();
+                vm.inited = true;
+                if (modelWasChanged) {
+                    updateModel();
+                }
+                updatePropertyActionStates();
+                checkAbilityToPasteContent();
             };
             function extendPropertyWithNCData(prop) {
                 if (prop.propertyAlias === undefined) {

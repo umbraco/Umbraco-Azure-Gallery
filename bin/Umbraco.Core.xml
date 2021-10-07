@@ -32,6 +32,825 @@
             <param name="assemblyName"></param>
             <returns></returns>
         </member>
+        <member name="T:Umbraco.Core.Collections.StackQueue`1">
+            <summary>
+            Collection that can be both a queue and a stack.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Collections.EventClearingObservableCollection`1">
+            <summary>
+            Allows clearing all event handlers
+            </summary>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.EventClearingObservableCollection`1.ClearCollectionChangedEvents">
+            <summary>
+            Clears all event handlers for the <see cref="!:CollectionChanged"/> event
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.CompositeNStringNStringKey">
+            <summary>
+            Represents a composite key of (string, string) for fast dictionaries.
+            </summary>
+            <remarks>
+            <para>The string parts of the key are case-insensitive.</para>
+            <para>Null is a valid value for both parts.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeNStringNStringKey.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeNStringNStringKey"/> struct.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.CompositeStringStringKey">
+            <summary>
+            Represents a composite key of (string, string) for fast dictionaries.
+            </summary>
+            <remarks>
+            <para>The string parts of the key are case-insensitive.</para>
+            <para>Null is NOT a valid value for neither parts.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeStringStringKey.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeStringStringKey"/> struct.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.CompositeIntStringKey">
+            <summary>
+            Represents a composite key of (int, string) for fast dictionaries.
+            </summary>
+            <remarks>
+            <para>The integer part of the key must be greater than, or equal to, zero.</para>
+            <para>The string part of the key is case-insensitive.</para>
+            <para>Null is a valid value for both parts.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeIntStringKey.#ctor(System.Nullable{System.Int32},System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeIntStringKey"/> struct.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.CompositeTypeTypeKey">
+            <summary>
+            Represents a composite key of (Type, Type) for fast dictionaries.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.#ctor(System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeTypeTypeKey"/> struct.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Collections.CompositeTypeTypeKey.Type1">
+            <summary>
+            Gets the first type.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Collections.CompositeTypeTypeKey.Type2">
+            <summary>
+            Gets the second type.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.Equals(Umbraco.Core.Collections.CompositeTypeTypeKey)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="T:Umbraco.Core.Collections.ConcurrentHashSet`1">
+            <summary>
+            A thread-safe representation of a <see cref="T:System.Collections.Generic.HashSet`1"/>.
+            Enumerating this collection is thread-safe and will only operate on a clone that is generated before returning the enumerator.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+            <filterpriority>1</filterpriority>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Remove(`0)">
+            <summary>
+            Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <returns>
+            true if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </returns>
+            <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
+        </member>
+        <member name="P:Umbraco.Core.Collections.ConcurrentHashSet`1.Count">
+            <summary>
+            Gets the number of elements contained in the <see cref="T:System.Collections.ICollection"/>.
+            </summary>
+            <returns>
+            The number of elements contained in the <see cref="T:System.Collections.ICollection"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:Umbraco.Core.Collections.ConcurrentHashSet`1.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
+            </summary>
+            <returns>
+            true if the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Add(`0)">
+            <summary>
+            Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.TryAdd(`0)">
+            <summary>
+            Attempts to add an item to the collection
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Clear">
+            <summary>
+            Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only. </exception>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Contains(`0)">
+            <summary>
+            Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains a specific value.
+            </summary>
+            <returns>
+            true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
+            </returns>
+            <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1"/> to an <see cref="T:System.Array"/>, starting at a specified index.
+            </summary>
+            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from the <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1"/>. The array must have zero-based indexing.</param><param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is a null reference (Nothing in Visual Basic).</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is less than zero.</exception><exception cref="T:System.ArgumentException"><paramref name="index"/> is equal to or greater than the length of the <paramref name="array"/> -or- The number of elements in the source <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> is greater than the available space from <paramref name="index"/> to the end of the destination <paramref name="array"/>.</exception>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:System.Collections.ICollection"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+            </summary>
+            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.ICollection"/>. The <see cref="T:System.Array"/> must have zero-based indexing. </param><param name="index">The zero-based index in <paramref name="array"/> at which copying begins. </param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is null. </exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is less than zero. </exception><exception cref="T:System.ArgumentException"><paramref name="array"/> is multidimensional.-or- The number of elements in the source <see cref="T:System.Collections.ICollection"/> is greater than the available space from <paramref name="index"/> to the end of the destination <paramref name="array"/>. </exception><exception cref="T:System.ArgumentException">The type of the source <see cref="T:System.Collections.ICollection"/> cannot be cast automatically to the type of the destination <paramref name="array"/>. </exception><filterpriority>2</filterpriority>
+        </member>
+        <member name="T:Umbraco.Core.Collections.DeepCloneableList`1">
+            <summary>
+            A List that can be deep cloned with deep cloned elements and can reset the collection's items dirty flags
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Default behavior is CloneOnce
+            </summary>
+            <param name="collection"></param>
+        </member>
+        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.DeepClone">
+            <summary>
+            Creates a new list and adds each element as a deep cloned element if it is of type IDeepCloneable
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.IsPropertyDirty(System.String)">
+            <inheritdoc />
+            <remarks>Always return false, the list has no properties that can be dirty.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.WasPropertyDirty(System.String)">
+            <inheritdoc />
+            <remarks>Always return false, the list has no properties that can be dirty.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.GetDirtyProperties">
+            <inheritdoc />
+            <remarks>Always return an empty enumerable, the list has no properties that can be dirty.</remarks>
+        </member>
+        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.GetWereDirtyProperties">
+            <remarks>Always return an empty enumerable, the list has no properties that can be dirty.</remarks>
+        </member>
+        <member name="F:Umbraco.Core.Collections.ListCloneBehavior.CloneOnce">
+            <summary>
+            When set, DeepClone will clone the items one time and the result list behavior will be None
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Collections.ListCloneBehavior.None">
+            <summary>
+            When set, DeepClone will not clone any items
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Collections.ListCloneBehavior.Always">
+            <summary>
+            When set, DeepClone will always clone all items
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.ObservableDictionary`2">
+            <summary>
+            An ObservableDictionary
+            </summary>
+            <remarks>
+            Assumes that the key will not change and is unique for each element in the collection.
+            Collection is not thread-safe, so calls should be made single-threaded.
+            </remarks>
+            <typeparam name="TValue">The type of elements contained in the BindableCollection</typeparam>
+            <typeparam name="TKey">The type of the indexing key</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.#ctor(System.Func{`1,`0},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Create new ObservableDictionary
+            </summary>
+            <param name="keySelector">Selector function to create key from value</param>
+            <param name="equalityComparer">The equality comparer to use when comparing keys, or null to use the default comparer.</param>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.ClearCollectionChangedEvents">
+            <summary>
+            Clears all <see cref="!:CollectionChanged"/> event handlers
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Collections.ObservableDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the element with the specified key.  If setting a new value, new value must have same key.
+            </summary>
+            <param name="key">Key of element to replace</param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.Replace(`0,`1)">
+             <summary>
+             Replaces element at given key with new value.  New value must have same key.
+             </summary>
+             <param name="key">Key of element to replace</param>
+             <param name="value">New value</param>
+            
+             <exception cref="T:System.InvalidOperationException"></exception>
+             <returns>False if key not found</returns>
+        </member>
+        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.ChangeKey(`0,`0)">
+            <summary>
+            Allows us to change the key of an item
+            </summary>
+            <param name="currentKey"></param>
+            <param name="newKey"></param>
+        </member>
+        <member name="P:Umbraco.Core.Collections.ObservableDictionary`2.Keys">
+            <summary>
+            Returns all keys
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Collections.ObservableDictionary`2.Values">
+            <summary>
+            Returns all values
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.TypeList`1">
+            <summary>
+            Represents a list of types.
+            </summary>
+            <remarks>Types in the list are, or derive from, or implement, the base type.</remarks>
+            <typeparam name="TBase">The base type.</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TypeList`1.Add``1">
+            <summary>
+            Adds a type to the list.
+            </summary>
+            <typeparam name="T">The type to add.</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TypeList`1.Contains(System.Type)">
+            <summary>
+            Determines whether a type is in the list.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Collections.OrderedHashSet`1">
+            <summary>
+            A custom collection similar to HashSet{T} which only contains unique items, however this collection keeps items in order
+            and is customizable to keep the newest or oldest equatable item
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Collections.TopoGraph`2">
+            <summary>
+            Represents a generic DAG that can be topologically sorted.
+            </summary>
+            <typeparam name="TKey">The type of the keys.</typeparam>
+            <typeparam name="TItem">The type of the items.</typeparam>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TopoGraph`2.#ctor(System.Func{`1,`0},System.Func{`1,System.Collections.Generic.IEnumerable{`0}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.TopoGraph`2"/> class.
+            </summary>
+            <param name="getKey">A method that returns the key of an item.</param>
+            <param name="getDependencies">A method that returns the dependency keys of an item.</param>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TopoGraph`2.AddItem(`1)">
+            <summary>
+            Adds an item to the graph.
+            </summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TopoGraph`2.AddItems(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            Adds items to the graph.
+            </summary>
+            <param name="items">The items.</param>
+        </member>
+        <member name="M:Umbraco.Core.Collections.TopoGraph`2.GetSortedItems(System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Gets the sorted items.
+            </summary>
+            <param name="throwOnCycle">A value indicating whether to throw on cycles, or just ignore the branch.</param>
+            <param name="throwOnMissing">A value indicating whether to throw on missing dependency, or just ignore the dependency.</param>
+            <param name="reverse">A value indicating whether to reverse the order.</param>
+            <returns>The (topologically) sorted items.</returns>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.CaseInsensitiveEnumConfigConverter`1">
+            <summary>
+            A case-insensitive configuration converter for enumerations.
+            </summary>
+            <typeparam name="T">The type of the enumeration.</typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.CommaDelimitedConfigurationElement">
+            <summary>
+            Defines a configuration section that contains inner text that is comma delimited
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.CommaDelimitedConfigurationElement.InnerEnumerator">
+            <summary>
+            A wrapper for StringEnumerator since it doesn't explicitly implement IEnumerable
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.Configs">
+            <summary>
+            Represents Umbraco configurations.
+            </summary>
+            <remarks>
+            <para>During composition, use composition.Configs. When running, either inject the required configuration,
+            or use Current.Configs.</para>
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.Configs.GetConfig``1">
+            <summary>
+            Gets a configuration.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.Configs.Add``1(System.Func{``0})">
+            <summary>
+            Adds a configuration, provided by a factory.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.Configs.Add``1(System.Func{Umbraco.Core.Composing.IFactory,``0})">
+            <summary>
+            Adds a configuration, provided by a factory.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.Configs.Add``1(System.String)">
+            <summary>
+            Adds a configuration, provided by a configuration section.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.Configs.RegisterWith(Umbraco.Core.Composing.IRegister)">
+            <summary>
+            Registers configurations in a register.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.GlobalSettings">
+            <summary>
+            The GlobalSettings Class contains general settings information for the entire Umbraco instance based on information from  web.config appsettings
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.GlobalSettings.ResetInternal">
+            <summary>
+            Used in unit testing to reset all config items that were set with property setters (i.e. did not come from config)
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.GlobalSettings.Reset">
+            <summary>
+            Resets settings that were set programmatically, to their initial values.
+            </summary>
+            <remarks>To be used in unit tests.</remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.HasSmtpServer">
+            <summary>
+            For testing only
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ReservedUrls">
+            <summary>
+            Gets the reserved URLs from web.config.
+            </summary>
+            <value>The reserved URLs.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ReservedPaths">
+            <summary>
+            Gets the reserved paths from web.config
+            </summary>
+            <value>The reserved paths.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ContentXmlFile">
+            <summary>
+            Gets the name of the content XML file.
+            </summary>
+            <value>The content XML.</value>
+            <remarks>
+            Defaults to ~/App_Data/umbraco.config
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.Path">
+            <summary>
+            Gets the path to umbraco's root directory (/umbraco by default).
+            </summary>
+            <value>The path.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.IconsPath">
+            <summary>
+            Gets the path to folder containing the icons used in the umbraco backoffice (/umbraco/assets/icons by default).
+            </summary>
+            <value>The icons path.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ConfigurationStatus">
+            <summary>
+            Gets or sets the configuration status. This will return the version number of the currently installed umbraco instance.
+            </summary>
+            <value>The configuration status.</value>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.GlobalSettings.SaveSetting(System.String,System.String)">
+            <summary>
+            Saves a setting into the configuration file.
+            </summary>
+            <param name="key">Key of the setting to be saved.</param>
+            <param name="value">Value of the setting to be saved.</param>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.GlobalSettings.RemoveSetting(System.String)">
+            <summary>
+            Removes a setting from the configuration file.
+            </summary>
+            <param name="key">Key of the setting to be removed.</param>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.DebugMode">
+            <summary>
+            Gets a value indicating whether umbraco is running in [debug mode].
+            </summary>
+            <value><c>true</c> if [debug mode]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.TimeOutInMinutes">
+            <summary>
+            Gets the time out in minutes.
+            </summary>
+            <value>The time out in minutes.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.VersionCheckPeriod">
+            <summary>
+            Returns the number of days that should take place between version checks.
+            </summary>
+            <value>The version check period in days (0 = never).</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.LocalTempStorageLocation">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.LocalTempPath">
+            <inheritdoc />
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.DefaultUILanguage">
+            <summary>
+            Gets the default UI language.
+            </summary>
+            <value>The default UI language.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.HideTopLevelNodeFromPath">
+            <summary>
+            Gets a value indicating whether umbraco should hide top level nodes from generated URLs.
+            </summary>
+            <value>
+                <c>true</c> if umbraco hides top level nodes from URLs; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.UseHttps">
+            <summary>
+            Gets a value indicating whether umbraco should force a secure (https) connection to the backoffice.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.GlobalSettings.SqlWriteLockTimeOut">
+            <summary>
+            An int value representing the time in milliseconds to lock the database for a write operation
+            </summary>
+            <remarks>
+            The default value is 5000 milliseconds
+            </remarks>
+            <value>The timeout in milliseconds.</value>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.GlobalSettingsExtensions.GetUmbracoMvcArea(Umbraco.Core.Configuration.IGlobalSettings)">
+             <summary>
+             This returns the string of the MVC Area route.
+             </summary>
+             <remarks>
+             This will return the MVC area that we will route all custom routes through like surface controllers, etc...
+             We will use the 'Path' (default ~/umbraco) to create it but since it cannot contain '/' and people may specify a path of ~/asdf/asdf/admin
+             we will convert the '/' to '-' and use that as the path. its a bit lame but will work.
+            
+             We also make sure that the virtual directory (SystemDirectories.Root) is stripped off first, otherwise we'd end up with something
+             like "MyVirtualDirectory-Umbraco" instead of just "Umbraco".
+             </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.IGlobalSettings">
+            <summary>
+            Contains general settings information for the entire Umbraco instance based on information from  web.config appsettings
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ReservedUrls">
+            <summary>
+            Gets the reserved URLs from web.config.
+            </summary>
+            <value>The reserved URLs.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ReservedPaths">
+            <summary>
+            Gets the reserved paths from web.config
+            </summary>
+            <value>The reserved paths.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.Path">
+            <summary>
+            Gets the path to umbraco's root directory (/umbraco by default).
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.IconsPath">
+            <summary>
+            Gets the path to umbraco's icons directory (/umbraco/assets/icons by default).
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ConfigurationStatus">
+            <summary>
+            Gets or sets the configuration status. This will return the version number of the currently installed umbraco instance.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.TimeOutInMinutes">
+            <summary>
+            Gets the time out in minutes.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.DefaultUILanguage">
+            <summary>
+            Gets the default UI language.
+            </summary>
+            <value>The default UI language.</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.HideTopLevelNodeFromPath">
+            <summary>
+            Gets a value indicating whether umbraco should hide top level nodes from generated URLs.
+            </summary>
+            <value>
+            	<c>true</c> if umbraco hides top level nodes from URLs; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.UseHttps">
+            <summary>
+            Gets a value indicating whether umbraco should force a secure (https) connection to the backoffice.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.VersionCheckPeriod">
+            <summary>
+            Returns a string value to determine if umbraco should skip version-checking.
+            </summary>
+            <value>The version check period in days (0 = never).</value>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.LocalTempStorageLocation">
+            <summary>
+            Gets the configuration for the location of temporary files.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.LocalTempPath">
+            <summary>
+            Gets the location of temporary files.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.SqlWriteLockTimeOut">
+            <summary>
+            Gets the write lock timeout.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.InnerTextConfigurationElement`1">
+            <summary>
+            A full config section is required for any full element and we have some elements that are defined like this:
+            {element}MyValue{/element} instead of as attribute values.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.InnerTextConfigurationElement`1.RawValue">
+            <summary>
+            Exposes the raw string value
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.InnerTextConfigurationElement`1.op_Implicit(Umbraco.Core.Configuration.InnerTextConfigurationElement{`0})~`0">
+            <summary>
+            Implicit operator so we don't need to use the 'Value' property explicitly
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.InnerTextConfigurationElement`1.ToString">
+            <summary>
+            Return the string value of Value
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.OptionalCommaDelimitedConfigurationElement">
+            <summary>
+            Used for specifying default values for comma delimited config
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.OptionalInnerTextConfigurationElement`1">
+            <summary>
+            This is used to supply optional/default values when using InnerTextConfigurationElement
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.RawXmlConfigurationElement">
+            <summary>
+            A configuration section that simply exposes the entire raw xml of the section itself which inheritors can use
+            to do with as they please.
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.IUmbracoConfigurationSection">
+            <summary>
+            Represents an Umbraco configuration section which can be used to pass to UmbracoConfiguration.For{T}
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.UmbracoConfigurationSection">
+            <summary>
+            Represents an Umbraco section within the configuration file.
+            </summary>
+            <remarks>
+            <para>The requirement for these sections is to be read-only.</para>
+            <para>However for unit tests purposes it is internally possible to override some values, and
+            then calling <c>>ResetSection</c> should cancel these changes and bring the section back to
+            what it was originally.</para>
+            <para>The <c>UmbracoSettings.For{T}</c> method will return a section, either one that
+            is in the configuration file, or a section that was created with default values.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoConfigurationSection.IsPresent">
+            <summary>
+            Gets a value indicating whether the section actually is in the configuration file.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.UmbracoSettings.ContentSectionExtensions.IsImageFile(Umbraco.Core.Configuration.UmbracoSettings.IContentSection,System.String)">
+            <summary>
+            Gets a value indicating whether the file extension corresponds to an image.
+            </summary>
+            <param name="extension">The file extension.</param>
+            <param name="contentConfig"></param>
+            <returns>A value indicating whether the file extension corresponds to an image.</returns>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.UmbracoSettings.ContentSectionExtensions.IsFileAllowedForUpload(Umbraco.Core.Configuration.UmbracoSettings.IContentSection,System.String)">
+            <summary>
+            Determines if file extension is allowed for upload based on (optional) white list and black list
+            held in settings.
+            Allow upload if extension is whitelisted OR if there is no whitelist and extension is NOT blacklisted.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Configuration.UmbracoSettings.ContentSectionExtensions.GetConfig(Umbraco.Core.Configuration.UmbracoSettings.IContentSection,System.String)">
+            <summary>
+            Gets the auto-fill configuration for a specified property alias.
+            </summary>
+            <param name="contentSection"></param>
+            <param name="propertyTypeAlias">The property type alias.</param>
+            <returns>The auto-fill configuration for the specified property alias, or null.</returns>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.IContentSection.ShowDeprecatedPropertyEditors">
+            <summary>
+            Gets a value indicating whether to show deprecated property editors in
+            a datatype list of available editors.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.IImagingAutoFillUploadField.Alias">
+            <summary>
+            Allow setting internally so we can create a default
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ImagingAutoFillUploadFieldElement.Alias">
+            <summary>
+            Allow setting internally so we can create a default
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ISecuritySection.AllowPasswordReset">
+            <summary>
+            Used to enable/disable the forgot password functionality on the back office login screen
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ISecuritySection.UsernameIsEmail">
+            <summary>
+            A boolean indicating that by default the email address will be the username
+            </summary>
+            <remarks>
+            Even if this is true and the username is different from the email in the database, the username field will still be shown.
+            When this is false, the username and email fields will be shown in the user section.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.AllowPasswordReset">
+            <summary>
+            Used to enable/disable the forgot password functionality on the back office login screen
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.UsernameIsEmail">
+            <summary>
+            A boolean indicating that by default the email address will be the username
+            </summary>
+            <remarks>
+            Even if this is true and the username is different from the email in the database, the username field will still be shown.
+            When this is false, the username and email fields will be shown in the user section.
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.Umbraco#Core#Configuration#UmbracoSettings#ISecuritySection#AllowPasswordReset">
+            <summary>
+            Used to enable/disable the forgot password functionality on the back office login screen
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.Umbraco#Core#Configuration#UmbracoSettings#ISecuritySection#UsernameIsEmail">
+            <summary>
+            A boolean indicating that by default the email address will be the username
+            </summary>
+            <remarks>
+            Even if this is true and the username is different from the email in the database, the username field will still be shown.
+            When this is false, the username and email fields will be shown in the user section.
+            </remarks>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.UmbracoSettings.UmbracoConfigurationElement">
+            <summary>
+            Base class with shared helper methods
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Configuration.UmbracoSettings.UmbracoConfigurationElement._rawElements">
+            <summary>
+            Used so the RawElement types are not re-created every time they are accessed
+            </summary>
+        </member>
+        <member name="T:Umbraco.Core.Configuration.UmbracoVersion">
+            <summary>
+            Represents the version of the executing code.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.Current">
+            <summary>
+            Gets the non-semantic version of the Umbraco code.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.Comment">
+            <summary>
+            Gets the semantic version comments of the Umbraco code.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.AssemblyVersion">
+            <summary>
+            Gets the assembly version of the Umbraco code.
+            </summary>
+            <remarks>
+            <para>The assembly version is the value of the <see cref="T:System.Reflection.AssemblyVersionAttribute"/>.</para>
+            <para>Is the one that the CLR checks for compatibility. Therefore, it changes only on
+            hard-breaking changes (for instance, on new major versions).</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.AssemblyFileVersion">
+            <summary>
+            Gets the assembly file version of the Umbraco code.
+            </summary>
+            <remarks>
+            <para>The assembly version is the value of the <see cref="T:System.Reflection.AssemblyFileVersionAttribute"/>.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.SemanticVersion">
+            <summary>
+            Gets the semantic version of the Umbraco code.
+            </summary>
+            <remarks>
+            <para>The semantic version is the value of the <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute"/>.</para>
+            <para>It is the full version of Umbraco, including comments.</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.LocalVersion">
+            <summary>
+            Gets the "local" version of the site.
+            </summary>
+            <remarks>
+            <para>Three things have a version, really: the executing code, the database model,
+            and the site/files. The database model version is entirely managed via migrations,
+            and changes during an upgrade. The executing code version changes when new code is
+            deployed. The site/files version changes during an upgrade.</para>
+            </remarks>
+        </member>
         <member name="T:Umbraco.Core.Constants">
             <summary>
             Defines constants.
@@ -1647,345 +2466,6 @@
             </summary>
             <remarks>Well-known entity types are those that Deploy already knows about,
             but entity types are strings and so can be extended beyond what is defined here.</remarks>
-        </member>
-        <member name="T:Umbraco.Core.Collections.EventClearingObservableCollection`1">
-            <summary>
-            Allows clearing all event handlers
-            </summary>
-            <typeparam name="TValue"></typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.EventClearingObservableCollection`1.ClearCollectionChangedEvents">
-            <summary>
-            Clears all event handlers for the <see cref="!:CollectionChanged"/> event
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.CompositeNStringNStringKey">
-            <summary>
-            Represents a composite key of (string, string) for fast dictionaries.
-            </summary>
-            <remarks>
-            <para>The string parts of the key are case-insensitive.</para>
-            <para>Null is a valid value for both parts.</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeNStringNStringKey.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeNStringNStringKey"/> struct.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.CompositeStringStringKey">
-            <summary>
-            Represents a composite key of (string, string) for fast dictionaries.
-            </summary>
-            <remarks>
-            <para>The string parts of the key are case-insensitive.</para>
-            <para>Null is NOT a valid value for neither parts.</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeStringStringKey.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeStringStringKey"/> struct.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.CompositeIntStringKey">
-            <summary>
-            Represents a composite key of (int, string) for fast dictionaries.
-            </summary>
-            <remarks>
-            <para>The integer part of the key must be greater than, or equal to, zero.</para>
-            <para>The string part of the key is case-insensitive.</para>
-            <para>Null is a valid value for both parts.</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeIntStringKey.#ctor(System.Nullable{System.Int32},System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeIntStringKey"/> struct.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.CompositeTypeTypeKey">
-            <summary>
-            Represents a composite key of (Type, Type) for fast dictionaries.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.#ctor(System.Type,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.CompositeTypeTypeKey"/> struct.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Collections.CompositeTypeTypeKey.Type1">
-            <summary>
-            Gets the first type.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Collections.CompositeTypeTypeKey.Type2">
-            <summary>
-            Gets the second type.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.Equals(Umbraco.Core.Collections.CompositeTypeTypeKey)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Umbraco.Core.Collections.CompositeTypeTypeKey.GetHashCode">
-            <inheritdoc/>
-        </member>
-        <member name="T:Umbraco.Core.Collections.ConcurrentHashSet`1">
-            <summary>
-            A thread-safe representation of a <see cref="T:System.Collections.Generic.HashSet`1"/>.
-            Enumerating this collection is thread-safe and will only operate on a clone that is generated before returning the enumerator.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the collection.
-            </summary>
-            <returns>
-            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
-            </returns>
-            <filterpriority>1</filterpriority>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.System#Collections#IEnumerable#GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through a collection.
-            </summary>
-            <returns>
-            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Remove(`0)">
-            <summary>
-            Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
-            </summary>
-            <returns>
-            true if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
-            </returns>
-            <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
-        </member>
-        <member name="P:Umbraco.Core.Collections.ConcurrentHashSet`1.Count">
-            <summary>
-            Gets the number of elements contained in the <see cref="T:System.Collections.ICollection"/>.
-            </summary>
-            <returns>
-            The number of elements contained in the <see cref="T:System.Collections.ICollection"/>.
-            </returns>
-            <filterpriority>2</filterpriority>
-        </member>
-        <member name="P:Umbraco.Core.Collections.ConcurrentHashSet`1.IsReadOnly">
-            <summary>
-            Gets a value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
-            </summary>
-            <returns>
-            true if the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only; otherwise, false.
-            </returns>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Add(`0)">
-            <summary>
-            Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
-            </summary>
-            <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.TryAdd(`0)">
-            <summary>
-            Attempts to add an item to the collection
-            </summary>
-            <param name="item"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Clear">
-            <summary>
-            Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
-            </summary>
-            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only. </exception>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.Contains(`0)">
-            <summary>
-            Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains a specific value.
-            </summary>
-            <returns>
-            true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
-            </returns>
-            <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.CopyTo(`0[],System.Int32)">
-            <summary>
-            Copies the elements of the <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1"/> to an <see cref="T:System.Array"/>, starting at a specified index.
-            </summary>
-            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from the <see cref="T:System.Collections.Concurrent.IProducerConsumerCollection`1"/>. The array must have zero-based indexing.</param><param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is a null reference (Nothing in Visual Basic).</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is less than zero.</exception><exception cref="T:System.ArgumentException"><paramref name="index"/> is equal to or greater than the length of the <paramref name="array"/> -or- The number of elements in the source <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> is greater than the available space from <paramref name="index"/> to the end of the destination <paramref name="array"/>.</exception>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ConcurrentHashSet`1.CopyTo(System.Array,System.Int32)">
-            <summary>
-            Copies the elements of the <see cref="T:System.Collections.ICollection"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
-            </summary>
-            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.ICollection"/>. The <see cref="T:System.Array"/> must have zero-based indexing. </param><param name="index">The zero-based index in <paramref name="array"/> at which copying begins. </param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is null. </exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is less than zero. </exception><exception cref="T:System.ArgumentException"><paramref name="array"/> is multidimensional.-or- The number of elements in the source <see cref="T:System.Collections.ICollection"/> is greater than the available space from <paramref name="index"/> to the end of the destination <paramref name="array"/>. </exception><exception cref="T:System.ArgumentException">The type of the source <see cref="T:System.Collections.ICollection"/> cannot be cast automatically to the type of the destination <paramref name="array"/>. </exception><filterpriority>2</filterpriority>
-        </member>
-        <member name="T:Umbraco.Core.Collections.DeepCloneableList`1">
-            <summary>
-            A List that can be deep cloned with deep cloned elements and can reset the collection's items dirty flags
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Default behavior is CloneOnce
-            </summary>
-            <param name="collection"></param>
-        </member>
-        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.DeepClone">
-            <summary>
-            Creates a new list and adds each element as a deep cloned element if it is of type IDeepCloneable
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.IsPropertyDirty(System.String)">
-            <inheritdoc />
-            <remarks>Always return false, the list has no properties that can be dirty.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.WasPropertyDirty(System.String)">
-            <inheritdoc />
-            <remarks>Always return false, the list has no properties that can be dirty.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.GetDirtyProperties">
-            <inheritdoc />
-            <remarks>Always return an empty enumerable, the list has no properties that can be dirty.</remarks>
-        </member>
-        <member name="M:Umbraco.Core.Collections.DeepCloneableList`1.GetWereDirtyProperties">
-            <remarks>Always return an empty enumerable, the list has no properties that can be dirty.</remarks>
-        </member>
-        <member name="F:Umbraco.Core.Collections.ListCloneBehavior.CloneOnce">
-            <summary>
-            When set, DeepClone will clone the items one time and the result list behavior will be None
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Collections.ListCloneBehavior.None">
-            <summary>
-            When set, DeepClone will not clone any items
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Collections.ListCloneBehavior.Always">
-            <summary>
-            When set, DeepClone will always clone all items
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.ObservableDictionary`2">
-            <summary>
-            An ObservableDictionary
-            </summary>
-            <remarks>
-            Assumes that the key will not change and is unique for each element in the collection.
-            Collection is not thread-safe, so calls should be made single-threaded.
-            </remarks>
-            <typeparam name="TValue">The type of elements contained in the BindableCollection</typeparam>
-            <typeparam name="TKey">The type of the indexing key</typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.#ctor(System.Func{`1,`0},System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Create new ObservableDictionary
-            </summary>
-            <param name="keySelector">Selector function to create key from value</param>
-            <param name="equalityComparer">The equality comparer to use when comparing keys, or null to use the default comparer.</param>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.ClearCollectionChangedEvents">
-            <summary>
-            Clears all <see cref="!:CollectionChanged"/> event handlers
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Collections.ObservableDictionary`2.Item(`0)">
-            <summary>
-            Gets or sets the element with the specified key.  If setting a new value, new value must have same key.
-            </summary>
-            <param name="key">Key of element to replace</param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.Replace(`0,`1)">
-             <summary>
-             Replaces element at given key with new value.  New value must have same key.
-             </summary>
-             <param name="key">Key of element to replace</param>
-             <param name="value">New value</param>
-            
-             <exception cref="T:System.InvalidOperationException"></exception>
-             <returns>False if key not found</returns>
-        </member>
-        <member name="M:Umbraco.Core.Collections.ObservableDictionary`2.ChangeKey(`0,`0)">
-            <summary>
-            Allows us to change the key of an item
-            </summary>
-            <param name="currentKey"></param>
-            <param name="newKey"></param>
-        </member>
-        <member name="P:Umbraco.Core.Collections.ObservableDictionary`2.Keys">
-            <summary>
-            Returns all keys
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Collections.ObservableDictionary`2.Values">
-            <summary>
-            Returns all values
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.TypeList`1">
-            <summary>
-            Represents a list of types.
-            </summary>
-            <remarks>Types in the list are, or derive from, or implement, the base type.</remarks>
-            <typeparam name="TBase">The base type.</typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.TypeList`1.Add``1">
-            <summary>
-            Adds a type to the list.
-            </summary>
-            <typeparam name="T">The type to add.</typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.TypeList`1.Contains(System.Type)">
-            <summary>
-            Determines whether a type is in the list.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Collections.OrderedHashSet`1">
-            <summary>
-            A custom collection similar to HashSet{T} which only contains unique items, however this collection keeps items in order
-            and is customizable to keep the newest or oldest equatable item
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:Umbraco.Core.Collections.TopoGraph`2">
-            <summary>
-            Represents a generic DAG that can be topologically sorted.
-            </summary>
-            <typeparam name="TKey">The type of the keys.</typeparam>
-            <typeparam name="TItem">The type of the items.</typeparam>
-        </member>
-        <member name="M:Umbraco.Core.Collections.TopoGraph`2.#ctor(System.Func{`1,`0},System.Func{`1,System.Collections.Generic.IEnumerable{`0}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:Umbraco.Core.Collections.TopoGraph`2"/> class.
-            </summary>
-            <param name="getKey">A method that returns the key of an item.</param>
-            <param name="getDependencies">A method that returns the dependency keys of an item.</param>
-        </member>
-        <member name="M:Umbraco.Core.Collections.TopoGraph`2.AddItem(`1)">
-            <summary>
-            Adds an item to the graph.
-            </summary>
-            <param name="item">The item.</param>
-        </member>
-        <member name="M:Umbraco.Core.Collections.TopoGraph`2.AddItems(System.Collections.Generic.IEnumerable{`1})">
-            <summary>
-            Adds items to the graph.
-            </summary>
-            <param name="items">The items.</param>
-        </member>
-        <member name="M:Umbraco.Core.Collections.TopoGraph`2.GetSortedItems(System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Gets the sorted items.
-            </summary>
-            <param name="throwOnCycle">A value indicating whether to throw on cycles, or just ignore the branch.</param>
-            <param name="throwOnMissing">A value indicating whether to throw on missing dependency, or just ignore the dependency.</param>
-            <param name="reverse">A value indicating whether to reverse the order.</param>
-            <returns>The (topologically) sorted items.</returns>
         </member>
         <member name="T:Umbraco.Core.Events.UnattendedInstallEventArgs">
             <summary>
@@ -4389,6 +4869,14 @@
             The property type aliases.
             </value>
         </member>
+        <member name="P:Umbraco.Core.Exceptions.InvalidCompositionException.PropertyGroupAliases">
+            <summary>
+            Gets the property group aliases.
+            </summary>
+            <value>
+            The property group aliases.
+            </value>
+        </member>
         <member name="M:Umbraco.Core.Exceptions.InvalidCompositionException.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.InvalidCompositionException" /> class.
@@ -4408,6 +4896,15 @@
             <param name="contentTypeAlias">The content type alias.</param>
             <param name="addedCompositionAlias">The added composition alias.</param>
             <param name="propertyTypeAliases">The property type aliases.</param>
+        </member>
+        <member name="M:Umbraco.Core.Exceptions.InvalidCompositionException.#ctor(System.String,System.String,System.String[],System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Exceptions.InvalidCompositionException" /> class.
+            </summary>
+            <param name="contentTypeAlias">The content type alias.</param>
+            <param name="addedCompositionAlias">The added composition alias.</param>
+            <param name="propertyTypeAliases">The property type aliases.</param>
+            <param name="propertyGroupAliases">The property group aliases.</param>
         </member>
         <member name="M:Umbraco.Core.Exceptions.InvalidCompositionException.#ctor(System.String)">
             <summary>
@@ -7090,6 +7587,21 @@
             <returns>
             The result of the conversion.
             </returns>
+        </member>
+        <member name="T:Umbraco.Core.Models.PropertyGroupType">
+            <summary>
+            Represents the type of a property group.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.PropertyGroupType.Group">
+            <summary>
+            Display property types in a group.
+            </summary>
+        </member>
+        <member name="F:Umbraco.Core.Models.PropertyGroupType.Tab">
+            <summary>
+            Display property types in a tab.
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Models.PublishedContent.PublishedContentTypeExtensions.TryGetKey(Umbraco.Core.Models.PublishedContent.IPublishedContentType,System.Guid@)">
             <summary>
@@ -11616,20 +12128,16 @@
             <returns>Returns <c>True</c> if a PropertyType with the passed in alias exists, otherwise <c>False</c></returns>
         </member>
         <member name="M:Umbraco.Core.Models.ContentTypeBase.AddPropertyGroup(System.String)">
-            <summary>
-            Adds a PropertyGroup.
-            This method will also check if a group already exists with the same name and link it to the parent.
-            </summary>
-            <param name="groupName">Name of the PropertyGroup to add</param>
-            <returns>Returns <c>True</c> if a PropertyGroup with the passed in name was added, otherwise <c>False</c></returns>
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentTypeBase.AddPropertyGroup(System.String,System.String)">
+            <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Models.ContentTypeBase.AddPropertyType(Umbraco.Core.Models.PropertyType,System.String)">
-            <summary>
-            Adds a PropertyType to a specific PropertyGroup
-            </summary>
-            <param name="propertyType"><see cref="T:Umbraco.Core.Models.PropertyType"/> to add</param>
-            <param name="propertyGroupName">Name of the PropertyGroup to add the PropertyType to</param>
-            <returns>Returns <c>True</c> if PropertyType was added, otherwise <c>False</c></returns>
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentTypeBase.AddPropertyType(Umbraco.Core.Models.PropertyType,System.String,System.String)">
+            <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Models.ContentTypeBase.AddPropertyType(Umbraco.Core.Models.PropertyType)">
             <summary>
@@ -11733,19 +12241,16 @@
             <returns>Returns <c>True</c> if a PropertyType with the passed in alias exists, otherwise <c>False</c></returns>
         </member>
         <member name="M:Umbraco.Core.Models.ContentTypeCompositionBase.AddPropertyGroup(System.String)">
-            <summary>
-            Adds a PropertyGroup.
-            </summary>
-            <param name="groupName">Name of the PropertyGroup to add</param>
-            <returns>Returns <c>True</c> if a PropertyGroup with the passed in name was added, otherwise <c>False</c></returns>
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentTypeCompositionBase.AddPropertyGroup(System.String,System.String)">
+            <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Models.ContentTypeCompositionBase.AddPropertyType(Umbraco.Core.Models.PropertyType,System.String)">
-            <summary>
-            Adds a PropertyType to a specific PropertyGroup
-            </summary>
-            <param name="propertyType"><see cref="T:Umbraco.Core.Models.PropertyType"/> to add</param>
-            <param name="propertyGroupName">Name of the PropertyGroup to add the PropertyType to</param>
-            <returns>Returns <c>True</c> if PropertyType was added, otherwise <c>False</c></returns>
+            <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Models.ContentTypeCompositionBase.AddPropertyType(Umbraco.Core.Models.PropertyType,System.String,System.String)">
+            <inheritdoc />
         </member>
         <member name="M:Umbraco.Core.Models.ContentTypeCompositionBase.CompositionAliases">
             <summary>
@@ -12483,9 +12988,9 @@
         </member>
         <member name="M:Umbraco.Core.Models.IContentTypeBase.RemovePropertyGroup(System.String)">
             <summary>
-            Removes a PropertyGroup from the current ContentType
+            Removes a property group from the current content type.
             </summary>
-            <param name="propertyGroupName">Name of the <see cref="T:Umbraco.Core.Models.PropertyGroup"/> to remove</param>
+            <param name="propertyGroupName">Name of the <see cref="T:Umbraco.Core.Models.PropertyGroup" /> to remove</param>
         </member>
         <member name="M:Umbraco.Core.Models.IContentTypeBase.PropertyTypeExists(System.String)">
             <summary>
@@ -12496,11 +13001,24 @@
         </member>
         <member name="M:Umbraco.Core.Models.IContentTypeBase.AddPropertyType(Umbraco.Core.Models.PropertyType,System.String)">
             <summary>
-            Adds a PropertyType to a specific PropertyGroup
+            Adds the property type to the specified property group (creates a new group if not found).
             </summary>
-            <param name="propertyType"><see cref="T:Umbraco.Core.Models.PropertyType"/> to add</param>
-            <param name="propertyGroupName">Name of the PropertyGroup to add the PropertyType to</param>
-            <returns>Returns <c>True</c> if PropertyType was added, otherwise <c>False</c></returns>
+            <param name="propertyType">The property type to add.</param>
+            <param name="propertyGroupName">The name of the property group to add the property type to.</param>
+            <returns>
+            Returns <c>true</c> if the property type was added; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.IContentTypeBase.AddPropertyType(Umbraco.Core.Models.PropertyType,System.String,System.String)">
+            <summary>
+            Adds the property type to the specified property group (creates a new group if not found and a name is specified).
+            </summary>
+            <param name="propertyType">The property type to add.</param>
+            <param name="groupAlias">The alias of the property group to add the property type to.</param>
+            <param name="groupName">The name of the property group to create when not found.</param>
+            <returns>
+            Returns <c>true</c> if the property type was added; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:Umbraco.Core.Models.IContentTypeBase.AddPropertyType(Umbraco.Core.Models.PropertyType)">
             <summary>
@@ -12511,11 +13029,28 @@
         </member>
         <member name="M:Umbraco.Core.Models.IContentTypeBase.AddPropertyGroup(System.String)">
             <summary>
-            Adds a PropertyGroup.
-            This method will also check if a group already exists with the same name and link it to the parent.
+            Adds a property group with the alias based on the specified <paramref name="groupName" />.
             </summary>
-            <param name="groupName">Name of the PropertyGroup to add</param>
-            <returns>Returns <c>True</c> if a PropertyGroup with the passed in name was added, otherwise <c>False</c></returns>
+            <param name="groupName">Name of the group.</param>
+            <returns>
+            Returns <c>true</c> if a property group with specified <paramref name="groupName" /> was added; otherwise, <c>false</c>.
+            </returns>
+            <remarks>
+            This method will also check if a group already exists with the same alias.
+            </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Models.IContentTypeBase.AddPropertyGroup(System.String,System.String)">
+            <summary>
+            Adds a property group with the specified <paramref name="name" /> and <paramref name="alias" />.
+            </summary>
+            <param name="alias">The alias.</param>
+            <param name="name">Name of the group.</param>
+            <returns>
+            Returns <c>true</c> if a property group with specified <paramref name="alias" /> was added; otherwise, <c>false</c>.
+            </returns>
+            <remarks>
+            This method will also check if a group already exists with the same alias.
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Models.IContentTypeBase.MovePropertyType(System.String,System.String)">
             <summary>
@@ -13806,45 +14341,105 @@
         </member>
         <member name="T:Umbraco.Core.Models.PropertyGroup">
             <summary>
-            A group of property types, which corresponds to the properties grouped under a Tab.
+            Represents a group of property types.
             </summary>
+        </member>
+        <member name="P:Umbraco.Core.Models.PropertyGroup.Type">
+            <summary>
+            Gets or sets the type of the group.
+            </summary>
+            <value>
+            The type.
+            </value>
         </member>
         <member name="P:Umbraco.Core.Models.PropertyGroup.Name">
             <summary>
-            Gets or sets the Name of the Group, which corresponds to the Tab-name in the UI
+            Gets or sets the name of the group.
             </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Umbraco.Core.Models.PropertyGroup.Alias">
+            <summary>
+            Gets or sets the alias of the group.
+            </summary>
+            <value>
+            The alias.
+            </value>
         </member>
         <member name="P:Umbraco.Core.Models.PropertyGroup.SortOrder">
             <summary>
-            Gets or sets the Sort Order of the Group
+            Gets or sets the sort order of the group.
             </summary>
+            <value>
+            The sort order.
+            </value>
         </member>
         <member name="P:Umbraco.Core.Models.PropertyGroup.PropertyTypes">
             <summary>
-            Gets or sets a collection of PropertyTypes for this PropertyGroup
+            Gets or sets a collection of property types for the group.
             </summary>
+            <value>
+            The property types.
+            </value>
             <remarks>
-            Marked DoNotClone because we will manually deal with cloning and the event handlers
+            Marked with DoNotClone, because we will manually deal with cloning and the event handlers.
             </remarks>
+        </member>
+        <member name="M:Umbraco.Core.Models.PropertyGroupExtensions.GetLocalAlias(Umbraco.Core.Models.PropertyGroup)">
+            <summary>
+            Gets the local alias.
+            </summary>
+            <param name="propertyGroup">The property group.</param>
+            <returns>
+            The local alias.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.PropertyGroupExtensions.UpdateLocalAlias(Umbraco.Core.Models.PropertyGroup,System.String)">
+            <summary>
+            Updates the local alias.
+            </summary>
+            <param name="propertyGroup">The property group.</param>
+            <param name="localAlias">The local alias.</param>
+        </member>
+        <member name="M:Umbraco.Core.Models.PropertyGroupExtensions.GetParentAlias(Umbraco.Core.Models.PropertyGroup)">
+            <summary>
+            Gets the parent alias.
+            </summary>
+            <param name="propertyGroup">The property group.</param>
+            <returns>
+            The parent alias.
+            </returns>
+        </member>
+        <member name="M:Umbraco.Core.Models.PropertyGroupExtensions.UpdateParentAlias(Umbraco.Core.Models.PropertyGroup,System.String)">
+            <summary>
+            Updates the parent alias.
+            </summary>
+            <param name="propertyGroup">The property group.</param>
+            <param name="parentAlias">The parent alias.</param>
         </member>
         <member name="T:Umbraco.Core.Models.PropertyGroupCollection">
             <summary>
             Represents a collection of <see cref="T:Umbraco.Core.Models.PropertyGroup"/> objects
             </summary>
         </member>
+        <member name="M:Umbraco.Core.Models.PropertyGroupCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.PropertyGroupCollection" /> class.
+            </summary>
+        </member>
+        <member name="M:Umbraco.Core.Models.PropertyGroupCollection.#ctor(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PropertyGroup})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Umbraco.Core.Models.PropertyGroupCollection" /> class.
+            </summary>
+            <param name="groups">The groups.</param>
+        </member>
         <member name="M:Umbraco.Core.Models.PropertyGroupCollection.Reset(System.Collections.Generic.IEnumerable{Umbraco.Core.Models.PropertyGroup})">
             <summary>
             Resets the collection to only contain the <see cref="T:Umbraco.Core.Models.PropertyGroup"/> instances referenced in the <paramref name="groups"/> parameter.
             </summary>
             <param name="groups">The property groups.</param>
-            <remarks></remarks>
-        </member>
-        <member name="M:Umbraco.Core.Models.PropertyGroupCollection.Contains(System.String)">
-            <summary>
-            Determines whether this collection contains a <see cref="T:Umbraco.Core.Models.PropertyGroup"/> whose name matches the specified parameter.
-            </summary>
-            <param name="groupName">Name of the PropertyGroup.</param>
-            <returns><c>true</c> if the collection contains the specified name; otherwise, <c>false</c>.</returns>
             <remarks></remarks>
         </member>
         <member name="M:Umbraco.Core.Models.PropertyGroupCollection.ClearCollectionChangedEvents">
@@ -14872,6 +15467,110 @@
             Determines whether an object has all required values for persistence.
             </summary>
         </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LoggedInUtc">
+            <summary>
+            Tracks when the session is created
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LastValidatedUtc">
+            <summary>
+            Updated every time a user's session is validated
+            </summary>
+            <remarks>
+            <para>This allows us to guess if a session is timed out if a user doesn't actively
+            log out and also allows us to trim the data in the table.</para>
+            <para>The index is IMPORTANT as it prevents deadlocks during deletion of
+            old sessions (DELETE ... WHERE lastValidatedUtc &lt; date).</para>
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LoggedOutUtc">
+            <summary>
+            Tracks when the session is removed when the user's account is logged out
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.IpAddress">
+            <summary>
+            Logs the IP address of the session if available
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.ContentNuDto.Data">
+            <summary>
+            Stores serialized JSON representing the content item's property and culture name values
+            </summary>
+            <remarks>
+            Pretty much anything that would require a 1:M lookup is serialized here
+            </remarks>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.DomainDto.IsoCode">
+            <summary>
+            Used for a result on the query to get the associated language for a domain if there is one
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.ExternalLoginDto.UserData">
+            <summary>
+            Used to store any arbitrary data for the user and external provider - like user tokens returned from the provider
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.Id">
+            <summary>
+            Gets or sets the identifier of the language.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.IsoCode">
+            <summary>
+            Gets or sets the ISO code of the language.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.CultureName">
+            <summary>
+            Gets or sets the culture name of the language.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.IsDefault">
+            <summary>
+            Gets or sets a value indicating whether the language is the default language.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.IsMandatory">
+            <summary>
+            Gets or sets a value indicating whether the language is mandatory.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.FallbackLanguageId">
+            <summary>
+            Gets or sets the identifier of a fallback language.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LogDto.EntityType">
+            <summary>
+            This is the entity type associated with the log
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.LogDto.Parameters">
+            <summary>
+            Used to store additional data parameters for the log
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserDto.PasswordConfig">
+            <summary>
+            This will represent a JSON structure of how the password has been created (i.e hash algorithm, iterations)
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserDto.Avatar">
+            <summary>
+            Will hold the media file system relative path of the users custom avatar if they uploaded one
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserDto.TourData">
+            <summary>
+            A Json blob stored for recording tour data for a user
+            </summary>
+        </member>
+        <member name="P:Umbraco.Core.Persistence.Dtos.UserGroupDto.UserCount">
+            <summary>
+            This is only relevant when this column is included in the results (i.e. GetUserGroupsWithUserCounts)
+            </summary>
+        </member>
         <member name="T:Umbraco.Core.Persistence.Repositories.Implement.ContentTypeCommonRepository">
             <summary>
             Implements <see cref="T:Umbraco.Core.Persistence.Repositories.IContentTypeCommonRepository"/>.
@@ -15776,7 +16475,7 @@
             Represents the UserRepository for doing CRUD operations for <see cref="T:Umbraco.Core.Models.Membership.IUser"/>
             </summary>
         </member>
-        <member name="M:Umbraco.Core.Persistence.Repositories.Implement.UserRepository.#ctor(Umbraco.Core.Scoping.IScopeAccessor,Umbraco.Core.Cache.AppCaches,Umbraco.Core.Logging.ILogger,Umbraco.Core.Persistence.Mappers.IMapperCollection,Umbraco.Core.Configuration.IGlobalSettings)">
+        <member name="M:Umbraco.Core.Persistence.Repositories.Implement.UserRepository.#ctor(Umbraco.Core.Scoping.IScopeAccessor,Umbraco.Core.Cache.AppCaches,Umbraco.Core.Logging.ILogger,Umbraco.Core.Persistence.Mappers.IMapperCollection,Umbraco.Core.Configuration.IGlobalSettings,Umbraco.Core.IRuntimeState)">
             <summary>
             Constructor
             </summary>
@@ -15787,6 +16486,7 @@
             A dictionary specifying the configuration for user passwords. If this is null then no password configuration will be persisted or read.
             </param>
             <param name="globalSettings"></param>
+            <param name="runtimeState"></param>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Persistence.Repositories.Implement.UserRepository.GetByUsername(System.String,System.Boolean)" -->
         <!-- Badly formed XML comment ignored for member "M:Umbraco.Core.Persistence.Repositories.Implement.UserRepository.Get(System.Int32,System.Boolean)" -->
@@ -16656,110 +17356,6 @@
             <remarks>
             Work arounds to handle special columns
             </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LoggedInUtc">
-            <summary>
-            Tracks when the session is created
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LastValidatedUtc">
-            <summary>
-            Updated every time a user's session is validated
-            </summary>
-            <remarks>
-            <para>This allows us to guess if a session is timed out if a user doesn't actively
-            log out and also allows us to trim the data in the table.</para>
-            <para>The index is IMPORTANT as it prevents deadlocks during deletion of
-            old sessions (DELETE ... WHERE lastValidatedUtc &lt; date).</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.LoggedOutUtc">
-            <summary>
-            Tracks when the session is removed when the user's account is logged out
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserLoginDto.IpAddress">
-            <summary>
-            Logs the IP address of the session if available
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.ContentNuDto.Data">
-            <summary>
-            Stores serialized JSON representing the content item's property and culture name values
-            </summary>
-            <remarks>
-            Pretty much anything that would require a 1:M lookup is serialized here
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.DomainDto.IsoCode">
-            <summary>
-            Used for a result on the query to get the associated language for a domain if there is one
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.ExternalLoginDto.UserData">
-            <summary>
-            Used to store any arbitrary data for the user and external provider - like user tokens returned from the provider
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.Id">
-            <summary>
-            Gets or sets the identifier of the language.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.IsoCode">
-            <summary>
-            Gets or sets the ISO code of the language.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.CultureName">
-            <summary>
-            Gets or sets the culture name of the language.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.IsDefault">
-            <summary>
-            Gets or sets a value indicating whether the language is the default language.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.IsMandatory">
-            <summary>
-            Gets or sets a value indicating whether the language is mandatory.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LanguageDto.FallbackLanguageId">
-            <summary>
-            Gets or sets the identifier of a fallback language.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LogDto.EntityType">
-            <summary>
-            This is the entity type associated with the log
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.LogDto.Parameters">
-            <summary>
-            Used to store additional data parameters for the log
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserDto.PasswordConfig">
-            <summary>
-            This will represent a JSON structure of how the password has been created (i.e hash algorithm, iterations)
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserDto.Avatar">
-            <summary>
-            Will hold the media file system relative path of the users custom avatar if they uploaded one
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserDto.TourData">
-            <summary>
-            A Json blob stored for recording tour data for a user
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Persistence.Dtos.UserGroupDto.UserCount">
-            <summary>
-            This is only relevant when this column is included in the results (i.e. GetUserGroupsWithUserCounts)
-            </summary>
         </member>
         <member name="M:Umbraco.Core.Persistence.Factories.ContentBaseFactory.BuildEntity(Umbraco.Core.Persistence.Dtos.DocumentDto,Umbraco.Core.Models.IContentType)">
             <summary>
@@ -18746,6 +19342,12 @@
             </summary>
             <remarks>May return <c>null</c> if the database factory is not configured.</remarks>
         </member>
+        <member name="P:Umbraco.Core.Persistence.IUmbracoDatabaseFactory.ProviderName">
+            <summary>
+            Gets the provider name.
+            </summary>
+            <remarks>May return <c>null</c> if the database factory is not configured.</remarks>
+        </member>
         <member name="P:Umbraco.Core.Persistence.IUmbracoDatabaseFactory.CanConnect">
             <summary>
             Gets a value indicating whether the database factory is configured (see <see cref="P:Umbraco.Core.Persistence.IUmbracoDatabaseFactory.Configured"/>),
@@ -20575,6 +21177,9 @@
         <member name="P:Umbraco.Core.Persistence.UmbracoDatabaseFactory.ConnectionString">
             <inheritdoc />
         </member>
+        <member name="P:Umbraco.Core.Persistence.UmbracoDatabaseFactory.ProviderName">
+            <inheritdoc />
+        </member>
         <member name="P:Umbraco.Core.Persistence.UmbracoDatabaseFactory.CanConnect">
             <inheritdoc />
         </member>
@@ -22372,7 +22977,7 @@
         </member>
         <member name="T:Umbraco.Core.Serialization.AutoInterningStringKeyCaseInsensitiveDictionaryConverter`1">
             <summary>
-            When applied to a dictionary with a string key, will ensure the deserialized string keys are interned 
+            When applied to a dictionary with a string key, will ensure the deserialized string keys are interned
             </summary>
             <typeparam name="TValue"></typeparam>
             <remarks>
@@ -25978,6 +26583,15 @@
             </summary>
             <param name="contentService"></param>
             <param name="contentId"></param>
+        </member>
+        <member name="T:Umbraco.Core.Services.MediaServiceExtensions">
+            <summary>
+            Media service extension methods
+            </summary>
+            <remarks>
+            Many of these have to do with UDI lookups but we don't need to add these methods to the service interface since a UDI is just a GUID
+            and the services already support GUIDs
+            </remarks>
         </member>
         <member name="M:Umbraco.Core.Services.ContentTypeServiceExtensions.GetAllElementTypes(Umbraco.Core.Services.IContentTypeService)">
             <summary>
@@ -35426,480 +36040,6 @@
             Gets all classes implementing IPackageAction.
             </summary>
         </member>
-        <member name="T:Umbraco.Core.Configuration.CaseInsensitiveEnumConfigConverter`1">
-            <summary>
-            A case-insensitive configuration converter for enumerations.
-            </summary>
-            <typeparam name="T">The type of the enumeration.</typeparam>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.CommaDelimitedConfigurationElement">
-            <summary>
-            Defines a configuration section that contains inner text that is comma delimited
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.CommaDelimitedConfigurationElement.InnerEnumerator">
-            <summary>
-            A wrapper for StringEnumerator since it doesn't explicitly implement IEnumerable
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.Configs">
-            <summary>
-            Represents Umbraco configurations.
-            </summary>
-            <remarks>
-            <para>During composition, use composition.Configs. When running, either inject the required configuration,
-            or use Current.Configs.</para>
-            </remarks>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.Configs.GetConfig``1">
-            <summary>
-            Gets a configuration.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.Configs.Add``1(System.Func{``0})">
-            <summary>
-            Adds a configuration, provided by a factory.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.Configs.Add``1(System.Func{Umbraco.Core.Composing.IFactory,``0})">
-            <summary>
-            Adds a configuration, provided by a factory.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.Configs.Add``1(System.String)">
-            <summary>
-            Adds a configuration, provided by a configuration section.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.Configs.RegisterWith(Umbraco.Core.Composing.IRegister)">
-            <summary>
-            Registers configurations in a register.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.GlobalSettings">
-            <summary>
-            The GlobalSettings Class contains general settings information for the entire Umbraco instance based on information from  web.config appsettings
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettings.ResetInternal">
-            <summary>
-            Used in unit testing to reset all config items that were set with property setters (i.e. did not come from config)
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettings.Reset">
-            <summary>
-            Resets settings that were set programmatically, to their initial values.
-            </summary>
-            <remarks>To be used in unit tests.</remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.HasSmtpServer">
-            <summary>
-            For testing only
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ReservedUrls">
-            <summary>
-            Gets the reserved URLs from web.config.
-            </summary>
-            <value>The reserved URLs.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ReservedPaths">
-            <summary>
-            Gets the reserved paths from web.config
-            </summary>
-            <value>The reserved paths.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ContentXmlFile">
-            <summary>
-            Gets the name of the content XML file.
-            </summary>
-            <value>The content XML.</value>
-            <remarks>
-            Defaults to ~/App_Data/umbraco.config
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.Path">
-            <summary>
-            Gets the path to umbraco's root directory (/umbraco by default).
-            </summary>
-            <value>The path.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.IconsPath">
-            <summary>
-            Gets the path to folder containing the icons used in the umbraco backoffice (/umbraco/assets/icons by default).
-            </summary>
-            <value>The icons path.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.ConfigurationStatus">
-            <summary>
-            Gets or sets the configuration status. This will return the version number of the currently installed umbraco instance.
-            </summary>
-            <value>The configuration status.</value>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettings.SaveSetting(System.String,System.String)">
-            <summary>
-            Saves a setting into the configuration file.
-            </summary>
-            <param name="key">Key of the setting to be saved.</param>
-            <param name="value">Value of the setting to be saved.</param>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettings.RemoveSetting(System.String)">
-            <summary>
-            Removes a setting from the configuration file.
-            </summary>
-            <param name="key">Key of the setting to be removed.</param>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.DebugMode">
-            <summary>
-            Gets a value indicating whether umbraco is running in [debug mode].
-            </summary>
-            <value><c>true</c> if [debug mode]; otherwise, <c>false</c>.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.TimeOutInMinutes">
-            <summary>
-            Gets the time out in minutes.
-            </summary>
-            <value>The time out in minutes.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.VersionCheckPeriod">
-            <summary>
-            Returns the number of days that should take place between version checks.
-            </summary>
-            <value>The version check period in days (0 = never).</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.LocalTempStorageLocation">
-            <inheritdoc />
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.LocalTempPath">
-            <inheritdoc />
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.DefaultUILanguage">
-            <summary>
-            Gets the default UI language.
-            </summary>
-            <value>The default UI language.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.HideTopLevelNodeFromPath">
-            <summary>
-            Gets a value indicating whether umbraco should hide top level nodes from generated URLs.
-            </summary>
-            <value>
-                <c>true</c> if umbraco hides top level nodes from URLs; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.UseHttps">
-            <summary>
-            Gets a value indicating whether umbraco should force a secure (https) connection to the backoffice.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.GlobalSettings.SqlWriteLockTimeOut">
-            <summary>
-            An int value representing the time in milliseconds to lock the database for a write operation
-            </summary>
-            <remarks>
-            The default value is 5000 milliseconds
-            </remarks>
-            <value>The timeout in milliseconds.</value>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.GlobalSettingsExtensions.GetUmbracoMvcArea(Umbraco.Core.Configuration.IGlobalSettings)">
-             <summary>
-             This returns the string of the MVC Area route.
-             </summary>
-             <remarks>
-             This will return the MVC area that we will route all custom routes through like surface controllers, etc...
-             We will use the 'Path' (default ~/umbraco) to create it but since it cannot contain '/' and people may specify a path of ~/asdf/asdf/admin
-             we will convert the '/' to '-' and use that as the path. its a bit lame but will work.
-            
-             We also make sure that the virtual directory (SystemDirectories.Root) is stripped off first, otherwise we'd end up with something
-             like "MyVirtualDirectory-Umbraco" instead of just "Umbraco".
-             </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.IGlobalSettings">
-            <summary>
-            Contains general settings information for the entire Umbraco instance based on information from  web.config appsettings
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ReservedUrls">
-            <summary>
-            Gets the reserved URLs from web.config.
-            </summary>
-            <value>The reserved URLs.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ReservedPaths">
-            <summary>
-            Gets the reserved paths from web.config
-            </summary>
-            <value>The reserved paths.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.Path">
-            <summary>
-            Gets the path to umbraco's root directory (/umbraco by default).
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.IconsPath">
-            <summary>
-            Gets the path to umbraco's icons directory (/umbraco/assets/icons by default).
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.ConfigurationStatus">
-            <summary>
-            Gets or sets the configuration status. This will return the version number of the currently installed umbraco instance.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.TimeOutInMinutes">
-            <summary>
-            Gets the time out in minutes.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.DefaultUILanguage">
-            <summary>
-            Gets the default UI language.
-            </summary>
-            <value>The default UI language.</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.HideTopLevelNodeFromPath">
-            <summary>
-            Gets a value indicating whether umbraco should hide top level nodes from generated URLs.
-            </summary>
-            <value>
-            	<c>true</c> if umbraco hides top level nodes from URLs; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.UseHttps">
-            <summary>
-            Gets a value indicating whether umbraco should force a secure (https) connection to the backoffice.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.VersionCheckPeriod">
-            <summary>
-            Returns a string value to determine if umbraco should skip version-checking.
-            </summary>
-            <value>The version check period in days (0 = never).</value>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.LocalTempStorageLocation">
-            <summary>
-            Gets the configuration for the location of temporary files.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.LocalTempPath">
-            <summary>
-            Gets the location of temporary files.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.IGlobalSettings.SqlWriteLockTimeOut">
-            <summary>
-            Gets the write lock timeout.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.InnerTextConfigurationElement`1">
-            <summary>
-            A full config section is required for any full element and we have some elements that are defined like this:
-            {element}MyValue{/element} instead of as attribute values.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.InnerTextConfigurationElement`1.RawValue">
-            <summary>
-            Exposes the raw string value
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.InnerTextConfigurationElement`1.op_Implicit(Umbraco.Core.Configuration.InnerTextConfigurationElement{`0})~`0">
-            <summary>
-            Implicit operator so we don't need to use the 'Value' property explicitly
-            </summary>
-            <param name="m"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.InnerTextConfigurationElement`1.ToString">
-            <summary>
-            Return the string value of Value
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.OptionalCommaDelimitedConfigurationElement">
-            <summary>
-            Used for specifying default values for comma delimited config
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.OptionalInnerTextConfigurationElement`1">
-            <summary>
-            This is used to supply optional/default values when using InnerTextConfigurationElement
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.RawXmlConfigurationElement">
-            <summary>
-            A configuration section that simply exposes the entire raw xml of the section itself which inheritors can use
-            to do with as they please.
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.IUmbracoConfigurationSection">
-            <summary>
-            Represents an Umbraco configuration section which can be used to pass to UmbracoConfiguration.For{T}
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.UmbracoConfigurationSection">
-            <summary>
-            Represents an Umbraco section within the configuration file.
-            </summary>
-            <remarks>
-            <para>The requirement for these sections is to be read-only.</para>
-            <para>However for unit tests purposes it is internally possible to override some values, and
-            then calling <c>>ResetSection</c> should cancel these changes and bring the section back to
-            what it was originally.</para>
-            <para>The <c>UmbracoSettings.For{T}</c> method will return a section, either one that
-            is in the configuration file, or a section that was created with default values.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoConfigurationSection.IsPresent">
-            <summary>
-            Gets a value indicating whether the section actually is in the configuration file.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.UmbracoSettings.ContentSectionExtensions.IsImageFile(Umbraco.Core.Configuration.UmbracoSettings.IContentSection,System.String)">
-            <summary>
-            Gets a value indicating whether the file extension corresponds to an image.
-            </summary>
-            <param name="extension">The file extension.</param>
-            <param name="contentConfig"></param>
-            <returns>A value indicating whether the file extension corresponds to an image.</returns>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.UmbracoSettings.ContentSectionExtensions.IsFileAllowedForUpload(Umbraco.Core.Configuration.UmbracoSettings.IContentSection,System.String)">
-            <summary>
-            Determines if file extension is allowed for upload based on (optional) white list and black list
-            held in settings.
-            Allow upload if extension is whitelisted OR if there is no whitelist and extension is NOT blacklisted.
-            </summary>
-        </member>
-        <member name="M:Umbraco.Core.Configuration.UmbracoSettings.ContentSectionExtensions.GetConfig(Umbraco.Core.Configuration.UmbracoSettings.IContentSection,System.String)">
-            <summary>
-            Gets the auto-fill configuration for a specified property alias.
-            </summary>
-            <param name="contentSection"></param>
-            <param name="propertyTypeAlias">The property type alias.</param>
-            <returns>The auto-fill configuration for the specified property alias, or null.</returns>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.IContentSection.ShowDeprecatedPropertyEditors">
-            <summary>
-            Gets a value indicating whether to show deprecated property editors in
-            a datatype list of available editors.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.IImagingAutoFillUploadField.Alias">
-            <summary>
-            Allow setting internally so we can create a default
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ImagingAutoFillUploadFieldElement.Alias">
-            <summary>
-            Allow setting internally so we can create a default
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ISecuritySection.AllowPasswordReset">
-            <summary>
-            Used to enable/disable the forgot password functionality on the back office login screen
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.ISecuritySection.UsernameIsEmail">
-            <summary>
-            A boolean indicating that by default the email address will be the username
-            </summary>
-            <remarks>
-            Even if this is true and the username is different from the email in the database, the username field will still be shown.
-            When this is false, the username and email fields will be shown in the user section.
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.AllowPasswordReset">
-            <summary>
-            Used to enable/disable the forgot password functionality on the back office login screen
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.UsernameIsEmail">
-            <summary>
-            A boolean indicating that by default the email address will be the username
-            </summary>
-            <remarks>
-            Even if this is true and the username is different from the email in the database, the username field will still be shown.
-            When this is false, the username and email fields will be shown in the user section.
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.Umbraco#Core#Configuration#UmbracoSettings#ISecuritySection#AllowPasswordReset">
-            <summary>
-            Used to enable/disable the forgot password functionality on the back office login screen
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoSettings.SecurityElement.Umbraco#Core#Configuration#UmbracoSettings#ISecuritySection#UsernameIsEmail">
-            <summary>
-            A boolean indicating that by default the email address will be the username
-            </summary>
-            <remarks>
-            Even if this is true and the username is different from the email in the database, the username field will still be shown.
-            When this is false, the username and email fields will be shown in the user section.
-            </remarks>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.UmbracoSettings.UmbracoConfigurationElement">
-            <summary>
-            Base class with shared helper methods
-            </summary>
-        </member>
-        <member name="F:Umbraco.Core.Configuration.UmbracoSettings.UmbracoConfigurationElement._rawElements">
-            <summary>
-            Used so the RawElement types are not re-created every time they are accessed
-            </summary>
-        </member>
-        <member name="T:Umbraco.Core.Configuration.UmbracoVersion">
-            <summary>
-            Represents the version of the executing code.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.Current">
-            <summary>
-            Gets the non-semantic version of the Umbraco code.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.Comment">
-            <summary>
-            Gets the semantic version comments of the Umbraco code.
-            </summary>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.AssemblyVersion">
-            <summary>
-            Gets the assembly version of the Umbraco code.
-            </summary>
-            <remarks>
-            <para>The assembly version is the value of the <see cref="T:System.Reflection.AssemblyVersionAttribute"/>.</para>
-            <para>Is the one that the CLR checks for compatibility. Therefore, it changes only on
-            hard-breaking changes (for instance, on new major versions).</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.AssemblyFileVersion">
-            <summary>
-            Gets the assembly file version of the Umbraco code.
-            </summary>
-            <remarks>
-            <para>The assembly version is the value of the <see cref="T:System.Reflection.AssemblyFileVersionAttribute"/>.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.SemanticVersion">
-            <summary>
-            Gets the semantic version of the Umbraco code.
-            </summary>
-            <remarks>
-            <para>The semantic version is the value of the <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute"/>.</para>
-            <para>It is the full version of Umbraco, including comments.</para>
-            </remarks>
-        </member>
-        <member name="P:Umbraco.Core.Configuration.UmbracoVersion.LocalVersion">
-            <summary>
-            Gets the "local" version of the site.
-            </summary>
-            <remarks>
-            <para>Three things have a version, really: the executing code, the database model,
-            and the site/files. The database model version is entirely managed via migrations,
-            and changes during an upgrade. The executing code version changes when new code is
-            deployed. The site/files version changes during an upgrade.</para>
-            </remarks>
-        </member>
         <member name="T:Umbraco.Core.ConfigsExtensions">
             <summary>
             Provides extension methods for the <see cref="T:Umbraco.Core.Configuration.Configs"/> class.
@@ -39268,6 +39408,18 @@
             </summary>
             <remarks>Not thread-safe obviously.</remarks>
         </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.GetReadLocks">
+            <summary>
+            Used for testing. Ensures and gets any queued read locks.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.GetWriteLocks">
+            <summary>
+            Used for testing. Ensures and gets and queued write locks.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Umbraco.Core.Scoping.Scope.RepositoryCacheMode">
             <inheritdoc />
         </member>
@@ -39285,6 +39437,18 @@
         </member>
         <member name="M:Umbraco.Core.Scoping.Scope.Complete">
             <inheritdoc />
+        </member>
+        <member name="M:Umbraco.Core.Scoping.Scope.EnsureDbLocks">
+            <summary>
+            When we require a ReadLock or a WriteLock we don't immediately request these locks from the database,
+            instead we only request them when necessary (lazily).
+            To do this, we queue requests for read/write locks.
+            This is so that if there's a request for either of these
+            locks, but the service/repository returns an item from the cache, we don't end up making a DB call to make the
+            read/write lock.
+            This executes the queue of requested locks in order in an efficient way lazily whenever the database instance is
+            resolved.
+            </summary>
         </member>
         <member name="M:Umbraco.Core.Scoping.Scope.GenerateUnclearedScopesLogMessage">
             <summary>
@@ -39327,7 +39491,7 @@
         <member name="M:Umbraco.Core.Scoping.Scope.WriteLock(System.TimeSpan,System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.ReadLockInner(System.Guid,System.Nullable{System.TimeSpan},System.Int32[])">
+        <member name="M:Umbraco.Core.Scoping.Scope.EagerReadLockInner(Umbraco.Core.Persistence.IUmbracoDatabase,System.Guid,System.Nullable{System.TimeSpan},System.Int32[])">
             <summary>
             Handles acquiring a read lock, will delegate it to the parent if there are any.
             </summary>
@@ -39335,7 +39499,7 @@
             <param name="timeout">Optional database timeout in milliseconds.</param>
             <param name="lockIds">Array of lock object identifiers.</param>
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.WriteLockInner(System.Guid,System.Nullable{System.TimeSpan},System.Int32[])">
+        <member name="M:Umbraco.Core.Scoping.Scope.EagerWriteLockInner(Umbraco.Core.Persistence.IUmbracoDatabase,System.Guid,System.Nullable{System.TimeSpan},System.Int32[])">
             <summary>
             Handles acquiring a write lock with a specified timeout, will delegate it to the parent if there are any.
             </summary>
@@ -39343,7 +39507,7 @@
             <param name="timeout">Optional database timeout in milliseconds.</param>
             <param name="lockIds">Array of lock object identifiers.</param>
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.LockInner(System.Guid,System.Collections.Generic.Dictionary{System.Guid,System.Collections.Generic.Dictionary{System.Int32,System.Int32}}@,System.Collections.Generic.HashSet{System.Int32}@,System.Action{System.Int32},System.Action{System.Int32,System.TimeSpan},System.Nullable{System.TimeSpan},System.Int32[])">
+        <member name="M:Umbraco.Core.Scoping.Scope.LockInner(Umbraco.Core.Persistence.IUmbracoDatabase,System.Guid,System.Collections.Generic.Dictionary{System.Guid,System.Collections.Generic.Dictionary{System.Int32,System.Int32}}@,System.Collections.Generic.HashSet{System.Int32}@,System.Action{Umbraco.Core.Persistence.IUmbracoDatabase,System.Int32},System.Action{Umbraco.Core.Persistence.IUmbracoDatabase,System.Int32,System.TimeSpan},System.Nullable{System.TimeSpan},System.Int32[])">
             <summary>
             Handles acquiring a lock, this should only be called from the outermost scope.
             </summary>
@@ -39355,26 +39519,26 @@
             <param name="timeout">Optional timeout parameter to specify a timeout.</param>
             <param name="lockIds">Lock identifiers to lock on.</param>
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.ObtainReadLock(System.Int32)">
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainReadLock(Umbraco.Core.Persistence.IUmbracoDatabase,System.Int32)">
             <summary>
             Obtains an ordinary read lock.
             </summary>
             <param name="lockId">Lock object identifier to lock.</param>
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.ObtainTimeoutReadLock(System.Int32,System.TimeSpan)">
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainTimeoutReadLock(Umbraco.Core.Persistence.IUmbracoDatabase,System.Int32,System.TimeSpan)">
             <summary>
             Obtains a read lock with a custom timeout.
             </summary>
             <param name="lockId">Lock object identifier to lock.</param>
             <param name="timeout">TimeSpan specifying the timout period.</param>
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.ObtainWriteLock(System.Int32)">
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainWriteLock(Umbraco.Core.Persistence.IUmbracoDatabase,System.Int32)">
             <summary>
             Obtains an ordinary write lock.
             </summary>
             <param name="lockId">Lock object identifier to lock.</param>
         </member>
-        <member name="M:Umbraco.Core.Scoping.Scope.ObtainTimeoutWriteLock(System.Int32,System.TimeSpan)">
+        <member name="M:Umbraco.Core.Scoping.Scope.ObtainTimeoutWriteLock(Umbraco.Core.Persistence.IUmbracoDatabase,System.Int32,System.TimeSpan)">
             <summary>
             Obtains a write lock with a custom timeout.
             </summary>
@@ -42005,6 +42169,11 @@
             <param name="url"></param>
             <param name="globalSettings"></param>
             <returns></returns>
+        </member>
+        <member name="F:Umbraco.Core.UriExtensions.NonClientSideRequestExtensions">
+            <summary>
+            Non Client Side request Extensions <see cref="M:Umbraco.Core.UriExtensions.IsClientSideRequest(System.Uri)"/>
+            </summary>
         </member>
         <member name="M:Umbraco.Core.UriExtensions.IsClientSideRequest(System.Uri)">
             <summary>

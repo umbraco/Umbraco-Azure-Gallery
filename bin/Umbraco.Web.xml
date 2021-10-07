@@ -1641,6 +1641,16 @@
             <param name="contentTypeAlias"></param>
             <param name="parentId"></param>
         </member>
+        <member name="M:Umbraco.Web.Editors.ContentController.GetEmptyByAliases(Umbraco.Web.Models.ContentEditing.ContentTypesByAliases)">
+            <summary>
+            Gets a dictionary containing empty content items for every alias specified in the contentTypeAliases array in the body of the request.
+            </summary>
+            <remarks>
+            This is a post request in order to support a large amount of aliases without hitting the URL length limit.
+            </remarks>
+            <param name="contentTypesByAliases"></param>
+            <returns></returns>
+        </member>
         <member name="M:Umbraco.Web.Editors.ContentController.GetEmptyByKey(System.Guid,System.Int32)">
             <summary>
             Gets an empty content item for the document type.
@@ -6539,6 +6549,21 @@
             Clears Csrf tokens.
             </summary>
         </member>
+        <member name="T:Umbraco.Web.Models.ContentEditing.ContentTypesByAliases">
+            <summary>
+            A model for retrieving multiple content types based on their aliases.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.Models.ContentEditing.ContentTypesByAliases.ParentId">
+            <summary>
+            Id of the parent of the content type.
+            </summary>
+        </member>
+        <member name="P:Umbraco.Web.Models.ContentEditing.ContentTypesByAliases.ContentTypeAliases">
+            <summary>
+            The alias of every content type to get.
+            </summary>
+        </member>
         <member name="T:Umbraco.Web.Models.ContentEditing.ContentTypesByKeys">
             <summary>
             A model for retrieving multiple content types based on their keys.
@@ -11180,7 +11205,7 @@
         </member>
         <member name="T:Umbraco.Web.PropertyEditors.ValueConverters.BlockEditorConverter">
             <summary>
-            Converts json block objects into <see cref="T:Umbraco.Core.Models.PublishedContent.IPublishedElement"/>
+            Converts JSON block objects into <see cref="T:Umbraco.Core.Models.PublishedContent.IPublishedElement" />.
             </summary>
         </member>
         <member name="M:Umbraco.Web.PropertyEditors.ValueConverters.BlockListPropertyValueConverter.IsConverter(Umbraco.Core.Models.PublishedContent.IPublishedPropertyType)">
@@ -12256,6 +12281,12 @@
             <summary>
             Used to display debugging output since ToString() can only be called once
             </summary>
+        </member>
+        <member name="T:Umbraco.Web.PublishedCache.NuCache.DataSource.MessagePackAutoInterningStringKeyCaseInsensitiveDictionaryFormatter`1">
+            <summary>
+            A messagepack formatter (deserializer) for a string key dictionary that uses OrdinalIgnoreCase for the key string comparison
+            </summary>
+            <typeparam name="TValue"></typeparam>
         </member>
         <member name="T:Umbraco.Web.PublishedCache.NuCache.DataSource.MsgPackContentNestedDataSerializer">
             <summary>

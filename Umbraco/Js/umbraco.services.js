@@ -1160,11 +1160,15 @@
                 var toVariant = toModel.variants[0];
                 for (var t = 0; t < fromVariant.tabs.length; t++) {
                     var fromTab = fromVariant.tabs[t];
-                    var toTab = toVariant.tabs[t];
-                    for (var p = 0; p < fromTab.properties.length; p++) {
-                        var fromProp = fromTab.properties[p];
-                        var toProp = toTab.properties[p];
-                        toProp.value = fromProp.value;
+                    var toTab = toVariant.tabs.find(function (tab) {
+                        return tab.alias === fromTab.alias;
+                    });
+                    if (fromTab && fromTab.properties && fromTab.properties.length > 0 && toTab && toTab.properties && toTab.properties.length > 0) {
+                        for (var p = 0; p < fromTab.properties.length; p++) {
+                            var fromProp = fromTab.properties[p];
+                            var toProp = toTab.properties[p];
+                            toProp.value = fromProp.value;
+                        }
                     }
                 }
             }
@@ -1616,6 +1620,11 @@
                             if (settingsData === null) {
                                 console.error('Couldnt find settings data of ' + settingsUdi);
                                 return null;
+                            }
+                            // the Settings model has been changed to a new Element Type.
+                            // we need to update the settingsData with the new Content Type key
+                            if (settingsData.contentTypeKey !== settingsScaffold.contentTypeKey) {
+                                settingsData.contentTypeKey = settingsScaffold.contentTypeKey;
                             }
                             blockObject.settingsData = settingsData;
                             // make basics from scaffold
@@ -2536,6 +2545,39 @@
                     });
                 }
             },
+            registerGenericTab: function registerGenericTab(groups) {
+                if (!groups) {
+                    return;
+                }
+                var hasGenericTab = groups.find(function (group) {
+                    return group.isGenericTab;
+                });
+                if (hasGenericTab) {
+                    return;
+                }
+                var isRootGroup = function isRootGroup(group) {
+                    return group.type === 0 && group.parentAlias === null;
+                };
+                var hasRootGroups = groups.filter(function (group) {
+                    return isRootGroup(group);
+                }).length > 0;
+                if (!hasRootGroups) {
+                    return;
+                }
+                var genericTab = {
+                    isGenericTab: true,
+                    type: 1,
+                    label: 'Generic',
+                    key: String.CreateGuid(),
+                    alias: null,
+                    parentAlias: null,
+                    properties: []
+                };
+                localizationService.localize('general_generic').then(function (value) {
+                    genericTab.label = value;
+                    groups.unshift(genericTab);
+                });
+            },
             /** Returns the action button definitions based on what permissions the user has.
     The content.allowedActions parameter contains a list of chars, each represents a button by permission so
     here we'll build the buttons according to the chars of the user. */
@@ -3132,6 +3174,24 @@
     }
     angular.module('umbraco.services').factory('contentEditingHelper', contentEditingHelper);
     'use strict';
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+    }
+    function _nonIterableSpread() {
+        throw new TypeError('Invalid attempt to spread non-iterable instance');
+    }
+    function _iterableToArray(iter) {
+        if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === '[object Arguments]')
+            return Array.from(iter);
+    }
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr)) {
+            for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+                arr2[i] = arr[i];
+            }
+            return arr2;
+        }
+    }
     /**
  * @ngdoc service
  * @name umbraco.services.contentTypeHelper
@@ -3139,6 +3199,96 @@
  **/
     function contentTypeHelper(contentTypeResource, dataTypeResource, $filter, $injector, $q) {
         var contentTypeHelperService = {
+            TYPE_GROUP: 0,
+            TYPE_TAB: 1,
+            isAliasUnique: function isAliasUnique(groups, alias) {
+                return groups.find(function (group) {
+                    return group.alias === alias;
+                }) ? false : true;
+            },
+            createUniqueAlias: function createUniqueAlias(groups, alias) {
+                var i = 1;
+                while (this.isAliasUnique(groups, alias + i.toString()) === false) {
+                    i++;
+                }
+                return alias + i.toString();
+            },
+            generateLocalAlias: function generateLocalAlias(name) {
+                return name ? name.toUmbracoAlias() : String.CreateGuid();
+            },
+            getLocalAlias: function getLocalAlias(alias) {
+                var lastIndex = alias.lastIndexOf('/');
+                return lastIndex === -1 ? alias : alias.substring(lastIndex + 1);
+            },
+            updateLocalAlias: function updateLocalAlias(alias, localAlias) {
+                var parentAlias = this.getParentAlias(alias);
+                return parentAlias == null || parentAlias === '' ? localAlias : parentAlias + '/' + localAlias;
+            },
+            getParentAlias: function getParentAlias(alias) {
+                if (alias) {
+                    var lastIndex = alias.lastIndexOf('/');
+                    return lastIndex === -1 ? null : alias.substring(0, lastIndex);
+                }
+                return null;
+            },
+            updateParentAlias: function updateParentAlias(alias, parentAlias) {
+                var localAlias = this.getLocalAlias(alias);
+                return parentAlias == null || parentAlias === '' ? localAlias : parentAlias + '/' + localAlias;
+            },
+            updateDescendingAliases: function updateDescendingAliases(groups, oldParentAlias, newParentAlias) {
+                var _this = this;
+                groups.forEach(function (group) {
+                    var parentAlias = _this.getParentAlias(group.alias);
+                    if (parentAlias === oldParentAlias) {
+                        var oldAlias = group.alias, newAlias = _this.updateParentAlias(oldAlias, newParentAlias);
+                        group.alias = newAlias;
+                        group.parentAlias = newParentAlias;
+                        _this.updateDescendingAliases(groups, oldAlias, newAlias);
+                    }
+                });
+            },
+            defineParentAliasOnGroups: function defineParentAliasOnGroups(groups) {
+                var _this2 = this;
+                groups.forEach(function (group) {
+                    group.parentAlias = _this2.getParentAlias(group.alias);
+                });
+            },
+            relocateDisorientedGroups: function relocateDisorientedGroups(groups) {
+                var _this3 = this;
+                var existingAliases = groups.map(function (group) {
+                    return group.alias;
+                });
+                existingAliases.push(null);
+                var disorientedGroups = groups.filter(function (group) {
+                    return existingAliases.indexOf(group.parentAlias) === -1;
+                });
+                disorientedGroups.forEach(function (group) {
+                    var oldAlias = group.alias, newAlias = _this3.updateParentAlias(oldAlias, null);
+                    group.alias = newAlias;
+                    group.parentAlias = null;
+                    _this3.updateDescendingAliases(groups, oldAlias, newAlias);
+                });
+            },
+            convertGroupToTab: function convertGroupToTab(groups, group) {
+                var _this4 = this;
+                var tabs = groups.filter(function (group) {
+                    return group.type === _this4.TYPE_TAB;
+                }).sort(function (a, b) {
+                    return a.sortOrder - b.sortOrder;
+                });
+                var nextSortOrder = tabs && tabs.length > 0 ? tabs[tabs.length - 1].sortOrder + 1 : 0;
+                group.convertingToTab = true;
+                group.type = this.TYPE_TAB;
+                var newAlias = this.generateLocalAlias(group.name);
+                // when checking for alias uniqueness we need to exclude the current group or the alias would get a + 1
+                var otherGroups = _toConsumableArray(groups).filter(function (groupCopy) {
+                    return !groupCopy.convertingToTab;
+                });
+                group.alias = this.isAliasUnique(otherGroups, newAlias) ? newAlias : this.createUniqueAlias(otherGroups, newAlias);
+                group.parentAlias = null;
+                group.sortOrder = nextSortOrder;
+                group.convertingToTab = false;
+            },
             createIdArray: function createIdArray(array) {
                 var newArray = [];
                 array.forEach(function (arrayItem) {
@@ -3242,7 +3392,7 @@
                     compositionGroup.tabState = 'inActive';
                     // if groups are named the same - merge the groups
                     contentType.groups.forEach(function (contentTypeGroup) {
-                        if (contentTypeGroup.name === compositionGroup.name) {
+                        if (contentTypeGroup.name === compositionGroup.name && contentTypeGroup.type === compositionGroup.type) {
                             // set flag to show if properties has been merged into a tab
                             compositionGroup.groupIsMerged = true;
                             // make group inherited
@@ -3319,8 +3469,7 @@
                                 contentTypeGroup.inherited = false;
                             }
                             // remove group if there are no properties left
-                            if (contentTypeGroup.properties.length > 1) {
-                                //contentType.groups.splice(groupIndex, 1);
+                            if (contentTypeGroup.properties.length > 0) {
                                 groups.push(contentTypeGroup);
                             }
                         } else {
@@ -3374,6 +3523,41 @@
                     'id': id
                 };
                 array.push(placeholder);
+            },
+            rebindSavedContentType: function rebindSavedContentType(contentType, savedContentType) {
+                // The saved content type might have updated values (eg. new IDs/keys), so make sure the view model is updated
+                contentType.ModelState = savedContentType.ModelState;
+                contentType.id = savedContentType.id;
+                contentType.groups.forEach(function (group) {
+                    if (!group.alias)
+                        return;
+                    var k = 0;
+                    while (k < savedContentType.groups.length && savedContentType.groups[k].alias != group.alias) {
+                        k++;
+                    }
+                    if (k == savedContentType.groups.length) {
+                        group.id = 0;
+                        return;
+                    }
+                    var savedGroup = savedContentType.groups[k];
+                    group.id = savedGroup.id;
+                    group.key = savedGroup.key;
+                    group.contentTypeId = savedGroup.contentTypeId;
+                    group.properties.forEach(function (property) {
+                        if (property.id || !property.alias)
+                            return;
+                        k = 0;
+                        while (k < savedGroup.properties.length && savedGroup.properties[k].alias != property.alias) {
+                            k++;
+                        }
+                        if (k == savedGroup.properties.length) {
+                            property.id = 0;
+                            return;
+                        }
+                        var savedProperty = savedGroup.properties[k];
+                        property.id = savedProperty.id;
+                    });
+                });
             }
         };
         return contentTypeHelperService;
@@ -11856,6 +12040,7 @@ When building a custom infinite editor view you can use the same components as a
                             dataTypeKey: args.model.dataTypeKey,
                             ignoreUserStartNodes: args.model.config.ignoreUserStartNodes,
                             anchors: anchorValues,
+                            size: args.model.config.overlaySize,
                             submit: function submit(model) {
                                 self.insertLinkInEditor(args.editor, model.target, anchorElement);
                                 editorService.close();
@@ -13129,21 +13314,20 @@ When building a custom infinite editor view you can use the same components as a
                     return trimmed;
                 },
                 formatContentTypePostData: function formatContentTypePostData(displayModel, action) {
-                    //create the save model from the display model
+                    // Create the save model from the display model
                     var saveModel = _.pick(displayModel, 'compositeContentTypes', 'isContainer', 'allowAsRoot', 'allowedTemplates', 'allowedContentTypes', 'alias', 'description', 'thumbnail', 'name', 'id', 'icon', 'trashed', 'key', 'parentId', 'alias', 'path', 'allowCultureVariant', 'allowSegmentVariant', 'isElement');
-                    // TODO: Map these
                     saveModel.allowedTemplates = _.map(displayModel.allowedTemplates, function (t) {
                         return t.alias;
                     });
                     saveModel.defaultTemplate = displayModel.defaultTemplate ? displayModel.defaultTemplate.alias : null;
                     var realGroups = _.reject(displayModel.groups, function (g) {
-                        //do not include these tabs
+                        // Do not include groups with init state
                         return g.tabState === 'init';
                     });
                     saveModel.groups = _.map(realGroups, function (g) {
-                        var saveGroup = _.pick(g, 'inherited', 'id', 'sortOrder', 'name');
+                        var saveGroup = _.pick(g, 'id', 'sortOrder', 'name', 'key', 'alias', 'type');
                         var realProperties = _.reject(g.properties, function (p) {
-                            //do not include these properties
+                            // Do not include properties with init state or inherited from a composition
                             return p.propertyState === 'init' || p.inherited === true;
                         });
                         var saveProperties = _.map(realProperties, function (p) {
@@ -13151,14 +13335,19 @@ When building a custom infinite editor view you can use the same components as a
                             return saveProperty;
                         });
                         saveGroup.properties = saveProperties;
-                        //if this is an inherited group and there are not non-inherited properties on it, then don't send up the data
-                        if (saveGroup.inherited === true && saveProperties.length === 0) {
-                            return null;
+                        if (g.inherited === true) {
+                            if (saveProperties.length === 0) {
+                                // All properties are inherited from the compositions, no need to save this group
+                                return null;
+                            } else if (g.contentTypeId != saveModel.id) {
+                                // We have local properties, but the group id is not local, ensure a new id/key is generated on save
+                                saveGroup = _.omit(saveGroup, 'id', 'key');
+                            }
                         }
                         return saveGroup;
                     });
-                    //we don't want any null groups
                     saveModel.groups = _.reject(saveModel.groups, function (g) {
+                        // Do not include empty/null groups
                         return !g;
                     });
                     return saveModel;
